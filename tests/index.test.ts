@@ -1,9 +1,9 @@
 import { describe, expect, test } from 'vitest'
-import { loadConfig } from '../src'
+import { unrun } from '../src'
 
-describe('loadConfig', () => {
+describe('unrun', () => {
   test('should load config from ts', async () => {
-    const config = await loadConfig({
+    const config = await unrun({
       path: './tests/fixtures/custom.config.ts',
     })
 
@@ -14,7 +14,7 @@ describe('loadConfig', () => {
   })
 
   test('should load config from esm', async () => {
-    const config = await loadConfig({
+    const config = await unrun({
       path: './tests/fixtures/custom.config.mjs',
     })
 
@@ -25,7 +25,7 @@ describe('loadConfig', () => {
   })
 
   test('should load config from cjs', async () => {
-    const config = await loadConfig({
+    const config = await unrun({
       path: './tests/fixtures/custom.config.js',
     })
 
@@ -36,7 +36,7 @@ describe('loadConfig', () => {
   })
 
   test('should load config from json', async () => {
-    const config = await loadConfig({
+    const config = await unrun({
       path: './tests/fixtures/custom.config.json',
     })
 

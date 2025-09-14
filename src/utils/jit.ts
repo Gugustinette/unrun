@@ -31,6 +31,7 @@ export const jit = async (options: JitOptions): Promise<any> => {
   const rolldownOutput = await bundle.generate({
     // Output options (https://rolldown.rs/reference/config-options#outputoptions)
     format: 'esm',
+    inlineDynamicImports: true,
   })
 
   // Verify that the output is not empty
