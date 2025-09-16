@@ -9,7 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 // Create jiti instance relative to this test file
 const jiti = createJiti(__dirname, { interopDefault: true })
 
-// Jiti's fixtures
+// Jiti's fixtures (success cases)
 const fixtures = [
   './async/index.js',
   './circular/index.js',
@@ -26,12 +26,12 @@ const fixtures = [
   // './jsx/index.ts',
   './mixed/index.cjs',
   './native/index.js',
-  // './proto/index.js',
+  './proto/index.js',
   // './pure-esm-dep/index.js',
   // './require-esm/index.cjs',
   './require-json/index.js',
   './syntax/index.ts',
-  // './top-level-await/index.ts',
+  './top-level-await/index.ts',
   // './typescript/index.ts',
 ]
 
@@ -51,4 +51,32 @@ describe.concurrent('backward compatibility with jiti', () => {
       expect(unrunMod).toEqual(jitiMod.default)
     })
   }
+
+  /**
+   * Error cases (should throw with both jiti and unrun)
+   */
+
+  // Error parsing (syntax error)
+  test('error-parse throws', async () => {
+    const fixturePath = resolve(
+      __dirname,
+      'fixtures/jiti',
+      './error-parse/index.ts',
+    )
+
+    await expect(jiti.import(fixturePath)).rejects.toThrow()
+    await expect(unrun({ path: fixturePath })).rejects.toThrow()
+  })
+
+  // Error at runtime
+  test('error-runtime throws', async () => {
+    const fixturePath = resolve(
+      __dirname,
+      'fixtures/jiti',
+      './error-runtime/index.ts',
+    )
+
+    await expect(jiti.import(fixturePath)).rejects.toThrow()
+    await expect(unrun({ path: fixturePath })).rejects.toThrow()
+  })
 })

@@ -25,6 +25,11 @@ export const jit = async (options: JitOptions): Promise<any> => {
   const bundle = await rolldown({
     // Input options (https://rolldown.rs/reference/config-options#inputoptions)
     input: filePath,
+    platform: 'neutral',
+    inject: {
+      __dirname: path.dirname(filePath),
+      __filename: filePath,
+    },
   })
 
   // Generate bundle in memory
