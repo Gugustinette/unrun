@@ -108,6 +108,14 @@ How:
 
 ### `src/utils/unwrap-cjs.ts`
 
+### `src/utils/source.ts`
+
+Small shared helpers used by multiple plugins:
+
+- `stripShebang(src)`: remove a leading hashbang while preserving line numbers.
+- `isEsmLike(src)`: light heuristic to detect ESM-looking sources.
+- `isValidIdentifier(name)`: validate keys when generating named JSON exports.
+
 Unwraps rolldown `__commonJS` wrappers that would break ESM when `await` is present.
 
 Why:

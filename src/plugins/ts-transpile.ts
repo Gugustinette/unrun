@@ -1,4 +1,5 @@
 import * as ts from 'typescript'
+import { stripShebang } from '../utils/source'
 import type { Plugin } from 'rolldown'
 
 /**
@@ -21,12 +22,7 @@ export function createTsTranspile(): Plugin {
     transform(code: string, id: string) {
       if (!/\.(?:mts|cts|ts|tsx)$/.test(id) || /\.d\.ts$/.test(id)) return null
       try {
-        let src = code
-        // Allow shebang in TS files
-        if (src.startsWith('#!')) {
-          const nl = src.indexOf('\n')
-          src = nl === -1 ? '' : src.slice(nl + 1)
-        }
+        const src = stripShebang(code)
         const isCTS = /\.cts$/.test(id)
         const out = ts.transpileModule(src, {
           fileName: id,

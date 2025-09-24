@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { isValidIdentifier } from '../utils/source'
 import type { Plugin } from 'rolldown'
 
 /**
@@ -47,7 +48,7 @@ export function createJsonLoader(): Plugin {
         code += `export default __json\n`
         if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
           for (const key of Object.keys(parsed)) {
-            if (/^[\w$]+$/.test(key)) {
+            if (isValidIdentifier(key)) {
               code += `export const ${key} = __json[${JSON.stringify(key)}]\n`
             }
           }

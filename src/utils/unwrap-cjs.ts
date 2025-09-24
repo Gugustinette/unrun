@@ -15,6 +15,8 @@
 export function unwrapCjsWrapper(input: string): string {
   let code = input
   const marker = '__commonJS({'
+  // Fast-path: if marker not found, skip any extra work
+  if (!code.includes(marker)) return input
   let pos = 0
   let changed = false
   while (true) {

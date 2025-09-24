@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { isEsmLike, stripShebang } from '../utils/source'
 import type { Plugin } from 'rolldown'
 
 /**
@@ -27,12 +28,7 @@ export function createEsmRequireShim(): Plugin {
     load(id) {
       if (!/\.(?:m?[jt]s|c?tsx?)(?:$|\?)/.test(id)) return null
       try {
-        let src = fs.readFileSync(id, 'utf8')
-        // Strip shebang (#!/usr/bin/env node) to avoid parser errors
-        if (src.startsWith('#!')) {
-          const nl = src.indexOf('\n')
-          src = nl === -1 ? '' : src.slice(nl + 1)
-        }
+        const src = stripShebang(fs.readFileSync(id, 'utf8'))
         const dir = path.dirname(id)
 
         // Provide per-module import.meta shims
@@ -48,7 +44,7 @@ export function createEsmRequireShim(): Plugin {
 
         let code = src
         // Only rewrite require() in ESM-looking files to avoid CJS wrapping
-        if (/\b(?:import|export)\b/.test(src)) {
+        if (isEsmLike(src)) {
           const requireCallRE = /(?<!\.)\brequire\s*\(/g
           const requireResolveRE = /(?<!\.)\brequire\s*\.\s*resolve\s*\(/g
           if (requireCallRE.test(src) || requireResolveRE.test(src)) {
