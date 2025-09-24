@@ -104,9 +104,11 @@ export const jit = async (options: JitOptions): Promise<any> => {
       finalCode.length,
     )
     try {
-      const debugOut = path.join(process.cwd(), 'unrun-debug.mjs')
-      fs.writeFileSync(debugOut, finalCode, 'utf8')
-      console.error('[unrun] wrote debug output to', debugOut)
+      if (process.env.UNRUN_DEBUG) {
+        const debugOut = path.join(process.cwd(), 'unrun-debug.mjs')
+        fs.writeFileSync(debugOut, finalCode, 'utf8')
+        console.error('[unrun] wrote debug output to', debugOut)
+      }
     } catch {}
     throw error
   }
