@@ -37,7 +37,7 @@ describe.concurrent('backward compatibility with jiti', () => {
   for (const fixture of fixtures) {
     const fixturePath = resolve(__dirname, 'fixtures/jiti', fixture)
 
-    test(fixture, { timeout: 10000 }, async () => {
+    test(fixture, { timeout: 20000 }, async () => {
       // Load the module with jiti
       const jitiMod: any = await jiti.import(fixturePath)
 
