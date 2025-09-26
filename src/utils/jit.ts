@@ -5,10 +5,7 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { pathToFileURL } from 'node:url'
-import { rolldown } from 'rolldown'
-import { createEsmRequireShim } from '../plugins/esm-require-shim'
-import { createJsonLoader } from '../plugins/json-loader'
-import { createTsTranspile } from '../plugins/ts-transpile'
+import { bundle } from './bundle'
 import { unwrapCjsWrapper } from './unwrap-cjs'
 
 export interface JitOptions {
@@ -23,48 +20,14 @@ export interface JitOptions {
 export const jit = async (options: JitOptions): Promise<any> => {
   // Resolve the file path to an absolute path
   const filePath = path.resolve(process.cwd(), options.path)
+
   // Check if the file exists
   if (!fs.existsSync(filePath)) {
     throw new Error(`File not found: ${filePath}`)
   }
-  // Setup bundle
-  const bundle = await rolldown({
-    // Input options (https://rolldown.rs/reference/config-options#inputoptions)
-    input: filePath,
-    // Use Node platform for better Node-compatible resolution & builtins
-    platform: 'node',
-    // Keep __dirname/__filename behavior and map import.meta.env to process.env
-    define: {
-      __dirname: JSON.stringify(path.dirname(filePath)),
-      __filename: JSON.stringify(filePath),
-      'import.meta.env': 'process.env',
-    },
-    // Compose feature-specific plugins
-    plugins: [createTsTranspile(), createJsonLoader(), createEsmRequireShim()],
-    experimental: {
-      // Let rolldown wrap pure CJS modules (like .cjs / .cts) so they can be required.
-      // ESM modules with occasional `require()` calls won't be wrapped because we rewrite them.
-      onDemandWrapping: true,
-    },
-  })
 
-  // Generate bundle in memory
-  const rolldownOutput = await bundle.generate({
-    // Output options (https://rolldown.rs/reference/config-options#outputoptions)
-    format: 'esm',
-    inlineDynamicImports: true,
-    // Ensure we don't polyfill/force CommonJS require at output level
-    // so ESM with TLA remains valid. (Option is harmless if unsupported.)
-    // @ts-ignore polyfillRequire might not be typed in current rolldown version
-    polyfillRequire: false,
-  })
-
-  // Verify that the output is not empty
-  if (!rolldownOutput.output[0]) {
-    throw new Error('No output chunk found')
-  }
-  // Get the output chunk
-  const outputChunk = rolldownOutput.output[0]
+  // Bundle the code
+  const outputChunk = await bundle(filePath)
 
   // Post-process: unwrap CJS wrappers containing TLA and clean tail exports
   const finalCode = unwrapCjsWrapper(outputChunk.code)
