@@ -16,8 +16,6 @@ const fixtures = [
   './data-uri/index.ts',
   './deps/index.ts',
   './env/index.js',
-  // './error-parse/index.ts',
-  // './error-runtime/index.ts',
   './esm/index.js',
   './hashbang/index.ts',
   './import-map/index.mjs',
@@ -41,13 +39,11 @@ describe.concurrent('backward compatibility with jiti', () => {
 
     test(fixture, async () => {
       // Load the module with jiti
-      const jitiMod = await jiti.import(fixturePath)
+      const jitiMod: any = await jiti.import(fixturePath)
 
       // Load the module with unrun
       const unrunMod = await unrun({ path: fixturePath })
 
-      // Compare the results
-      // @ts-ignore
       expect(unrunMod).toEqual(jitiMod.default)
     })
   }

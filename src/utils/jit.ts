@@ -8,7 +8,6 @@ import { pathToFileURL } from 'node:url'
 import { rolldown } from 'rolldown'
 import { createEsmRequireShim } from '../plugins/esm-require-shim'
 import { createJsonLoader } from '../plugins/json-loader'
-import { createTsExtensionAlias } from '../plugins/ts-extension-alias'
 import { createTsTranspile } from '../plugins/ts-transpile'
 import { unwrapCjsWrapper } from './unwrap-cjs'
 
@@ -41,12 +40,7 @@ export const jit = async (options: JitOptions): Promise<any> => {
       'import.meta.env': 'process.env',
     },
     // Compose feature-specific plugins
-    plugins: [
-      createTsExtensionAlias(),
-      createTsTranspile(),
-      createJsonLoader(),
-      createEsmRequireShim(),
-    ],
+    plugins: [createTsTranspile(), createJsonLoader(), createEsmRequireShim()],
     experimental: {
       // Let rolldown wrap pure CJS modules (like .cjs / .cts) so they can be required.
       // ESM modules with occasional `require()` calls won't be wrapped because we rewrite them.

@@ -14,6 +14,7 @@ export async function unrun(options: Options = {}): Promise<any> {
     path: filePath,
   })
 
+  // Prefer default export if present
   if (module && 'default' in module && module.default !== undefined) {
     return module.default
   }
@@ -25,11 +26,9 @@ export async function unrun(options: Options = {}): Promise<any> {
     module[Symbol.toStringTag] === 'Module' &&
     Object.keys(module).length === 0
   ) {
-    // Heuristic to align with jiti's behavior across fixtures
-    // - For pure .mjs entries (like the import-map fixture), return the namespace object
-    // - For TS/JS entries using data URLs (like data-uri fixture), return a plain {}
     return path.extname(filePath) === '.mjs' ? module : {}
   }
 
+  // Otherwise return the module as-is
   return module
 }
