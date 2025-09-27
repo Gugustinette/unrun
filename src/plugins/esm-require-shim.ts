@@ -1,7 +1,26 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { isEsmLike, stripShebang } from '../utils/source'
 import type { Plugin } from 'rolldown'
+
+/**
+ * Remove a hashbang (#!/usr/bin/env node) from the beginning of the source,
+ * preserving line numbers as much as possible.
+ */
+export function stripShebang(src: string): string {
+  if (src.startsWith('#!')) {
+    const nl = src.indexOf('\n')
+    return nl === -1 ? '' : src.slice(nl + 1)
+  }
+  return src
+}
+
+/**
+ * A very light heuristic to detect if a module looks like ESM.
+ * We avoid false positives by requiring bare `import`/`export` tokens.
+ */
+export function isEsmLike(src: string): boolean {
+  return /\b(?:import|export)\b/.test(src)
+}
 
 /**
  * ESM require + import.meta shims
