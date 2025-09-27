@@ -1,8 +1,8 @@
 import path from 'node:path'
+import process from 'node:process'
 import { rolldown, type OutputChunk } from 'rolldown'
 import { createEsmRequireShim } from '../plugins/esm-require-shim'
 import { createJsonLoader } from '../plugins/json-loader'
-import { createTsTranspile } from '../plugins/ts-transpile'
 
 export async function bundle(filePath: string): Promise<OutputChunk> {
   // Setup bundle
@@ -18,7 +18,9 @@ export async function bundle(filePath: string): Promise<OutputChunk> {
       'import.meta.env': 'process.env',
     },
     // Compose feature-specific plugins
-    plugins: [createTsTranspile(), createJsonLoader(), createEsmRequireShim()],
+    plugins: [createJsonLoader(), createEsmRequireShim()],
+    // Resolve tsconfig.json from cwd if present
+    tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),
   })
 
   // Generate bundle in memory

@@ -6,7 +6,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { pathToFileURL } from 'node:url'
 import { bundle } from './bundle'
-import { unwrapCjsWrapper } from './unwrap-cjs'
+import { makeCjsWrapperAsyncFriendly } from './make-cjs-wrapper-async-friendly'
 
 export interface JitOptions {
   /**
@@ -14,6 +14,13 @@ export interface JitOptions {
    * @default process.cwd()
    */
   path: string
+  /**
+   * Whether to make Rolldown's CommonJS wrappers async-friendly.
+   * This is necessary if the code being imported uses top-level await
+   * inside a CommonJS module.
+   * @default true
+   */
+  makeCjsWrapperAsyncFriendly?: boolean
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: Dynamically imported modules can't be typed
@@ -29,8 +36,11 @@ export const jit = async (options: JitOptions): Promise<any> => {
   // Bundle the code
   const outputChunk = await bundle(filePath)
 
-  // Post-process: unwrap CJS wrappers containing TLA and clean tail exports
-  const finalCode = unwrapCjsWrapper(outputChunk.code)
+  // Post-process: make CommonJS wrappers async-friendly
+  let finalCode = outputChunk.code
+  if (options.makeCjsWrapperAsyncFriendly ?? true) {
+    finalCode = makeCjsWrapperAsyncFriendly(finalCode)
+  }
 
   // Prefer loading from a temporary file (avoids massive data: URLs that can
   // cause IPC serialization issues in test runners and matches Node behavior better)
@@ -67,7 +77,20 @@ export const jit = async (options: JitOptions): Promise<any> => {
         console.error('[unrun] wrote debug output to', debugOut)
       }
     } catch {}
+    // Clean the temporary file unless debugging
+    if (process.env.UNRUN_DEBUG !== '1' && moduleUrl.startsWith('file://')) {
+      try {
+        fs.unlinkSync(new URL(moduleUrl))
+      } catch {}
+    }
     throw error
+  }
+
+  // Clean the temporary file unless debugging
+  if (process.env.UNRUN_DEBUG !== '1' && moduleUrl.startsWith('file://')) {
+    try {
+      fs.unlinkSync(new URL(moduleUrl))
+    } catch {}
   }
 
   // Return the module
