@@ -9,6 +9,7 @@ export async function bundle(filePath: string): Promise<OutputChunk> {
     // Input options (https://rolldown.rs/reference/config-options#inputoptions)
     input: filePath,
     // Use Node platform for better Node-compatible resolution & builtins
+    // See https://rolldown.rs/guide/in-depth/bundling-cjs#require-external-modules
     platform: 'node',
     // Keep __dirname/__filename behavior and map import.meta.env to process.env
     define: {
