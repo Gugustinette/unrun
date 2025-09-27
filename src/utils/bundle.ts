@@ -2,7 +2,6 @@ import path from 'node:path'
 import process from 'node:process'
 import { rolldown, type OutputChunk } from 'rolldown'
 import { createEsmRequireShim } from '../plugins/esm-require-shim'
-import { createJsonLoader } from '../plugins/json-loader'
 
 export async function bundle(filePath: string): Promise<OutputChunk> {
   // Setup bundle
@@ -18,7 +17,7 @@ export async function bundle(filePath: string): Promise<OutputChunk> {
       'import.meta.env': 'process.env',
     },
     // Compose feature-specific plugins
-    plugins: [createJsonLoader(), createEsmRequireShim()],
+    plugins: [createEsmRequireShim()],
     // Resolve tsconfig.json from cwd if present
     tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),
   })

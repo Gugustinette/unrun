@@ -70,27 +70,14 @@ export const jit = async (options: JitOptions): Promise<any> => {
       'code length:',
       finalCode.length,
     )
-    try {
-      if (process.env.UNRUN_DEBUG) {
-        const debugOut = path.join(process.cwd(), 'unrun-debug.mjs')
-        fs.writeFileSync(debugOut, finalCode, 'utf8')
-        console.error('[unrun] wrote debug output to', debugOut)
-      }
-    } catch {}
+    throw error
+  } finally {
     // Clean the temporary file unless debugging
-    if (process.env.UNRUN_DEBUG !== '1' && moduleUrl.startsWith('file://')) {
+    if (process.env.UNRUN_DEBUG !== 'true' && moduleUrl.startsWith('file://')) {
       try {
         fs.unlinkSync(new URL(moduleUrl))
       } catch {}
     }
-    throw error
-  }
-
-  // Clean the temporary file unless debugging
-  if (process.env.UNRUN_DEBUG !== '1' && moduleUrl.startsWith('file://')) {
-    try {
-      fs.unlinkSync(new URL(moduleUrl))
-    } catch {}
   }
 
   // Return the module
