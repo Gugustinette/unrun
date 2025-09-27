@@ -1,4 +1,4 @@
-import * as ts from 'typescript'
+import { ScriptTarget, transpileModule } from 'typescript'
 import { stripShebang } from '../utils/source'
 import type { Plugin } from 'rolldown'
 
@@ -18,21 +18,16 @@ import type { Plugin } from 'rolldown'
 export function createTsTranspile(): Plugin {
   return {
     name: 'unrun-typescript-transpile',
-    // @ts-ignore rolldown transform hook signature compatible with rollup
     transform(code: string, id: string) {
       if (!/\.(?:mts|cts|ts|tsx)$/.test(id) || /\.d\.ts$/.test(id)) return null
       try {
         const src = stripShebang(code)
         const isCTS = /\.cts$/.test(id)
-        const out = ts.transpileModule(src, {
+        const out = transpileModule(src, {
           fileName: id,
           compilerOptions: {
-            target: ts.ScriptTarget.ES2022,
-            module: isCTS ? ts.ModuleKind.CommonJS : ts.ModuleKind.ESNext,
+            target: ScriptTarget.ES2022,
             experimentalDecorators: true,
-            emitDecoratorMetadata: true,
-            importsNotUsedAsValues: ts.ImportsNotUsedAsValues.Preserve,
-            useDefineForClassFields: false,
             sourceMap: false,
           },
           reportDiagnostics: false,
