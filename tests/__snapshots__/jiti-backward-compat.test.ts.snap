@@ -1,0 +1,213 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`backward compat snapshots with jiti > ./async/index.js > stdout 1`] = `"works"`;
+
+exports[`backward compat snapshots with jiti > ./async/index.js > stdout-unrun 1`] = `"works"`;
+
+exports[`backward compat snapshots with jiti > ./circular/index.js > stdout 1`] = `"a b c"`;
+
+exports[`backward compat snapshots with jiti > ./circular/index.js > stdout-unrun 1`] = `"a b c"`;
+
+exports[`backward compat snapshots with jiti > ./data-uri/index.ts > stdout 1`] = `""`;
+
+exports[`backward compat snapshots with jiti > ./data-uri/index.ts > stdout-unrun 1`] = `""`;
+
+exports[`backward compat snapshots with jiti > ./deps/index.ts > stdout 1`] = `
+"npm:config: true
+npm:defu {}
+npm:destr true
+npm:etag: true
+npm:is-installed-globally false
+npm:mime: true
+npm:typescript: true
+npm:moment-timezone true
+npm:zod: true"
+`;
+
+exports[`backward compat snapshots with jiti > ./deps/index.ts > stdout-unrun 1`] = `
+"npm:config: true
+npm:defu {}
+npm:destr true
+npm:etag: true
+npm:is-installed-globally false
+npm:mime: true
+npm:typescript: true
+npm:moment-timezone true
+npm:zod: true"
+`;
+
+exports[`backward compat snapshots with jiti > ./env/index.js > stdout 1`] = `
+"process.env true
+process.env.TEST true
+process.env?.TEST true
+import.meta true
+import.meta.env.TEST true
+import.meta.env?.TEST true"
+`;
+
+exports[`backward compat snapshots with jiti > ./env/index.js > stdout-unrun 1`] = `
+"process.env true
+process.env.TEST true
+process.env?.TEST true
+import.meta true
+import.meta.env.TEST true
+import.meta.env?.TEST true"
+`;
+
+exports[`backward compat snapshots with jiti > ./esm/index.js > stdout 1`] = `
+"{ utilsLib: { utils: { a: 'a', default: 'default' }, version: '123' } }
+{ utils: { a: 'a', default: 'default' } }
+{
+  file: '<cwd><path>',
+  dir: '<cwd>',
+  'import.meta.url': 'file://<cwd><path>'
+}"
+`;
+
+exports[`backward compat snapshots with jiti > ./esm/index.js > stdout-unrun 1`] = `
+"{ utilsLib: { utils: [Getter], version: [Getter] } }
+{ utils: { a: [Getter], default: [Getter] } }
+{
+  file: '<cwd><path>',
+  dir: '<cwd>',
+  'import.meta.url': 'file:<path>'
+}"
+`;
+
+exports[`backward compat snapshots with jiti > ./hashbang/index.ts > stdout 1`] = `"1"`;
+
+exports[`backward compat snapshots with jiti > ./hashbang/index.ts > stdout-unrun 1`] = `"1"`;
+
+exports[`backward compat snapshots with jiti > ./import-map/index.mjs > stdout 1`] = `"{ alias: 'alias' }"`;
+
+exports[`backward compat snapshots with jiti > ./import-map/index.mjs > stdout-unrun 1`] = `"{ alias: 'alias' }"`;
+
+exports[`backward compat snapshots with jiti > ./import-meta/index.ts > stdout 1`] = `
+"hello! { hello: 'world' }
+file://<cwd><path>
+hello! custom
+file://<cwd><path>+custom.ts
+import.meta.dirname: <cwd>
+import.meta.filename: <cwd><path>"
+`;
+
+exports[`backward compat snapshots with jiti > ./import-meta/index.ts > stdout-unrun 1`] = `
+"hello! { hello: 'world' }
+file:<path>
+hello! custom
+file:<path>+custom.ts
+import.meta.dirname: <path>
+import.meta.filename: <path>"
+`;
+
+exports[`backward compat snapshots with jiti > ./json/index.ts > stdout 1`] = `
+"Imported : { test: 123 } .default: { test: 123 }
+Imported with assertion : { test: 123 } .default: { test: 123 }
+Required : { test: 123 } .default: { test: 123 }
+Dynamic Imported : [Object: null prototype] { default: { test: 123 }, test: 123 } .default: { test: 123 }"
+`;
+
+exports[`backward compat snapshots with jiti > ./json/index.ts > stdout-unrun 1`] = `
+"Imported : { test: 123 } .default: undefined
+Imported with assertion : { test: 123 } .default: undefined
+Required : { test: 123 } .default: undefined
+Dynamic Imported : { default: { test: 123 }, test: [Getter] } .default: { test: 123 }"
+`;
+
+exports[`backward compat snapshots with jiti > ./mixed/index.cjs > stdout 1`] = `"Mixed works for: <root>"`;
+
+exports[`backward compat snapshots with jiti > ./mixed/index.cjs > stdout-unrun 1`] = `"Mixed works for: <root>"`;
+
+exports[`backward compat snapshots with jiti > ./native/index.js > stdout 1`] = `"[Module: null prototype] { default: { hasRequire: false } }"`;
+
+exports[`backward compat snapshots with jiti > ./native/index.js > stdout-unrun 1`] = `"{ default: [Getter] }"`;
+
+exports[`backward compat snapshots with jiti > ./proto/index.js > stdout 1`] = `"exists: true"`;
+
+exports[`backward compat snapshots with jiti > ./proto/index.js > stdout-unrun 1`] = `"exists: true"`;
+
+exports[`backward compat snapshots with jiti > ./pure-esm-dep/index.js > stdout 1`] = `
+"Enter Program
+Enter VariableDeclaration
+Enter VariableDeclarator
+Enter Identifier
+Enter Literal"
+`;
+
+exports[`backward compat snapshots with jiti > ./pure-esm-dep/index.js > stdout-unrun 1`] = `
+"Enter Program
+Enter VariableDeclaration
+Enter VariableDeclarator
+Enter Identifier
+Enter Literal"
+`;
+
+exports[`backward compat snapshots with jiti > ./require-esm/index.cjs > stdout 1`] = `"Works!"`;
+
+exports[`backward compat snapshots with jiti > ./require-esm/index.cjs > stdout-unrun 1`] = `"Works!"`;
+
+exports[`backward compat snapshots with jiti > ./require-json/index.js > stdout 1`] = `"{ type: 'commonjs' }"`;
+
+exports[`backward compat snapshots with jiti > ./require-json/index.js > stdout-unrun 1`] = `"{ type: 'commonjs' }"`;
+
+exports[`backward compat snapshots with jiti > ./syntax/index.ts > stdout 1`] = `
+"Optional chaining: undefined
+Nullish coalescing: 0
+Logical or assignment: 50 title is empty.
+Logical nullish assignment: 50 20"
+`;
+
+exports[`backward compat snapshots with jiti > ./syntax/index.ts > stdout-unrun 1`] = `
+"Optional chaining: undefined
+Nullish coalescing: 0
+Logical or assignment: 50 title is empty.
+Logical nullish assignment: 50 20"
+`;
+
+exports[`backward compat snapshots with jiti > ./top-level-await/index.ts > stdout 1`] = `"async value works from sub module"`;
+
+exports[`backward compat snapshots with jiti > ./top-level-await/index.ts > stdout-unrun 1`] = `"async value works from sub module"`;
+
+exports[`backward compat snapshots with jiti > ./typescript/index.ts > stdout 1`] = `
+"Decorator metadata keys: design:type
+Decorator called with 3 arguments.
+Decorator called with 3 arguments.
+Decorator called with 3 arguments.
+Decorator called with 1 arguments.
+{
+  file: '<cwd><path>',
+  dir: '<cwd>',
+  resolve: '<cwd><path>'
+} [class DecoratedClass]
+{
+  satisfiesTest: {
+    firstTest: { name: 'first', avatar: 'https:<path>' },
+    secondTest: { name: 'second', avatar: [Object] },
+    normalizeUserEntity: [Function: normalizeUserEntity]
+  }
+}
+child
+promise resolved"
+`;
+
+exports[`backward compat snapshots with jiti > ./typescript/index.ts > stdout-unrun 1`] = `
+"Decorator metadata keys: 
+Decorator called with 3 arguments.
+Decorator called with 3 arguments.
+Decorator called with 3 arguments.
+Decorator called with 1 arguments.
+{
+  file: '<cwd><path>',
+  dir: '<cwd>',
+  resolve: '<cwd><path>'
+} [class DecoratedClass$1]
+{
+  satisfiesTest: {
+    firstTest: { name: 'first', avatar: 'https:<path>' },
+    secondTest: { name: 'second', avatar: [Object] },
+    normalizeUserEntity: [Function: normalizeUserEntity]
+  }
+}
+child
+promise resolved"
+`;
