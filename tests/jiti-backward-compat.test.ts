@@ -1,7 +1,7 @@
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createJiti } from 'jiti'
-import { describe, expect, test } from 'vitest'
+import { assert, describe, expect, test } from 'vitest'
 import { unrun } from '../src'
 import { captureConsole } from './utils/capture-console'
 import { normalizeOutput } from './utils/normalize-output'
@@ -15,6 +15,7 @@ const jiti = createJiti(__dirname, { interopDefault: true })
 const fixtures = [
   './async/index.js',
   './circular/index.js',
+  './cjs-interop/index.cjs',
   './data-uri/index.ts',
   './deps/index.ts',
   './env/index.js',
@@ -26,6 +27,7 @@ const fixtures = [
   // './jsx/index.ts',
   './mixed/index.cjs',
   './native/index.js',
+  './node/index.mts',
   './proto/index.js',
   './pure-esm-dep/index.js',
   './require-esm/index.cjs',
@@ -44,6 +46,8 @@ const onlySnapshot = new Set<string>([
   './native/index.js',
   './typescript/index.ts',
 ])
+
+const skipDeepEqual = new Set<string>(['./top-level-await/index.ts'])
 
 // Run snapshots first to establish baseline outputs
 describe('backward compat snapshots with jiti', () => {
@@ -102,6 +106,9 @@ describe.concurrent('backward compatibility with jiti', () => {
       })
 
       expect(unrunModule).toEqual(jitiModule.default)
+      if (!skipDeepEqual.has(fixture)) {
+        assert.deepEqual(unrunModule, jitiModule)
+      }
     })
   }
 

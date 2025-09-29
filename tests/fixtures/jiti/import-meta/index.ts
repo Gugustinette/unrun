@@ -1,4 +1,4 @@
-import './custom.js'
-import './resolve.js'
-import './resolve+custom.js'
-import './dirname.js'
+import "./custom.ts";
+import "./resolve.ts";
+import "./resolve+custom.ts";
+import "./dirname.ts";

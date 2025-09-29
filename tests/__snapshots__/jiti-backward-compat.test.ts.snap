@@ -8,6 +8,10 @@ exports[`backward compat snapshots with jiti > ./circular/index.js > stdout-jiti
 
 exports[`backward compat snapshots with jiti > ./circular/index.js > stdout-unrun 1`] = `"a b c"`;
 
+exports[`backward compat snapshots with jiti > ./cjs-interop/index.cjs > stdout-jiti 1`] = `"CJS function default interop test passed"`;
+
+exports[`backward compat snapshots with jiti > ./cjs-interop/index.cjs > stdout-unrun 1`] = `"CJS function default interop test passed"`;
+
 exports[`backward compat snapshots with jiti > ./data-uri/index.ts > stdout-jiti 1`] = `""`;
 
 exports[`backward compat snapshots with jiti > ./data-uri/index.ts > stdout-unrun 1`] = `""`;
@@ -121,6 +125,10 @@ exports[`backward compat snapshots with jiti > ./mixed/index.cjs > stdout-unrun 
 exports[`backward compat snapshots with jiti > ./native/index.js > stdout-jiti 1`] = `"[Module: null prototype] { default: { hasRequire: false } }"`;
 
 exports[`backward compat snapshots with jiti > ./native/index.js > stdout-unrun 1`] = `"{ default: [Getter] }"`;
+
+exports[`backward compat snapshots with jiti > ./node/index.mts > stdout-jiti 1`] = `"node:test true"`;
+
+exports[`backward compat snapshots with jiti > ./node/index.mts > stdout-unrun 1`] = `"node:test true"`;
 
 exports[`backward compat snapshots with jiti > ./proto/index.js > stdout-jiti 1`] = `"exists: true"`;
 

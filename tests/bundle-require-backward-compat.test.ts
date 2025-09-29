@@ -1,7 +1,7 @@
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { bundleRequire } from 'bundle-require'
-import { describe, expect, test } from 'vitest'
+import { assert, describe, expect, test } from 'vitest'
 import { unrun } from '../src'
 import { captureConsole } from './utils/capture-console'
 
@@ -37,6 +37,7 @@ describe.concurrent('backward compatibility with bundle-require', () => {
       })
 
       expect(unrunModule).toEqual(bundleModule)
+      assert.deepEqual(unrunModule, bundleModule)
     })
   }
 
