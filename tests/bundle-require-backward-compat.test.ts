@@ -15,9 +15,6 @@ const fixtures = [
   './replace-path/input.ts',
 ]
 
-// Some fixtures have known semantic differences in outputs
-const skipModuleEquality = new Set<string>(['./input.ts'])
-
 // Compare module outputs
 describe.concurrent('backward compatibility with bundle-require', () => {
   for (const fixture of fixtures) {
@@ -35,13 +32,11 @@ describe.concurrent('backward compatibility with bundle-require', () => {
         // Load the module with unrun
         unrunModule = await unrun({
           path: fixturePath,
-          outputPreset: 'none',
+          outputPreset: 'bundle-require',
         })
       })
 
-      if (!skipModuleEquality.has(fixture)) {
-        expect(unrunModule).toEqual(bundleModule)
-      }
+      expect(unrunModule).toEqual(bundleModule)
     })
   }
 
