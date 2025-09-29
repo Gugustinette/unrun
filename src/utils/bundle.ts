@@ -1,5 +1,6 @@
 import path from 'node:path'
 import process from 'node:process'
+import { pathToFileURL } from 'node:url'
 import { rolldown, type OutputChunk } from 'rolldown'
 import { createEsmRequireShim } from '../plugins/esm-require-shim'
 
@@ -11,11 +12,11 @@ export async function bundle(filePath: string): Promise<OutputChunk> {
     // Use Node platform for better Node-compatible resolution & builtins
     // See https://rolldown.rs/guide/in-depth/bundling-cjs#require-external-modules
     platform: 'node',
-    // Keep __dirname/__filename behavior and map import.meta.env to process.env
+    // Keep __dirname/__filename behavior
     define: {
       __dirname: JSON.stringify(path.dirname(filePath)),
       __filename: JSON.stringify(filePath),
-      'import.meta.env': 'process.env',
+      'import.meta.url': JSON.stringify(pathToFileURL(filePath).href),
     },
     // Compose feature-specific plugins
     plugins: [createEsmRequireShim()],
@@ -32,7 +33,7 @@ export async function bundle(filePath: string): Promise<OutputChunk> {
 
   // Verify that the output is not empty
   if (!rolldownOutput.output[0]) {
-    throw new Error('No output chunk found')
+    throw new Error('[unrun] No output chunk found')
   }
   // Return the output chunk
   return rolldownOutput.output[0]

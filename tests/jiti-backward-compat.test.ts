@@ -58,27 +58,27 @@ describe('backward compat snapshots with jiti', () => {
       const localJiti = createJiti(__dirname, { interopDefault: true })
 
       // Import with jiti and capture console output
-      const jitiOut = await captureConsole(async () => {
+      const jitiModule = await captureConsole(async () => {
         await localJiti.import(fixturePath)
       })
 
       // Import with unrun and capture console output
-      const unrunOut = await captureConsole(async () => {
+      const unrunModule = await captureConsole(async () => {
         await unrun({ path: fixturePath })
       })
 
-      const jStdout = normalizeOutput(jitiOut.stdout, cwd, root)
-      const uStdout = normalizeOutput(unrunOut.stdout, cwd, root)
+      const jitiStdout = normalizeOutput(jitiModule.stdout, cwd, root)
+      const unrunStdout = normalizeOutput(unrunModule.stdout, cwd, root)
 
       // Always snapshot jiti output as the canonical baseline
-      expect(jStdout).toMatchSnapshot('stdout')
+      expect(jitiStdout).toMatchSnapshot('stdout-jiti')
 
       // Also store unrun's output snapshot to help track differences when not equal
-      expect(uStdout).toMatchSnapshot('stdout-unrun')
+      expect(unrunStdout).toMatchSnapshot('stdout-unrun')
 
       // Ensure both tools produce identical console output when possible
       if (!onlySnapshot.has(fixture)) {
-        expect(uStdout).toEqual(jStdout)
+        expect(unrunStdout).toEqual(jitiStdout)
       }
     })
   }
@@ -90,18 +90,18 @@ describe.concurrent('backward compatibility with jiti', () => {
     const fixturePath = resolve(__dirname, 'fixtures/jiti', fixture)
 
     test(fixture, { timeout: 20000 }, async () => {
-      let jitiMod: any
-      let unrunMod: any
+      let jitiModule: any
+      let unrunModule: any
 
       await captureConsole(async () => {
         // Load the module with jiti
-        jitiMod = await jiti.import(fixturePath)
+        jitiModule = await jiti.import(fixturePath)
 
         // Load the module with unrun
-        unrunMod = await unrun({ path: fixturePath })
+        unrunModule = await unrun({ path: fixturePath })
       })
 
-      expect(unrunMod).toEqual(jitiMod.default)
+      expect(unrunModule).toEqual(jitiModule.default)
     })
   }
 

@@ -40,7 +40,7 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "rolldown": "1.0.0-beta.37"
+    "rolldown": "1.0.0-beta.40"
   },
   "devDependencies": {
     "@sxzz/eslint-config": "^7.1.4",

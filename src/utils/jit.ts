@@ -30,7 +30,7 @@ export const jit = async (options: JitOptions): Promise<any> => {
 
   // Check if the file exists
   if (!fs.existsSync(filePath)) {
-    throw new Error(`File not found: ${filePath}`)
+    throw new Error(`[unrun] File not found: ${filePath}`)
   }
 
   // Bundle the code
@@ -64,13 +64,9 @@ export const jit = async (options: JitOptions): Promise<any> => {
   try {
     _module = await import(moduleUrl)
   } catch (error) {
-    console.error(
-      '[unrun] import failed for',
-      moduleUrl,
-      'code length:',
-      finalCode.length,
+    throw new Error(
+      `[unrun] Import failed for ${moduleUrl} (code length: ${finalCode.length}): ${(error as Error).message}`,
     )
-    throw error
   } finally {
     // Clean the temporary file unless debugging
     if (process.env.UNRUN_DEBUG !== 'true' && moduleUrl.startsWith('file://')) {
