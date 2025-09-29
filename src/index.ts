@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { jit } from './utils/jit'
 
 export interface Options {
@@ -13,9 +14,21 @@ export async function unrun(options: Options = {}): Promise<any> {
     path: filePath,
   })
 
-  if (module.default) {
+  // Prefer default export if present
+  if (module && 'default' in module && module.default !== undefined) {
     return module.default
   }
 
+  // If it's an ESM namespace with no exports, return a plain object like jiti
+  if (
+    module &&
+    typeof module === 'object' &&
+    module[Symbol.toStringTag] === 'Module' &&
+    Object.keys(module).length === 0
+  ) {
+    return path.extname(filePath) === '.mjs' ? module : {}
+  }
+
+  // Otherwise return the module as-is
   return module
 }

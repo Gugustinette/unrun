@@ -9,5 +9,28 @@ on:
 permissions: {}
 
 jobs:
-  unit-test:
+  # Reuse sxzz workflow for lint/typecheck only
+  lint-and-check:
     uses: sxzz/workflows/.github/workflows/unit-test.yml@v1
+    with:
+      # Run lint and typecheck, but skip the built-in test matrix (which includes Windows)
+      skip-test: true
+
+  # Custom test job that runs only on Ubuntu
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22, 24]
+      fail-fast: false
+    steps:
+      - name: Setup JS
+        uses: sxzz/workflows/setup-js@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Unit Test
+        run: pnpm run test
