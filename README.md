@@ -17,7 +17,9 @@ npm i unrun
 ```ts
 import { unrun } from 'unrun'
 
-const mod = await unrun('./path/to/file.ts')
+const mod = await unrun({
+  path: './path/to/file', // Path to the file to load
+})
 ```
 
 <!-- Badges -->
