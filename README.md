@@ -15,9 +15,9 @@ npm i unrun
 ## Usage
 
 ```ts
-import { unrun } from 'unrun';
+import { unrun } from 'unrun'
 
-const mod = await unrun("./path/to/file.ts");
+const mod = await unrun('./path/to/file.ts')
 ```
 
 <!-- Badges -->
