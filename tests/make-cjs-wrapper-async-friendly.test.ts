@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { beforeEach, describe, expect, test } from 'vitest'
+import { resolveOptions } from '../src/options'
 import { jit } from '../src/utils/jit'
 
 describe('makeCjsWrapperAsyncFriendly', () => {
@@ -14,17 +15,21 @@ describe('makeCjsWrapperAsyncFriendly', () => {
       './fixtures/make-cjs-wrapper-async-friendly/index.cjs',
     )
 
+    const optionsNoFix = resolveOptions({
+      path: entry,
+      makeCjsWrapperAsyncFriendly: false,
+    })
+    const optionsWithFix = resolveOptions({ path: entry })
+
     // Without making async-friendly, jit should reject when importing (parse error)
     const originalError = console.error
     console.error = () => {}
-    await expect(
-      jit({ path: entry, makeCjsWrapperAsyncFriendly: false }),
-    ).rejects.toThrow()
+    await expect(jit(optionsNoFix)).rejects.toThrow()
     console.error = originalError
     expect((globalThis as any).__unwrap_test__).toBeUndefined()
 
     // With async-friendly (default enabled), jit should resolve and perform the side effect
-    await expect(jit({ path: entry })).resolves.toBeDefined()
+    await expect(jit(optionsWithFix)).resolves.toBeDefined()
 
     // Verify the side effect ran at top-level
     expect((globalThis as any).__unwrap_test__).toBe(1)
