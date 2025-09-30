@@ -26,6 +26,8 @@ export async function bundle(
             __dirname: JSON.stringify(path.dirname(filePath)),
             __filename: JSON.stringify(filePath),
             'import.meta.url': JSON.stringify(pathToFileURL(filePath).href),
+            'import.meta.filename': JSON.stringify(filePath),
+            'import.meta.dirname': JSON.stringify(path.dirname(filePath)),
           },
     // Compose feature-specific plugins
     plugins: [
@@ -36,6 +38,7 @@ export async function bundle(
     ],
     // Resolve tsconfig.json from cwd if present
     tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),
+    keepNames: true,
   })
 
   // Generate bundle in memory

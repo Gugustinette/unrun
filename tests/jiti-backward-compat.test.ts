@@ -1,4 +1,5 @@
 import { dirname, resolve } from 'node:path'
+import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { createJiti } from 'jiti'
 import { assert, describe, expect, test } from 'vitest'
@@ -8,8 +9,11 @@ import { normalizeOutput } from './utils/normalize-output'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
+// Enable JSX support in jiti
+process.env.JITI_JSX = process.env.JITI_JSX || '1'
+
 // Create jiti instance relative to this test file
-const jiti = createJiti(__dirname, { interopDefault: true })
+const jiti = createJiti(__dirname)
 
 // Jiti's fixtures (success cases)
 const fixtures = [
@@ -58,12 +62,9 @@ describe('backward compat snapshots with jiti', () => {
       const cwd = dirname(fixturePath)
       const root = dirname(__dirname)
 
-      // Create a fresh jiti instance to avoid cache between tests
-      const localJiti = createJiti(__dirname, { interopDefault: true })
-
       // Import with jiti and capture console output
       const jitiModule = await captureConsole(async () => {
-        await localJiti.import(fixturePath)
+        await jiti.import(fixturePath)
       })
 
       // Import with unrun and capture console output

@@ -100,8 +100,8 @@ exports[`backward compat snapshots with jiti > ./import-meta/index.ts > stdout-u
 file:<path>
 hello! custom
 file:<path>+custom.ts
-import.meta.dirname: <path>
-import.meta.filename: <path>"
+import.meta.dirname: <cwd>
+import.meta.filename: <cwd><path>"
 `;
 
 exports[`backward compat snapshots with jiti > ./json/index.ts > stdout-jiti 1`] = `
@@ -208,7 +208,7 @@ Decorator called with 1 arguments.
   file: '<cwd><path>',
   dir: '<cwd>',
   resolve: '<cwd><path>'
-} [class DecoratedClass$1]
+} [class DecoratedClass]
 {
   satisfiesTest: {
     firstTest: { name: 'first', avatar: 'https:<path>' },
