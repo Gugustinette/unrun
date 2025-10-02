@@ -1,3 +1,5 @@
+import type { InputOptions, OutputOptions } from 'rolldown'
+
 export interface Options {
   /**
    * The path to the file to be imported.
@@ -18,6 +20,18 @@ export interface Options {
    * @default true
    */
   makeCjsWrapperAsyncFriendly?: boolean
+
+  /**
+   * Additional rolldown input options. These options will be merged with the
+   * defaults provided by unrun, with these options always taking precedence.
+   */
+  inputOptions?: InputOptions
+
+  /**
+   * Additional rolldown output options. These options will be merged with the
+   * defaults provided by unrun, with these options always taking precedence.
+   */
+  outputOptions?: OutputOptions
 }
 
 export interface ResolvedOptions {
@@ -40,6 +54,18 @@ export interface ResolvedOptions {
    * @default true
    */
   makeCjsWrapperAsyncFriendly: boolean
+
+  /**
+   * Additional rolldown input options. These options will be merged with the
+   * defaults provided by unrun, with these options always taking precedence.
+   */
+  inputOptions?: InputOptions
+
+  /**
+   * Additional rolldown output options. These options will be merged with the
+   * defaults provided by unrun, with these options always taking precedence.
+   */
+  outputOptions?: OutputOptions
 }
 
 export function resolveOptions(options: Options = {}): ResolvedOptions {
@@ -47,5 +73,7 @@ export function resolveOptions(options: Options = {}): ResolvedOptions {
     path: options.path || 'custom.config.ts',
     outputPreset: options.outputPreset || 'jiti',
     makeCjsWrapperAsyncFriendly: options.makeCjsWrapperAsyncFriendly ?? true,
+    inputOptions: options.inputOptions,
+    outputOptions: options.outputOptions,
   }
 }

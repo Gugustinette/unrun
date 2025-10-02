@@ -19,7 +19,7 @@ export const jit = async (options: ResolvedOptions): Promise<any> => {
   }
 
   // Bundle the code
-  const outputChunk = await bundle(filePath, options)
+  const outputChunk = await bundle(options)
 
   // Post-process: make CommonJS wrappers async-friendly
   let finalCode = outputChunk.code
