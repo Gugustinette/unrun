@@ -27,18 +27,31 @@ export const jit = async (options: ResolvedOptions): Promise<any> => {
     finalCode = makeCjsWrapperAsyncFriendly(finalCode)
   }
 
-  // Prefer loading from a temporary file (avoids massive data: URLs that can
-  // cause IPC serialization issues in test runners and matches Node behavior better)
+  // Prefer loading from a project-local temp file under node_modules/.unrun
+  // (avoids massive data: URLs that can cause IPC issues and ensures deps resolve
+  // relative to the npm project)
   let moduleUrl: string | null = null
   try {
     const hash = crypto.createHash('sha1').update(finalCode).digest('hex')
-    const outDir = path.join(tmpdir(), 'unrun-cache')
+    // Try to place the cache under the closest node_modules/.unrun to the input file
+    // Fallback to OS tmpdir if we can't create it
+    const projectNodeModules = path.join(process.cwd(), 'node_modules')
+    const outDir = path.join(projectNodeModules, '.unrun')
     const outFile = path.join(outDir, `${hash}.mjs`)
     if (!fs.existsSync(outFile)) {
-      fs.mkdirSync(outDir, { recursive: true })
-      fs.writeFileSync(outFile, finalCode, 'utf8')
+      try {
+        fs.mkdirSync(outDir, { recursive: true })
+        fs.writeFileSync(outFile, finalCode, 'utf8')
+      } catch {
+        // If writing to node_modules fails (e.g., RO filesystem), fallback to tmpdir
+        const fallbackDir = path.join(tmpdir(), 'unrun-cache')
+        const fallbackFile = path.join(fallbackDir, `${hash}.mjs`)
+        fs.mkdirSync(fallbackDir, { recursive: true })
+        fs.writeFileSync(fallbackFile, finalCode, 'utf8')
+        moduleUrl = pathToFileURL(fallbackFile).href
+      }
     }
-    moduleUrl = pathToFileURL(outFile).href
+    moduleUrl = moduleUrl || pathToFileURL(outFile).href
   } catch {
     // Fallback to data URL if writing fails
     moduleUrl = `data:text/javascript;base64,${Buffer.from(finalCode).toString('base64')}`

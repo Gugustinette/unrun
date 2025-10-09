@@ -28,7 +28,7 @@ const fixtures = [
   './import-map/index.mjs',
   './import-meta/index.ts',
   './json/index.ts',
-  // './jsx/index.ts',
+  './jsx/index.ts',
   './mixed/index.cjs',
   './native/index.js',
   './node/index.mts',
@@ -40,18 +40,6 @@ const fixtures = [
   './top-level-await/index.ts',
   './typescript/index.ts',
 ]
-
-// Some fixtures currently produce slightly different console output between jiti and unrun.
-// We'll still snapshot their outputs for stability, but skip the strict equality check for now.
-const onlySnapshot = new Set<string>([
-  './esm/index.js',
-  './import-meta/index.ts',
-  './json/index.ts',
-  './native/index.js',
-  './typescript/index.ts',
-])
-
-const skipDeepEqual = new Set<string>(['./top-level-await/index.ts'])
 
 // Run snapshots first to establish baseline outputs
 describe('backward compat snapshots with jiti', () => {
@@ -81,10 +69,8 @@ describe('backward compat snapshots with jiti', () => {
       // Also store unrun's output snapshot to help track differences when not equal
       expect(unrunStdout).toMatchSnapshot('stdout-unrun')
 
-      // Ensure both tools produce identical console output when possible
-      if (!onlySnapshot.has(fixture)) {
-        expect(unrunStdout).toEqual(jitiStdout)
-      }
+      // Ensure both tools produce identical console output
+      expect(unrunStdout).toEqual(jitiStdout)
     })
   }
 })
@@ -107,9 +93,7 @@ describe.concurrent('backward compatibility with jiti', () => {
       })
 
       expect(unrunModule).toEqual(jitiModule.default)
-      if (!skipDeepEqual.has(fixture)) {
-        assert.deepEqual(unrunModule, jitiModule)
-      }
+      assert.deepEqual(unrunModule, jitiModule.default)
     })
   }
 

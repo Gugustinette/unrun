@@ -69,8 +69,8 @@ exports[`backward compat snapshots with jiti > ./esm/index.js > stdout-jiti 1`] 
 `;
 
 exports[`backward compat snapshots with jiti > ./esm/index.js > stdout-unrun 1`] = `
-"{ utilsLib: { utils: [Getter], version: [Getter] } }
-{ utils: { a: [Getter], default: [Getter] } }
+"{ utilsLib: { utils: { a: 'a', default: 'default' }, version: '123' } }
+{ utils: { a: 'a', default: 'default' } }
 {
   file: '<cwd><path>',
   dir: '<cwd>',
@@ -97,9 +97,9 @@ import.meta.filename: <cwd><path>"
 
 exports[`backward compat snapshots with jiti > ./import-meta/index.ts > stdout-unrun 1`] = `
 "hello! { hello: 'world' }
-file:<path>
+file://<cwd><path>
 hello! custom
-file:<path>+custom.ts
+file://<cwd><path>+custom.ts
 import.meta.dirname: <cwd>
 import.meta.filename: <cwd><path>"
 `;
@@ -112,10 +112,24 @@ Dynamic Imported : [Object: null prototype] { default: { test: 123 }, test: 123 
 `;
 
 exports[`backward compat snapshots with jiti > ./json/index.ts > stdout-unrun 1`] = `
-"Imported : { test: 123 } .default: undefined
-Imported with assertion : { test: 123 } .default: undefined
-Required : { test: 123 } .default: undefined
-Dynamic Imported : { default: { test: 123 }, test: [Getter] } .default: { test: 123 }"
+"Imported : { test: 123 } .default: { test: 123 }
+Imported with assertion : { test: 123 } .default: { test: 123 }
+Required : { test: 123 } .default: { test: 123 }
+Dynamic Imported : [Object: null prototype] { default: { test: 123 }, test: 123 } .default: { test: 123 }"
+`;
+
+exports[`backward compat snapshots with jiti > ./jsx/index.ts > stdout-jiti 1`] = `
+"<h1>Hello, nano-jsx!<<path>>
+<h1>Hello, preact!<<path>>
+<h1>Hello, react!<<path>>
+<h1>Hello, vue!<<path>>"
+`;
+
+exports[`backward compat snapshots with jiti > ./jsx/index.ts > stdout-unrun 1`] = `
+"<h1>Hello, nano-jsx!<<path>>
+<h1>Hello, preact!<<path>>
+<h1>Hello, react!<<path>>
+<h1>Hello, vue!<<path>>"
 `;
 
 exports[`backward compat snapshots with jiti > ./mixed/index.cjs > stdout-jiti 1`] = `"Mixed works for: <root>"`;
@@ -124,7 +138,7 @@ exports[`backward compat snapshots with jiti > ./mixed/index.cjs > stdout-unrun 
 
 exports[`backward compat snapshots with jiti > ./native/index.js > stdout-jiti 1`] = `"[Module: null prototype] { default: { hasRequire: false } }"`;
 
-exports[`backward compat snapshots with jiti > ./native/index.js > stdout-unrun 1`] = `"{ default: [Getter] }"`;
+exports[`backward compat snapshots with jiti > ./native/index.js > stdout-unrun 1`] = `"[Module: null prototype] { default: { hasRequire: false } }"`;
 
 exports[`backward compat snapshots with jiti > ./node/index.mts > stdout-jiti 1`] = `"node:test true"`;
 
@@ -199,7 +213,7 @@ promise resolved"
 `;
 
 exports[`backward compat snapshots with jiti > ./typescript/index.ts > stdout-unrun 1`] = `
-"Decorator metadata keys: 
+"Decorator metadata keys: design:type
 Decorator called with 3 arguments.
 Decorator called with 3 arguments.
 Decorator called with 3 arguments.

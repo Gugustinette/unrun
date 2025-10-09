@@ -14,7 +14,7 @@ export function createSourcePathConstantsPlugin(): Plugin {
       filter: {
         id: /\.(?:m?[jt]s|c?tsx?)(?:$|\?)/,
       },
-      handler(id) {
+      handler(id: string) {
         try {
           let code = fs.readFileSync(id, 'utf8')
 
@@ -35,10 +35,32 @@ export function createSourcePathConstantsPlugin(): Plugin {
             `const __dirname = ${JSON.stringify(dir)}\n`
 
           // Replace import.meta.url occurrences
-          code = code.replaceAll(
+          // First, temporarily protect string property keys containing import.meta.url
+          const protectedStrings: string[] = []
+          let protectedCode = code.replaceAll(
+            /(["'])[^"']*import\s*\.\s*meta\s*\.\s*url[^"']*\1\s*:/g,
+            (match) => {
+              const placeholder = `__PROTECTED_STRING_${protectedStrings.length}__`
+              protectedStrings.push(match)
+              return placeholder
+            },
+          )
+
+          // Now safely replace import.meta.url in the protected code
+          protectedCode = protectedCode.replaceAll(
             /\bimport\s*\.\s*meta\s*\.\s*url\b/g,
             JSON.stringify(url),
           )
+
+          // Restore the protected strings
+          for (const [i, protectedString] of protectedStrings.entries()) {
+            protectedCode = protectedCode.replace(
+              `__PROTECTED_STRING_${i}__`,
+              protectedString,
+            )
+          }
+
+          code = protectedCode
 
           return { code: prologue + code }
         } catch {
