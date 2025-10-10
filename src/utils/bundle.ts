@@ -9,11 +9,10 @@ import {
 } from 'rolldown'
 import {
   createConsoleOutputCustomizer,
-  createImportMetaResolveShim,
   createJsonLoader,
   createRequireResolveFix,
   createRequireTypeofFix,
-  createSourcePathConstantsPlugin,
+  createSourceContextShimsPlugin,
 } from '../plugins'
 import type { ResolvedOptions } from '../options'
 
@@ -42,10 +41,8 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
     plugins: [
       // Handle JSON very early so entry JSON paths are rewritten to JS
       createJsonLoader(),
-      // Inject __dirname/__filename/import.meta shims
-      createSourcePathConstantsPlugin(),
-      // Inline import.meta.resolve("./foo") to a file:// URL when literal
-      createImportMetaResolveShim(),
+      // Inject __dirname/__filename/import.meta shims and inline import.meta.resolve
+      createSourceContextShimsPlugin(),
       // Fix require.resolve calls to use correct base path
       createRequireResolveFix(options),
       // Customize console output for namespace objects
