@@ -32,7 +32,7 @@ describe.concurrent('backward compatibility with bundle-require', () => {
         // Load the module with unrun
         unrunModule = await unrun({
           path: fixturePath,
-          outputPreset: 'bundle-require',
+          outputPreset: 'none',
         })
       })
 
