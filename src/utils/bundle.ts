@@ -18,36 +18,6 @@ import {
 import type { ResolvedOptions } from '../options'
 
 export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
-  // Default definitions for __dirname, __filename, and import.meta properties
-  const defaultDefine: InputOptions['define'] =
-    // When bundle-require preset is enabled, avoid using global defines and let the plugin inject per-module values.
-    options.outputPreset === 'bundle-require'
-      ? undefined
-      : {
-          __dirname: JSON.stringify(path.dirname(options.path)),
-          __filename: JSON.stringify(options.path),
-          'import.meta.url': JSON.stringify(pathToFileURL(options.path).href),
-          'import.meta.filename': JSON.stringify(options.path),
-          'import.meta.dirname': JSON.stringify(path.dirname(options.path)),
-          'import.meta.env': 'process.env',
-        }
-
-  // Compose feature-specific plugins
-  const defaultPlugins: InputOptions['plugins'] = [
-    // Handle JSON very early so entry JSON paths are rewritten to JS
-    createJsonLoader(),
-    // Inject __dirname/__filename/import.meta shims
-    createSourcePathConstantsPlugin(),
-    // Inline import.meta.resolve("./foo") to a file:// URL when literal
-    createImportMetaResolveShim(),
-    // Fix require.resolve calls to use correct base path
-    createRequireResolveFix(options),
-    // Customize console output for namespace objects
-    createConsoleOutputCustomizer(),
-    // Fix typeof require in ESM
-    createRequireTypeofFix(),
-  ]
-
   // Input options (https://rolldown.rs/reference/config-options#inputoptions)
   const inputOptions: InputOptions = {
     input: options.path,
@@ -60,9 +30,29 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
     external: (id: string) =>
       !id.startsWith('.') && !id.startsWith('/') && !id.startsWith('#'),
     // Keep __dirname/__filename/import.meta.url definitions
-    define: defaultDefine as any,
+    define: {
+      __dirname: JSON.stringify(path.dirname(options.path)),
+      __filename: JSON.stringify(options.path),
+      'import.meta.url': JSON.stringify(pathToFileURL(options.path).href),
+      'import.meta.filename': JSON.stringify(options.path),
+      'import.meta.dirname': JSON.stringify(path.dirname(options.path)),
+      'import.meta.env': 'process.env',
+    },
     // Compose feature-specific plugins
-    plugins: defaultPlugins,
+    plugins: [
+      // Handle JSON very early so entry JSON paths are rewritten to JS
+      createJsonLoader(),
+      // Inject __dirname/__filename/import.meta shims
+      createSourcePathConstantsPlugin(),
+      // Inline import.meta.resolve("./foo") to a file:// URL when literal
+      createImportMetaResolveShim(),
+      // Fix require.resolve calls to use correct base path
+      createRequireResolveFix(options),
+      // Customize console output for namespace objects
+      createConsoleOutputCustomizer(),
+      // Fix typeof require in ESM
+      createRequireTypeofFix(),
+    ],
     // Resolve tsconfig.json from cwd if present
     tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),
     keepNames: true,
@@ -81,7 +71,7 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
 
   // Output options (https://rolldown.rs/reference/config-options#outputoptions)
   const outputOptions: OutputOptions = {
-    format: 'esm' as const,
+    format: 'esm',
     inlineDynamicImports: true,
     // Apply user-provided overrides last
     ...(options.outputOptions ?? {}),

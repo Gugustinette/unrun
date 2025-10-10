@@ -29,6 +29,7 @@ export const jit = async (options: ResolvedOptions): Promise<any> => {
   try {
     _module = await loadModule(finalCode, {
       filenameHint: path.basename(options.path),
+      keepFile: process.env.UNRUN_DEBUG === 'true',
     })
   } catch (error) {
     throw new Error(
