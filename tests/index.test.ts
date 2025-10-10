@@ -26,7 +26,7 @@ describe('unrun', () => {
 
   test('should load config from cjs', async () => {
     const config = await unrun({
-      path: './tests/fixtures/custom.config.js',
+      path: './tests/fixtures/custom.config.cjs',
     })
 
     expect(config.default).toEqual({
