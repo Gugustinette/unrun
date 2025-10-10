@@ -1,12 +1,9 @@
-import { Buffer } from 'node:buffer'
-import crypto from 'node:crypto'
 import fs from 'node:fs'
-import { tmpdir } from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
-import { pathToFileURL } from 'node:url'
 import type { ResolvedOptions } from '../options'
 import { bundle } from './bundle'
+import { loadModule } from './load-module'
 import { makeCjsWrapperAsyncFriendly } from './make-cjs-wrapper-async-friendly'
 
 export const jit = async (options: ResolvedOptions): Promise<any> => {
@@ -27,51 +24,16 @@ export const jit = async (options: ResolvedOptions): Promise<any> => {
     finalCode = makeCjsWrapperAsyncFriendly(finalCode)
   }
 
-  // Prefer loading from a project-local temp file under node_modules/.unrun
-  // (avoids massive data: URLs that can cause IPC issues and ensures deps resolve
-  // relative to the npm project)
-  let moduleUrl: string | null = null
-  try {
-    const hash = crypto.createHash('sha1').update(finalCode).digest('hex')
-    // Try to place the cache under the closest node_modules/.unrun to the input file
-    // Fallback to OS tmpdir if we can't create it
-    const projectNodeModules = path.join(process.cwd(), 'node_modules')
-    const outDir = path.join(projectNodeModules, '.unrun')
-    const outFile = path.join(outDir, `${hash}.mjs`)
-    if (!fs.existsSync(outFile)) {
-      try {
-        fs.mkdirSync(outDir, { recursive: true })
-        fs.writeFileSync(outFile, finalCode, 'utf8')
-      } catch {
-        // If writing to node_modules fails (e.g., RO filesystem), fallback to tmpdir
-        const fallbackDir = path.join(tmpdir(), 'unrun-cache')
-        const fallbackFile = path.join(fallbackDir, `${hash}.mjs`)
-        fs.mkdirSync(fallbackDir, { recursive: true })
-        fs.writeFileSync(fallbackFile, finalCode, 'utf8')
-        moduleUrl = pathToFileURL(fallbackFile).href
-      }
-    }
-    moduleUrl = moduleUrl || pathToFileURL(outFile).href
-  } catch {
-    // Fallback to data URL if writing fails
-    moduleUrl = `data:text/javascript;base64,${Buffer.from(finalCode).toString('base64')}`
-  }
-
-  // Dynamically import the generated module
+  // Load the generated module
   let _module
   try {
-    _module = await import(moduleUrl)
+    _module = await loadModule(finalCode, {
+      filenameHint: path.basename(options.path),
+    })
   } catch (error) {
     throw new Error(
-      `[unrun] Import failed for ${moduleUrl} (code length: ${finalCode.length}): ${(error as Error).message}`,
+      `[unrun] Import failed (code length: ${finalCode.length}): ${(error as Error).message}`,
     )
-  } finally {
-    // Clean the temporary file unless debugging
-    if (process.env.UNRUN_DEBUG !== 'true' && moduleUrl.startsWith('file://')) {
-      try {
-        fs.unlinkSync(new URL(moduleUrl))
-      } catch {}
-    }
   }
 
   // Return the module

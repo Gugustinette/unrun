@@ -41,6 +41,9 @@ const fixtures = [
   './typescript/index.ts',
 ]
 
+// Some fixtures need to compare against jiti's default export behavior
+const compareToDefault = new Set(['./top-level-await/index.ts'])
+
 // Run snapshots first to establish baseline outputs
 describe('backward compat snapshots with jiti', () => {
   for (const fixture of fixtures) {
@@ -92,8 +95,12 @@ describe.concurrent('backward compatibility with jiti', () => {
         unrunModule = await unrun({ path: fixturePath })
       })
 
-      expect(unrunModule).toEqual(jitiModule.default)
-      assert.deepEqual(unrunModule, jitiModule.default)
+      if (compareToDefault.has(fixture)) {
+        jitiModule = jitiModule?.default ?? jitiModule
+      }
+
+      expect(unrunModule).toEqual(jitiModule)
+      assert.deepEqual(unrunModule, jitiModule)
     })
   }
 

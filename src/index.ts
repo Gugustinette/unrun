@@ -12,33 +12,27 @@ export async function unrun(options: Options): Promise<any> {
   // If the output preset is 'jiti', mimic jiti's export behavior
   if (resolvedOptions.outputPreset === 'jiti') {
     const ext = path.extname(resolvedOptions.path)
-    // Prefer default export if present
-    if (module && 'default' in module && module.default !== undefined) {
-      return module.default
-    }
-
     // If it's an ESM namespace with no exports, return a plain object like jiti
     if (
       module &&
       typeof module === 'object' &&
-      module[Symbol.toStringTag] === 'Module' &&
-      Object.keys(module).length === 0
+      (module as any)[Symbol.toStringTag] === 'Module' &&
+      Object.keys(module as any).length === 0
     ) {
       return ext === '.mjs' ? module : {}
     }
 
-    // Special-case JSON top-level configs: if the evaluated module is a plain
-    // object with a self-referential `default` property (due to our JSON
-    // loader), strip it so callers get a clean object.
+    // If it's an object with only a default: {} key, unwrap to a plain object (match jiti)
     if (
       module &&
       typeof module === 'object' &&
-      ext === '.json' &&
-      (module as any).default === module
+      'default' in (module as any) &&
+      Object.keys(module as any).length === 1 &&
+      (module as any).default &&
+      typeof (module as any).default === 'object' &&
+      Object.keys((module as any).default).length === 0
     ) {
-      const cloned = { ...(module as any) }
-      delete (cloned as any).default
-      return cloned
+      return ext === '.mjs' ? module : (module as any).default
     }
   }
 
