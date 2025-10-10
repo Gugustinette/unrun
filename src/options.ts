@@ -8,10 +8,19 @@ export interface Options {
   path?: string
 
   /**
+   * Debug mode.
+   * Wether or not to keep temporary files to help with debugging.
+   * Temporary files are stored in `node_modules/.cache/unrun/` if possible,
+   * otherwise in the OS temporary directory.
+   * @default false
+   */
+  debug?: boolean
+
+  /**
    * The preset to use for output generation.
    * @default 'jiti'
    */
-  outputPreset?: 'jiti' | 'none' | 'bundle-require'
+  outputPreset?: 'jiti' | 'none'
 
   /**
    * Whether to make Rolldown's CommonJS wrappers async-friendly.
@@ -42,10 +51,19 @@ export interface ResolvedOptions {
   path: string
 
   /**
+   * Debug mode.
+   * Wether or not to keep temporary files to help with debugging.
+   * Temporary files are stored in `node_modules/.cache/unrun/` if possible,
+   * otherwise in the OS temporary directory.
+   * @default false
+   */
+  debug: boolean
+
+  /**
    * The preset to use for output generation.
    * @default 'jiti'
    */
-  outputPreset: 'jiti' | 'none' | 'bundle-require'
+  outputPreset: 'jiti' | 'none'
 
   /**
    * Whether to make Rolldown's CommonJS wrappers async-friendly.
@@ -71,6 +89,7 @@ export interface ResolvedOptions {
 export function resolveOptions(options: Options = {}): ResolvedOptions {
   return {
     path: options.path || 'custom.config.ts',
+    debug: options.debug || false,
     outputPreset: options.outputPreset || 'jiti',
     makeCjsWrapperAsyncFriendly: options.makeCjsWrapperAsyncFriendly ?? true,
     inputOptions: options.inputOptions,

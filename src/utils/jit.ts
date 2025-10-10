@@ -27,10 +27,7 @@ export const jit = async (options: ResolvedOptions): Promise<any> => {
   // Load the generated module
   let _module
   try {
-    _module = await loadModule(finalCode, {
-      filenameHint: path.basename(options.path),
-      keepFile: process.env.UNRUN_DEBUG === 'true',
-    })
+    _module = await loadModule(finalCode, options)
   } catch (error) {
     throw new Error(
       `[unrun] Import failed (code length: ${finalCode.length}): ${(error as Error).message}`,

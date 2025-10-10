@@ -5,23 +5,23 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { pathToFileURL } from 'node:url'
+import type { ResolvedOptions } from '../options'
 
 /**
  * Import a JS module from code string.
  * Write ESM code to a temp file (prefer project-local node_modules/.cache/unrun) and import it.
  * Cleans up file unless keepFile is true.
  * @param code - The JavaScript code to be imported as a module.
- * @param opts - Optional parameters.
- * @param opts.filenameHint - A hint for the filename to use when creating the temp file.
- * @param opts.keepFile - If true, the temp file will not be deleted after import.
+ * @param options - Resolved options including caching preferences.
  * @returns The imported module.
  */
 export async function loadModule(
   code: string,
-  opts: { filenameHint?: string; keepFile?: boolean } = {},
+  options: ResolvedOptions,
 ): Promise<any> {
+  const filenameHint = path.basename(options.path)
   let moduleUrl = ''
-  const { filenameHint, keepFile } = opts
+
   try {
     // Generate a stable filename from the code content to enable caching
     const hash = crypto.createHash('sha1').update(code).digest('hex')
@@ -64,9 +64,9 @@ export async function loadModule(
     // Dynamically import the generated module
     _module = await import(moduleUrl)
   } finally {
-    // Cleanup of the temporary file unless the caller asked to keep it
+    // Clean up the temp file unless keepFile is true
     // Only applicable for file:// URLs
-    if (!keepFile && moduleUrl.startsWith('file://')) {
+    if (!options.debug && moduleUrl.startsWith('file://')) {
       try {
         fs.unlinkSync(new URL(moduleUrl))
       } catch {}
