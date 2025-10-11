@@ -35,6 +35,7 @@
     "dev": "tsdown --watch",
     "test": "vitest",
     "test:run": "vitest run",
+    "benchmark": "tsx ./scripts/benchmark.ts",
     "test:update-fixtures": "tsx ./scripts/update-fixtures.ts",
     "typecheck": "tsc --noEmit",
     "format": "prettier --cache --write .",
