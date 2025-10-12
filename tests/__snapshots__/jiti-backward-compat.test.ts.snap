@@ -78,6 +78,24 @@ exports[`backward compat snapshots with jiti > ./esm/index.js > stdout-unrun 1`]
 }"
 `;
 
+exports[`backward compat snapshots with jiti > ./export-promise/index.mjs > stdout-jiti 1`] = `
+"module: [Module: null prototype] {
+  bar: 'bar',
+  default: Promise { 'foo' },
+  foo: [AsyncFunction: foo]
+}
+default module: foo"
+`;
+
+exports[`backward compat snapshots with jiti > ./export-promise/index.mjs > stdout-unrun 1`] = `
+"module: [Module: null prototype] {
+  bar: 'bar',
+  default: Promise { 'foo' },
+  foo: [AsyncFunction: foo]
+}
+default module: foo"
+`;
+
 exports[`backward compat snapshots with jiti > ./hashbang/index.ts > stdout-jiti 1`] = `"1"`;
 
 exports[`backward compat snapshots with jiti > ./hashbang/index.ts > stdout-unrun 1`] = `"1"`;
@@ -196,6 +214,7 @@ Decorator called with 3 arguments.
 Decorator called with 3 arguments.
 Decorator called with 3 arguments.
 Decorator called with 1 arguments.
+foo
 {
   file: '<cwd><path>',
   dir: '<cwd>',
@@ -218,6 +237,7 @@ Decorator called with 3 arguments.
 Decorator called with 3 arguments.
 Decorator called with 3 arguments.
 Decorator called with 1 arguments.
+foo
 {
   file: '<cwd><path>',
   dir: '<cwd>',

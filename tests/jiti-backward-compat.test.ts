@@ -1,19 +1,19 @@
 import { dirname, resolve } from 'node:path'
 import process from 'node:process'
-import { fileURLToPath } from 'node:url'
 import { createJiti } from 'jiti'
 import { assert, describe, expect, test } from 'vitest'
 import { unrun } from '../src'
 import { captureConsole } from './utils/capture-console'
 import { normalizeOutput } from './utils/normalize-output'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-
 // Enable JSX support in jiti
 process.env.JITI_JSX = process.env.JITI_JSX || '1'
 
 // Create jiti instance relative to this test file
-const jiti = createJiti(__dirname)
+const jiti = createJiti(import.meta.url, {
+  fsCache: false,
+  moduleCache: false,
+})
 
 // Jiti's fixtures (success cases)
 const fixtures = [
@@ -24,6 +24,7 @@ const fixtures = [
   './deps/index.ts',
   './env/index.js',
   './esm/index.js',
+  './export-promise/index.mjs',
   './hashbang/index.ts',
   './import-map/index.mjs',
   './import-meta/index.ts',
@@ -42,7 +43,15 @@ const fixtures = [
 ]
 
 // Some fixtures need to compare against jiti's default export behavior
-const compareToDefault = new Set(['./top-level-await/index.ts'])
+const compareToDefault = new Set([
+  './async/index.js',
+  './cjs-interop/index.cjs',
+  './mixed/index.cjs',
+  './native/index.js',
+  './require-esm/index.cjs',
+  './require-json/index.js',
+  './top-level-await/index.ts',
+])
 
 // Run snapshots first to establish baseline outputs
 describe('backward compat snapshots with jiti', () => {

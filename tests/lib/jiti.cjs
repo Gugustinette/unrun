@@ -1,5 +1,5 @@
-// required for ./tests/fixtures/cjs-interop/index.cjs to work
-import { createJiti } from 'jiti'
+// required for CJS tests to work
+const { createJiti } = require('jiti')
 
 module.exports = createJiti
 module.exports.createJiti = createJiti

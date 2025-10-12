@@ -60,7 +60,7 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
       fragment: 'React.Fragment',
     },
     // Finally, apply user-provided overrides
-    ...(options.inputOptions ?? {}),
+    ...options.inputOptions,
   }
 
   // Setup bundle
@@ -71,7 +71,7 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
     format: 'esm',
     inlineDynamicImports: true,
     // Apply user-provided overrides last
-    ...(options.outputOptions ?? {}),
+    ...options.outputOptions,
   }
 
   // Generate bundle in memory
