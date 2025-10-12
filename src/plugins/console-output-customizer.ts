@@ -53,6 +53,7 @@ export function createConsoleOutputCustomizer(): Plugin {
             ].join('\n')
             if (chunk.code.startsWith('#!')) {
               const nl = chunk.code.indexOf('\n')
+              // eslint-disable-next-line unicorn/no-negated-condition
               if (nl !== -1) {
                 chunk.code = `${chunk.code.slice(0, nl + 1)}${helper}\n${chunk.code.slice(nl + 1)}`
               } else {

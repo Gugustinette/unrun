@@ -19,7 +19,7 @@ export async function captureConsole<T>(fn: () => Promise<T> | T): Promise<{
     try {
       arr.push(format(...(args as any)))
     } catch {
-      arr.push(args.map((a) => String(a)).join(' '))
+      arr.push(args.map(String).join(' '))
     }
   }
 
