@@ -10,7 +10,7 @@ export interface Options {
   /**
    * Debug mode.
    * Wether or not to keep temporary files to help with debugging.
-   * Temporary files are stored in `node_modules/.cache/unrun/` if possible,
+   * Temporary files are stored in `node_modules/.unrun/` if possible,
    * otherwise in the OS temporary directory.
    * @default false
    */
@@ -53,7 +53,7 @@ export interface ResolvedOptions {
   /**
    * Debug mode.
    * Wether or not to keep temporary files to help with debugging.
-   * Temporary files are stored in `node_modules/.cache/unrun/` if possible,
+   * Temporary files are stored in `node_modules/.unrun/` if possible,
    * otherwise in the OS temporary directory.
    * @default false
    */

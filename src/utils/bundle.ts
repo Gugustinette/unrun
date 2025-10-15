@@ -1,22 +1,51 @@
+import { randomBytes } from 'node:crypto'
+import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { pathToFileURL } from 'node:url'
 import {
-  rolldown,
+  build,
   type InputOptions,
-  type OutputChunk,
   type OutputOptions,
+  type RolldownOutput,
 } from 'rolldown'
 import {
-  createConsoleOutputCustomizer,
-  createJsonLoader,
+  createMakeCjsWrapperAsyncFriendlyPlugin,
   createRequireResolveFix,
   createRequireTypeofFix,
   createSourceContextShimsPlugin,
 } from '../plugins'
 import type { ResolvedOptions } from '../options'
 
-export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
+export async function bundle(options: ResolvedOptions): Promise<{
+  outDir: string
+  rolldownOutput: RolldownOutput
+}> {
+  // Resolve the file path to an absolute path
+  options.path = path.resolve(process.cwd(), options.path)
+  // Ensure output directory exists
+  const unrunOutDir = path.join(process.cwd(), 'node_modules', '.unrun')
+  fs.mkdirSync(unrunOutDir, { recursive: true })
+  // Compute key for output filename
+  const moduleKey = randomBytes(16).toString('hex')
+  // Create directory dedicated to this module to avoid collisions
+  const outDir = path.join(unrunOutDir, moduleKey)
+  fs.mkdirSync(outDir, { recursive: true })
+
+  // Compose feature-specific plugins
+  const plugins = [
+    // Inject __dirname/__filename/import.meta shims and inline import.meta.resolve
+    createSourceContextShimsPlugin(),
+    // Fix require.resolve calls to use correct base path
+    createRequireResolveFix(options),
+    // Fix typeof require in ESM
+    createRequireTypeofFix(),
+  ]
+
+  if (options.makeCjsWrapperAsyncFriendly) {
+    plugins.push(createMakeCjsWrapperAsyncFriendlyPlugin())
+  }
+
   // Input options (https://rolldown.rs/reference/config-options#inputoptions)
   const inputOptions: InputOptions = {
     input: options.path,
@@ -37,19 +66,7 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
       'import.meta.dirname': JSON.stringify(path.dirname(options.path)),
       'import.meta.env': 'process.env',
     },
-    // Compose feature-specific plugins
-    plugins: [
-      // Handle JSON very early so entry JSON paths are rewritten to JS
-      createJsonLoader(),
-      // Inject __dirname/__filename/import.meta shims and inline import.meta.resolve
-      createSourceContextShimsPlugin(),
-      // Fix require.resolve calls to use correct base path
-      createRequireResolveFix(options),
-      // Customize console output for namespace objects
-      createConsoleOutputCustomizer(),
-      // Fix typeof require in ESM
-      createRequireTypeofFix(),
-    ],
+    plugins,
     // Resolve tsconfig.json from cwd if present
     tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),
     keepNames: true,
@@ -63,24 +80,23 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
     ...options.inputOptions,
   }
 
-  // Setup bundle
-  const bundle = await rolldown(inputOptions)
-
   // Output options (https://rolldown.rs/reference/config-options#outputoptions)
   const outputOptions: OutputOptions = {
+    dir: outDir,
     format: 'esm',
-    inlineDynamicImports: true,
-    // Apply user-provided overrides last
+    // Apply user-provided overrides
     ...options.outputOptions,
   }
 
-  // Generate bundle in memory
-  const rolldownOutput = await bundle.generate(outputOptions)
+  // Let Rolldown handle writing the bundle to disk
+  const rolldownOutput = await build({
+    ...inputOptions,
+    output: outputOptions,
+  })
 
-  // Verify that the output is not empty
-  if (!rolldownOutput.output[0]) {
-    throw new Error('[unrun] No output chunk found')
+  // Return the output file path
+  return {
+    outDir,
+    rolldownOutput,
   }
-  // Return the output chunk
-  return rolldownOutput.output[0]
 }

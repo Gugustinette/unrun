@@ -69,8 +69,8 @@ exports[`backward compat snapshots with jiti > ./esm/index.js > stdout-jiti 1`] 
 `;
 
 exports[`backward compat snapshots with jiti > ./esm/index.js > stdout-unrun 1`] = `
-"{ utilsLib: { utils: { a: 'a', default: 'default' }, version: '123' } }
-{ utils: { a: 'a', default: 'default' } }
+"{ utilsLib: { utils: [Getter], version: [Getter] } }
+{ utils: [Module: null prototype] { a: 'a', default: 'default' } }
 {
   file: '<cwd><path>',
   dir: '<cwd>',
@@ -120,20 +120,6 @@ hello! custom
 file://<cwd><path>+custom.ts
 import.meta.dirname: <cwd>
 import.meta.filename: <cwd><path>"
-`;
-
-exports[`backward compat snapshots with jiti > ./json/index.ts > stdout-jiti 1`] = `
-"Imported : { test: 123 } .default: { test: 123 }
-Imported with assertion : { test: 123 } .default: { test: 123 }
-Required : { test: 123 } .default: { test: 123 }
-Dynamic Imported : [Object: null prototype] { default: { test: 123 }, test: 123 } .default: { test: 123 }"
-`;
-
-exports[`backward compat snapshots with jiti > ./json/index.ts > stdout-unrun 1`] = `
-"Imported : { test: 123 } .default: { test: 123 }
-Imported with assertion : { test: 123 } .default: { test: 123 }
-Required : { test: 123 } .default: { test: 123 }
-Dynamic Imported : [Object: null prototype] { default: { test: 123 }, test: 123 } .default: { test: 123 }"
 `;
 
 exports[`backward compat snapshots with jiti > ./jsx/index.ts > stdout-jiti 1`] = `
