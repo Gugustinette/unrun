@@ -68,7 +68,7 @@ describe('backward compat snapshots with jiti', () => {
       // Execute jiti CLI to capture the canonical stdout
       const { stdout: jitiCliStdout } = await runJitiCli(fixturePath)
 
-      // Execute the CLI to capture unrun's stdout without monkey-patching console
+      // Execute unrun CLI to capture unrun's stdout
       const { stdout: unrunCliStdout } = await runUnrunCli(fixturePath)
 
       const jitiStdout = normalizeOutput(jitiCliStdout, cwd, repoRoot)

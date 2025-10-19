@@ -32,20 +32,6 @@ export async function bundle(options: ResolvedOptions): Promise<{
   const outDir = path.join(unrunOutDir, moduleKey)
   fs.mkdirSync(outDir, { recursive: true })
 
-  // Compose feature-specific plugins
-  const plugins = [
-    // Inject __dirname/__filename/import.meta shims and inline import.meta.resolve
-    createSourceContextShimsPlugin(),
-    // Fix require.resolve calls to use correct base path
-    createRequireResolveFix(options),
-    // Fix typeof require in ESM
-    createRequireTypeofFix(),
-  ]
-
-  if (options.makeCjsWrapperAsyncFriendly) {
-    plugins.push(createMakeCjsWrapperAsyncFriendlyPlugin())
-  }
-
   // Input options (https://rolldown.rs/reference/config-options#inputoptions)
   const inputOptions: InputOptions = {
     input: options.path,
@@ -66,7 +52,19 @@ export async function bundle(options: ResolvedOptions): Promise<{
       'import.meta.dirname': JSON.stringify(path.dirname(options.path)),
       'import.meta.env': 'process.env',
     },
-    plugins,
+    // Compose feature-specific plugins
+    plugins: [
+      // Inject __dirname/__filename/import.meta shims and inline import.meta.resolve
+      createSourceContextShimsPlugin(),
+      // Make CJS wrappers async-friendly
+      options.makeCjsWrapperAsyncFriendly
+        ? createMakeCjsWrapperAsyncFriendlyPlugin()
+        : null,
+      // Fix require.resolve calls to use correct base path
+      createRequireResolveFix(options),
+      // Fix typeof require in ESM
+      createRequireTypeofFix(),
+    ],
     // Resolve tsconfig.json from cwd if present
     tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),
     keepNames: true,
