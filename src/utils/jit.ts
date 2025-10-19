@@ -4,7 +4,6 @@ import process from 'node:process'
 import type { ResolvedOptions } from '../options'
 import { bundle } from './bundle'
 import { loadModule } from './load-module'
-import { makeCjsWrapperAsyncFriendly } from './make-cjs-wrapper-async-friendly'
 
 export const jit = async (options: ResolvedOptions): Promise<any> => {
   // Resolve the file path to an absolute path
@@ -18,11 +17,8 @@ export const jit = async (options: ResolvedOptions): Promise<any> => {
   // Bundle the code
   const outputChunk = await bundle(options)
 
-  // Post-process: make CommonJS wrappers async-friendly
-  let finalCode = outputChunk.code
-  if (options.makeCjsWrapperAsyncFriendly ?? true) {
-    finalCode = makeCjsWrapperAsyncFriendly(finalCode)
-  }
+  // Get final code
+  const finalCode = outputChunk.code
 
   // Load the generated module
   let _module

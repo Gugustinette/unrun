@@ -5,6 +5,7 @@ import { assert, describe, expect, test } from 'vitest'
 import { unrun } from '../src'
 import { captureConsole } from './utils/capture-console'
 import { normalizeOutput } from './utils/normalize-output'
+import { repoRoot, runJitiCli, runUnrunCli } from './utils/run-cli'
 
 // Enable JSX support in jiti
 process.env.JITI_JSX = process.env.JITI_JSX || '1'
@@ -60,20 +61,15 @@ describe('backward compat snapshots with jiti', () => {
 
     test(fixture, { timeout: 20000 }, async () => {
       const cwd = dirname(fixturePath)
-      const root = dirname(__dirname)
 
-      // Import with jiti and capture console output
-      const jitiModule = await captureConsole(async () => {
-        await jiti.import(fixturePath)
-      })
+      // Execute jiti CLI to capture the canonical stdout
+      const { stdout: jitiCliStdout } = await runJitiCli(fixturePath)
 
-      // Import with unrun and capture console output
-      const unrunModule = await captureConsole(async () => {
-        await unrun({ path: fixturePath })
-      })
+      // Execute unrun CLI to capture unrun's stdout
+      const { stdout: unrunCliStdout } = await runUnrunCli(fixturePath)
 
-      const jitiStdout = normalizeOutput(jitiModule.stdout, cwd, root)
-      const unrunStdout = normalizeOutput(unrunModule.stdout, cwd, root)
+      const jitiStdout = normalizeOutput(jitiCliStdout, cwd, repoRoot)
+      const unrunStdout = normalizeOutput(unrunCliStdout, cwd, repoRoot)
 
       // Always snapshot jiti output as the canonical baseline
       expect(jitiStdout).toMatchSnapshot('stdout-jiti')

@@ -10,6 +10,7 @@ import {
 import {
   createConsoleOutputCustomizer,
   createJsonLoader,
+  createMakeCjsWrapperAsyncFriendlyPlugin,
   createRequireResolveFix,
   createRequireTypeofFix,
   createSourceContextShimsPlugin,
@@ -43,6 +44,10 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
       createJsonLoader(),
       // Inject __dirname/__filename/import.meta shims and inline import.meta.resolve
       createSourceContextShimsPlugin(),
+      // Make CJS wrappers async-friendly
+      options.makeCjsWrapperAsyncFriendly
+        ? createMakeCjsWrapperAsyncFriendlyPlugin()
+        : null,
       // Fix require.resolve calls to use correct base path
       createRequireResolveFix(options),
       // Customize console output for namespace objects
