@@ -13,10 +13,23 @@ cli
   .option('--debug', 'Show debug logs', {
     default: false,
   })
+  .option('--output-preset <preset>', 'Set the output preset (none|jiti)', {
+    default: 'none' as const,
+  })
   .action(async (input: string[], options: Options) => {
     // Verify an input was given
     if (input.length === 0) {
       throw new Error('[unrun] No input files provided')
+    }
+
+    if (
+      options.outputPreset !== undefined &&
+      options.outputPreset !== 'none' &&
+      options.outputPreset !== 'jiti'
+    ) {
+      throw new Error(
+        `[unrun] Invalid output preset "${options.outputPreset}" (expected: none | jiti)`,
+      )
     }
 
     // Lazy load unrun
@@ -26,6 +39,7 @@ cli
     await unrun({
       path: input[0],
       debug: options.debug,
+      outputPreset: options.outputPreset,
     })
   })
 

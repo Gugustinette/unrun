@@ -31,14 +31,17 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
       !id.startsWith('.') && !id.startsWith('/') && !id.startsWith('#'),
     // Compose feature-specific plugins
     plugins: [
-      createConsoleOutputCustomizer(),
-      createJsonLoader(),
-      options.makeCjsWrapperAsyncFriendly
-        ? createMakeCjsWrapperAsyncFriendlyPlugin()
-        : null,
-      createRequireTypeofFix(),
+      createMakeCjsWrapperAsyncFriendlyPlugin(),
       createRequireResolveFix(options),
       createSourceContextShimsPlugin(),
+      // jiti-specific fixes
+      ...(options.outputPreset === 'jiti'
+        ? [
+            createConsoleOutputCustomizer(),
+            createJsonLoader(),
+            createRequireTypeofFix(),
+          ]
+        : []),
     ],
     // Resolve tsconfig.json from cwd if present
     tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),

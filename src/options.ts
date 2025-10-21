@@ -18,17 +18,9 @@ export interface Options {
 
   /**
    * The preset to use for output generation.
-   * @default 'jiti'
+   * @default 'none'
    */
-  outputPreset?: 'jiti' | 'none'
-
-  /**
-   * Whether to make Rolldown's CommonJS wrappers async-friendly.
-   * This is necessary if the code being imported uses top-level await
-   * inside a CommonJS module.
-   * @default true
-   */
-  makeCjsWrapperAsyncFriendly?: boolean
+  outputPreset?: 'none' | 'jiti'
 
   /**
    * Additional rolldown input options. These options will be merged with the
@@ -61,17 +53,9 @@ export interface ResolvedOptions {
 
   /**
    * The preset to use for output generation.
-   * @default 'jiti'
+   * @default 'none'
    */
-  outputPreset: 'jiti' | 'none'
-
-  /**
-   * Whether to make Rolldown's CommonJS wrappers async-friendly.
-   * This is necessary if the code being imported uses top-level await
-   * inside a CommonJS module.
-   * @default true
-   */
-  makeCjsWrapperAsyncFriendly: boolean
+  outputPreset: 'none' | 'jiti'
 
   /**
    * Additional rolldown input options. These options will be merged with the
@@ -90,8 +74,7 @@ export function resolveOptions(options: Options = {}): ResolvedOptions {
   return {
     path: options.path || 'custom.config.ts',
     debug: options.debug || false,
-    outputPreset: options.outputPreset || 'jiti',
-    makeCjsWrapperAsyncFriendly: options.makeCjsWrapperAsyncFriendly ?? true,
+    outputPreset: options.outputPreset || 'none',
     inputOptions: options.inputOptions,
     outputOptions: options.outputOptions,
   }

@@ -63,14 +63,12 @@ export function runNodeCli(
 
 export function runJitiCli(
   modulePath: string,
-  options?: ExecFileOptionsWithStringEncoding,
 ): Promise<{ stdout: string; stderr: string }> {
-  return runNodeCli(jitiCliEntry, [modulePath], options)
+  return runNodeCli(jitiCliEntry, [modulePath])
 }
 
 export function runUnrunCli(
   modulePath: string,
-  options?: ExecFileOptionsWithStringEncoding,
 ): Promise<{ stdout: string; stderr: string }> {
-  return runNodeCli(unrunCliEntry, [modulePath], options)
+  return runNodeCli(unrunCliEntry, [modulePath, '--output-preset', 'jiti'])
 }
