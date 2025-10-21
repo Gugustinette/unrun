@@ -9,7 +9,7 @@ import type { ResolvedOptions } from '../options'
 
 /**
  * Import a JS module from code string.
- * Write ESM code to a temp file (prefer project-local node_modules/.cache/unrun) and import it.
+ * Write ESM code to a temp file (prefer project-local node_modules/.unrun) and import it.
  * Cleans up file unless keepFile is true.
  * @param code - The JavaScript code to be imported as a module.
  * @param options - Resolved options including caching preferences.
@@ -29,9 +29,9 @@ export async function loadModule(
     // Construct a readable filename: <hint>.<hash>.mjs
     const fname = `${filenameHint ? `${sanitize(filenameHint)}.` : ''}${hash}.mjs`
 
-    // Store in project-local cache if possible to aid debugging and tooling
+    // Store in project-local cache if possible to aid debugging, tooling and dependency resolution
     const projectNodeModules = path.join(process.cwd(), 'node_modules')
-    const outDir = path.join(projectNodeModules, '.cache', 'unrun')
+    const outDir = path.join(projectNodeModules, '.unrun')
     const outFile = path.join(outDir, fname)
 
     // Only write the file if it doesn't exist already (cache hit)

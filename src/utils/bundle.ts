@@ -55,12 +55,6 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
         'import.meta.dirname': JSON.stringify(path.dirname(options.path)),
         'import.meta.env': 'process.env',
       },
-      /*
-      When doing JSX with Vue, the import source must be set to 'vue'.
-      jsx: {
-        importSource: 'vue',
-      },
-      */
     },
     // Finally, apply user-provided overrides
     ...options.inputOptions,
