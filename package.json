@@ -38,18 +38,17 @@
     "dev": "tsdown --watch",
     "test": "vitest",
     "test:run": "vitest run",
-    "benchmark": "tsx ./scripts/benchmark.ts",
     "test:update-fixtures": "tsx ./scripts/update-fixtures.ts",
+    "benchmark": "tsx ./scripts/benchmark.ts",
     "typecheck": "tsc --noEmit",
     "format": "prettier --cache --write .",
     "release": "bumpp && unotp pnpm publish",
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@oxc-project/runtime": "^0.94.0",
-    "@types/react": "^19.1.15",
+    "@oxc-project/runtime": "^0.95.0",
     "cac": "^6.7.14",
-    "rolldown": "1.0.0-beta.42"
+    "rolldown": "1.0.0-beta.44"
   },
   "devDependencies": {
     "@sxzz/eslint-config": "^7.1.4",
@@ -80,11 +79,11 @@
     "react-dom": "^19.1.1",
     "reflect-metadata": "^0.2.2",
     "tinyexec": "^1.0.1",
-    "tsdown": "^0.15.6",
+    "tsdown": "^0.15.9",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "vite": "^7.1.7",
-    "vitest": "4.0.0-beta.13",
+    "vitest": "4.0.0-beta.19",
     "vue": "^3.5.22",
     "zod": "^4.1.8"
   },

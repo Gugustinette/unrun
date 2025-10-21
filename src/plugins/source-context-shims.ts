@@ -5,8 +5,9 @@ import type { Plugin } from 'rolldown'
 
 /**
  * A rolldown plugin that injects source context shims:
- * - Injects per-module __filename/__dirname and replaces import.meta.url with the source file URL
- * - Inlines import.meta.resolve("./foo") with a file:// URL when the argument is a string literal
+ * - Replaces import.meta.resolve calls with resolved file URLs
+ * - Injects per-module __filename/__dirname
+ * - Replaces import.meta.url with the source file URL
  */
 export function createSourceContextShimsPlugin(): Plugin {
   return {
@@ -16,17 +17,18 @@ export function createSourceContextShimsPlugin(): Plugin {
         id: /\.(?:m?[jt]s|c?tsx?)(?:$|\?)/,
       },
       handler(id: string) {
-        let original: string
+        // Read the original source code
+        let code: string
         try {
-          original = fs.readFileSync(id, 'utf8')
+          code = fs.readFileSync(id, 'utf8')
         } catch {
           return null
         }
 
-        let code = original
-        let touched = false
+        // Flag to track if we modified the code
+        let __MODIFIED_CODE__ = false
 
-        // 1) Inline import.meta.resolve("./foo") when literal
+        // Replace import.meta.resolve calls with resolved file URLs
         if (code.includes('import.meta.resolve')) {
           const re = /import\.meta\.resolve!?\s*\(\s*(["'])([^"']+)\1\s*\)/g
           const replaced = code.replaceAll(re, (_m, _q, spec) => {
@@ -36,15 +38,12 @@ export function createSourceContextShimsPlugin(): Plugin {
           })
           if (replaced !== code) {
             code = replaced
-            touched = true
+            __MODIFIED_CODE__ = true
           }
         }
 
-        // 2) Inject __filename/__dirname and replace import.meta.url
-        const needsSourcePathConstants =
-          /__filename|__dirname|import\s*\.\s*meta\s*\.\s*url/.test(original)
-
-        if (needsSourcePathConstants) {
+        // Check if there are any source path constants to inject
+        if (/__filename|__dirname|import\s*\.\s*meta\s*\.\s*url/.test(code)) {
           const file = id
           const dir = path.dirname(id)
           const url = pathToFileURL(id).href
@@ -78,11 +77,15 @@ export function createSourceContextShimsPlugin(): Plugin {
             )
           }
 
+          // Prepend the prologue to the modified code
           code = prologue + protectedCode
-          touched = true
+          // Flag that we modified the code
+          __MODIFIED_CODE__ = true
         }
 
-        return touched ? { code } : null
+        // If code was modified, return the new code
+        // Else, return null to indicate no changes
+        return __MODIFIED_CODE__ ? { code } : null
       },
     },
   }

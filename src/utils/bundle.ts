@@ -23,46 +23,41 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
     input: options.path,
     // Use Node platform for better Node-compatible resolution & builtins
     // See https://rolldown.rs/guide/in-depth/bundling-cjs#require-external-modules
-    platform: 'node' as const,
+    platform: 'node',
     // Treat all non-relative and non-absolute imports as external dependencies,
     //   except for package "imports" specifiers (starting with '#') which we resolve ourselves.
     //   This ensures bare deps resolve from host project while allowing #imports mapping.
     external: (id: string) =>
       !id.startsWith('.') && !id.startsWith('/') && !id.startsWith('#'),
-    // Keep __dirname/__filename/import.meta.url definitions
-    define: {
-      __dirname: JSON.stringify(path.dirname(options.path)),
-      __filename: JSON.stringify(options.path),
-      'import.meta.url': JSON.stringify(pathToFileURL(options.path).href),
-      'import.meta.filename': JSON.stringify(options.path),
-      'import.meta.dirname': JSON.stringify(path.dirname(options.path)),
-      'import.meta.env': 'process.env',
-    },
     // Compose feature-specific plugins
     plugins: [
-      // Handle JSON very early so entry JSON paths are rewritten to JS
+      createConsoleOutputCustomizer(),
       createJsonLoader(),
-      // Inject __dirname/__filename/import.meta shims and inline import.meta.resolve
-      createSourceContextShimsPlugin(),
-      // Make CJS wrappers async-friendly
       options.makeCjsWrapperAsyncFriendly
         ? createMakeCjsWrapperAsyncFriendlyPlugin()
         : null,
-      // Fix require.resolve calls to use correct base path
-      createRequireResolveFix(options),
-      // Customize console output for namespace objects
-      createConsoleOutputCustomizer(),
-      // Fix typeof require in ESM
       createRequireTypeofFix(),
+      createRequireResolveFix(options),
+      createSourceContextShimsPlugin(),
     ],
     // Resolve tsconfig.json from cwd if present
     tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),
-    keepNames: true,
-    // Configure JSX support with classic mode for pragma support
-    jsx: {
-      mode: 'classic',
-      factory: 'React.createElement',
-      fragment: 'React.Fragment',
+    transform: {
+      // Keep __dirname/__filename/import.meta.url definitions
+      define: {
+        __dirname: JSON.stringify(path.dirname(options.path)),
+        __filename: JSON.stringify(options.path),
+        'import.meta.url': JSON.stringify(pathToFileURL(options.path).href),
+        'import.meta.filename': JSON.stringify(options.path),
+        'import.meta.dirname': JSON.stringify(path.dirname(options.path)),
+        'import.meta.env': 'process.env',
+      },
+      /*
+      When doing JSX with Vue, the import source must be set to 'vue'.
+      jsx: {
+        importSource: 'vue',
+      },
+      */
     },
     // Finally, apply user-provided overrides
     ...options.inputOptions,
@@ -75,6 +70,7 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
   const outputOptions: OutputOptions = {
     format: 'esm',
     inlineDynamicImports: true,
+    keepNames: true,
     // Apply user-provided overrides last
     ...options.outputOptions,
   }
