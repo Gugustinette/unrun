@@ -136,20 +136,6 @@ Required : { test: 123 } .default: { test: 123 }
 Dynamic Imported : [Object: null prototype] { default: { test: 123 }, test: 123 } .default: { test: 123 }"
 `;
 
-exports[`backward compat snapshots with jiti > ./jsx/index.ts > stdout-jiti 1`] = `
-"<h1>Hello, nano-jsx!<<path>>
-<h1>Hello, preact!<<path>>
-<h1>Hello, react!<<path>>
-<h1>Hello, vue!<<path>>"
-`;
-
-exports[`backward compat snapshots with jiti > ./jsx/index.ts > stdout-unrun 1`] = `
-"<h1>Hello, nano-jsx!<<path>>
-<h1>Hello, preact!<<path>>
-<h1>Hello, react!<<path>>
-<h1>Hello, vue!<<path>>"
-`;
-
 exports[`backward compat snapshots with jiti > ./mixed/index.cjs > stdout-jiti 1`] = `"Mixed works for: <root>"`;
 
 exports[`backward compat snapshots with jiti > ./mixed/index.cjs > stdout-unrun 1`] = `"Mixed works for: <root>"`;
