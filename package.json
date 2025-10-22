@@ -48,7 +48,8 @@
   "dependencies": {
     "@oxc-project/runtime": "^0.95.0",
     "cac": "^6.7.14",
-    "rolldown": "1.0.0-beta.44"
+    "rolldown": "1.0.0-beta.44",
+    "synckit": "^0.11.11"
   },
   "devDependencies": {
     "@sxzz/eslint-config": "^7.1.4",

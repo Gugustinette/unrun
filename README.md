@@ -23,14 +23,25 @@ npm i unrun
 ## Usage
 
 - Programmatic API
+  - Async
 
-```ts
-import { unrun } from 'unrun'
+  ```ts
+  import { unrun } from 'unrun'
 
-const mod = await unrun({
-  path: './path/to/file', // Path to the module to load
-})
-```
+  const mod = await unrun({
+    path: './path/to/file', // Path to the module to load
+  })
+  ```
+
+  - Sync
+
+  ```ts
+  import { unrunSync } from 'unrun'
+
+  const mod = unrunSync({
+    path: './path/to/file', // Path to the module to load
+  })
+  ```
 
 - CLI
 
