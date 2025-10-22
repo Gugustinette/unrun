@@ -10,9 +10,8 @@ import type { ResolvedOptions } from '../options'
 /**
  * Import a JS module from code string.
  * Write ESM code to a temp file (prefer project-local node_modules/.unrun) and import it.
- * Cleans up file unless keepFile is true.
  * @param code - The JavaScript code to be imported as a module.
- * @param options - Resolved options including caching preferences.
+ * @param options - Resolved options including debug preferences.
  * @returns The imported module.
  */
 export async function loadModule(
@@ -23,7 +22,7 @@ export async function loadModule(
   let moduleUrl = ''
 
   try {
-    // Generate a stable filename from the code content to enable caching
+    // Generate a stable filename from the code content
     const hash = crypto.createHash('sha1').update(code).digest('hex')
 
     // Construct a readable filename: <hint>.<hash>.mjs
@@ -34,10 +33,10 @@ export async function loadModule(
     const outDir = path.join(projectNodeModules, '.unrun')
     const outFile = path.join(outDir, fname)
 
-    // Only write the file if it doesn't exist already (cache hit)
+    // Only write the file if it doesn't exist already
     if (!fs.existsSync(outFile)) {
       try {
-        // Try writing to the project-local cache directory.
+        // Try writing to the project-local .unrun directory
         fs.mkdirSync(outDir, { recursive: true })
         fs.writeFileSync(outFile, code, 'utf8')
       } catch {
@@ -64,7 +63,7 @@ export async function loadModule(
     // Dynamically import the generated module
     _module = await import(moduleUrl)
   } finally {
-    // Clean up the temp file unless keepFile is true
+    // Clean up the temp file unless debug is true
     // Only applicable for file:// URLs
     if (!options.debug && moduleUrl.startsWith('file://')) {
       try {

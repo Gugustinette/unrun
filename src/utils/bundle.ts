@@ -24,9 +24,7 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
     // Use Node platform for better Node-compatible resolution & builtins
     // See https://rolldown.rs/guide/in-depth/bundling-cjs#require-external-modules
     platform: 'node',
-    // Treat all non-relative and non-absolute imports as external dependencies,
-    //   except for package "imports" specifiers (starting with '#') which we resolve ourselves.
-    //   This ensures bare deps resolve from host project while allowing #imports mapping.
+    // Treat all non-relative and non-absolute imports as external dependencies
     external: (id: string) =>
       !id.startsWith('.') && !id.startsWith('/') && !id.startsWith('#'),
     // Compose feature-specific plugins
@@ -46,7 +44,7 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
     // Resolve tsconfig.json from cwd if present
     tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),
     transform: {
-      // Keep __dirname/__filename/import.meta.url definitions
+      // Keep __dirname/__filename/import.meta definitions
       define: {
         __dirname: JSON.stringify(path.dirname(options.path)),
         __filename: JSON.stringify(options.path),
@@ -79,6 +77,7 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
   if (!rolldownOutput.output[0]) {
     throw new Error('[unrun] No output chunk found')
   }
+
   // Return the output chunk
   return rolldownOutput.output[0]
 }

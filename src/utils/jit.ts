@@ -17,16 +17,13 @@ export const jit = async (options: ResolvedOptions): Promise<any> => {
   // Bundle the code
   const outputChunk = await bundle(options)
 
-  // Get final code
-  const finalCode = outputChunk.code
-
   // Load the generated module
   let _module
   try {
-    _module = await loadModule(finalCode, options)
+    _module = await loadModule(outputChunk.code, options)
   } catch (error) {
     throw new Error(
-      `[unrun] Import failed (code length: ${finalCode.length}): ${(error as Error).message}`,
+      `[unrun] Import failed (code length: ${outputChunk.code.length}): ${(error as Error).message}`,
     )
   }
 
