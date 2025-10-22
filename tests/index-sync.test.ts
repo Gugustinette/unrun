@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest'
+// @ts-ignore : dist won't be there during CI type checks
 import { unrunSync } from '../dist'
 
 describe('unrun', () => {
