@@ -1,11 +1,12 @@
+import { normalizePath } from './utils/normalize-path'
 import type { InputOptions, OutputOptions } from 'rolldown'
 
 export interface Options {
   /**
-   * The path to the file to be imported.
+   * The path to the file to be imported. Supports filesystem paths, file URLs or URL objects.
    * @default 'custom.config.ts'
    */
-  path?: string
+  path?: string | URL
 
   /**
    * Debug mode.
@@ -72,7 +73,7 @@ export interface ResolvedOptions {
 
 export function resolveOptions(options: Options = {}): ResolvedOptions {
   return {
-    path: options.path || 'custom.config.ts',
+    path: normalizePath(options.path),
     debug: options.debug || false,
     preset: options.preset || 'none',
     inputOptions: options.inputOptions,
