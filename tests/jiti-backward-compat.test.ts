@@ -98,7 +98,7 @@ describe.concurrent('backward compatibility with jiti', () => {
         jitiModule = await jiti.import(fixturePath)
 
         // Load the module with unrun
-        unrunModule = await unrun({ path: fixturePath, outputPreset: 'jiti' })
+        unrunModule = await unrun({ path: fixturePath, preset: 'jiti' })
       })
 
       if (compareToDefault.has(fixture)) {

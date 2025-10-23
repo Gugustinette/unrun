@@ -13,7 +13,7 @@ cli
   .option('--debug', 'Show debug logs', {
     default: false,
   })
-  .option('--output-preset <preset>', 'Set the output preset (none|jiti)', {
+  .option('--preset <preset>', 'Set the preset (none|jiti|bundle-require)', {
     default: 'none' as const,
   })
   .action(async (input: string[], options: Options) => {
@@ -23,12 +23,13 @@ cli
     }
 
     if (
-      options.outputPreset !== undefined &&
-      options.outputPreset !== 'none' &&
-      options.outputPreset !== 'jiti'
+      options.preset !== undefined &&
+      options.preset !== 'none' &&
+      options.preset !== 'jiti' &&
+      options.preset !== 'bundle-require'
     ) {
       throw new Error(
-        `[unrun] Invalid output preset "${options.outputPreset}" (expected: none | jiti)`,
+        `[unrun] Invalid preset "${options.preset}" (expected: none | jiti | bundle-require)`,
       )
     }
 
@@ -39,7 +40,7 @@ cli
     await unrun({
       path: input[0],
       debug: options.debug,
-      outputPreset: options.outputPreset,
+      preset: options.preset,
     })
   })
 

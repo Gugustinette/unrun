@@ -32,7 +32,7 @@ describe.concurrent('backward compatibility with bundle-require', () => {
         // Load the module with unrun
         unrunModule = await unrun({
           path: fixturePath,
-          outputPreset: 'none',
+          preset: 'bundle-require',
         })
       })
 
@@ -57,7 +57,9 @@ describe.concurrent('backward compatibility with bundle-require', () => {
       captureConsole(() => bundleRequire({ filepath: fixturePath })),
     ).rejects.toThrow()
     await expect(
-      captureConsole(() => unrun({ path: fixturePath })),
+      captureConsole(() =>
+        unrun({ path: fixturePath, preset: 'bundle-require' }),
+      ),
     ).rejects.toThrow()
   })
 
@@ -73,7 +75,9 @@ describe.concurrent('backward compatibility with bundle-require', () => {
       captureConsole(() => bundleRequire({ filepath: fixturePath })),
     ).rejects.toThrow()
     await expect(
-      captureConsole(() => unrun({ path: fixturePath })),
+      captureConsole(() =>
+        unrun({ path: fixturePath, preset: 'bundle-require' }),
+      ),
     ).rejects.toThrow()
   })
 })

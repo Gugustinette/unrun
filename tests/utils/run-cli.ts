@@ -70,5 +70,5 @@ export function runJitiCli(
 export function runUnrunCli(
   modulePath: string,
 ): Promise<{ stdout: string; stderr: string }> {
-  return runNodeCli(unrunCliEntry, [modulePath, '--output-preset', 'jiti'])
+  return runNodeCli(unrunCliEntry, [modulePath, '--preset', 'jiti'])
 }

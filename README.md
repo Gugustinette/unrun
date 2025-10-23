@@ -51,13 +51,13 @@ npx unrun ./path/to/file
 
 ## Options
 
-| Option          | Type                     | Default              | Description                                                             |
-| --------------- | ------------------------ | -------------------- | ----------------------------------------------------------------------- |
-| `path`          | `string`                 | `'custom.config.ts'` | Path to the module to load.                                             |
-| `debug`         | `boolean`                | `false`              | Keep temporary build artifacts to help with debugging.                  |
-| `outputPreset`  | `'none' \| 'jiti'`       | `'none'`             | Selects the output preset used during bundling.                         |
-| `inputOptions`  | `rolldown.InputOptions`  | `undefined`          | Extra rolldown input options that override the defaults used by unrun.  |
-| `outputOptions` | `rolldown.OutputOptions` | `undefined`          | Extra rolldown output options that override the defaults used by unrun. |
+| Option          | Type                                   | Default              | Description                                                             |
+| --------------- | -------------------------------------- | -------------------- | ----------------------------------------------------------------------- |
+| `path`          | `string`                               | `'custom.config.ts'` | Path to the module to load.                                             |
+| `debug`         | `boolean`                              | `false`              | Keep temporary build artifacts to help with debugging.                  |
+| `preset`        | `'none' \| 'jiti' \| 'bundle-require'` | `'none'`             | Selects the output preset used during bundling.                         |
+| `inputOptions`  | `rolldown.InputOptions`                | `undefined`          | Extra rolldown input options that override the defaults used by unrun.  |
+| `outputOptions` | `rolldown.OutputOptions`               | `undefined`          | Extra rolldown output options that override the defaults used by unrun. |
 
 ## Advanced Usage
 

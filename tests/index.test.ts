@@ -7,7 +7,7 @@ describe('unrun', () => {
       path: './tests/fixtures/custom.config.ts',
     })
 
-    expect(config.default).toEqual({
+    expect(config).toEqual({
       entry: './src/index.ts',
       dir: 'parentDir/dist',
     })
@@ -18,7 +18,7 @@ describe('unrun', () => {
       path: './tests/fixtures/custom.config.mjs',
     })
 
-    expect(config.default).toEqual({
+    expect(config).toEqual({
       entry: './src/index.ts',
       dir: 'parentDir/dist',
     })
@@ -29,7 +29,7 @@ describe('unrun', () => {
       path: './tests/fixtures/custom.config.cjs',
     })
 
-    expect(config.default).toEqual({
+    expect(config).toEqual({
       entry: './src/index.ts',
       dir: 'parentDir/dist',
     })
@@ -40,7 +40,7 @@ describe('unrun', () => {
       path: './tests/fixtures/custom.config.json',
     })
 
-    expect(config.default).toEqual({
+    expect(config).toEqual({
       entry: './src/index.ts',
       dir: 'parentDir/dist',
     })

@@ -33,7 +33,7 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
       createRequireResolveFix(options),
       createSourceContextShimsPlugin(),
       // jiti-specific fixes
-      ...(options.outputPreset === 'jiti'
+      ...(options.preset === 'jiti'
         ? [
             createConsoleOutputCustomizer(),
             createJsonLoader(),

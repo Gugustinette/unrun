@@ -17,10 +17,10 @@ export interface Options {
   debug?: boolean
 
   /**
-   * The preset to use for output generation.
+   * The preset to use for bundling and output format.
    * @default 'none'
    */
-  outputPreset?: 'none' | 'jiti'
+  preset?: 'none' | 'jiti' | 'bundle-require'
 
   /**
    * Additional rolldown input options. These options will be merged with the
@@ -52,10 +52,10 @@ export interface ResolvedOptions {
   debug: boolean
 
   /**
-   * The preset to use for output generation.
+   * The preset to use for bundling and output format.
    * @default 'none'
    */
-  outputPreset: 'none' | 'jiti'
+  preset: 'none' | 'jiti' | 'bundle-require'
 
   /**
    * Additional rolldown input options. These options will be merged with the
@@ -74,7 +74,7 @@ export function resolveOptions(options: Options = {}): ResolvedOptions {
   return {
     path: options.path || 'custom.config.ts',
     debug: options.debug || false,
-    outputPreset: options.outputPreset || 'none',
+    preset: options.preset || 'none',
     inputOptions: options.inputOptions,
     outputOptions: options.outputOptions,
   }
