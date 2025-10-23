@@ -4,7 +4,7 @@ import type { InputOptions, OutputOptions } from 'rolldown'
 export interface Options {
   /**
    * The path to the file to be imported. Supports filesystem paths, file URLs or URL objects.
-   * @default 'custom.config.ts'
+   * @default 'index.ts'
    */
   path?: string | URL
 
@@ -39,7 +39,7 @@ export interface Options {
 export interface ResolvedOptions {
   /**
    * The path to the file to be imported.
-   * @default 'custom.config.ts'
+   * @default 'index.ts'
    */
   path: string
 
