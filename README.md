@@ -55,7 +55,7 @@ npx unrun ./path/to/file
 | --------------- | -------------------------------------- | ------------ | ----------------------------------------------------------------------- |
 | `path`          | `string`                               | `'index.ts'` | Path to the module to load.                                             |
 | `debug`         | `boolean`                              | `false`      | Keep temporary build artifacts to help with debugging.                  |
-| `preset`        | `'none' \| 'jiti' \| 'bundle-require'` | `'none'`     | Selects the output preset used during bundling.                         |
+| `preset`        | `'none' \| 'jiti' \| 'bundle-require'` | `'none'`     | The preset to use for bundling and output format.                       |
 | `inputOptions`  | `rolldown.InputOptions`                | `undefined`  | Extra rolldown input options that override the defaults used by unrun.  |
 | `outputOptions` | `rolldown.OutputOptions`               | `undefined`  | Extra rolldown output options that override the defaults used by unrun. |
 
