@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-10-24T22:37:32.305Z",
+  "device": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "nodeVersion": "v24.2.0"
+  },
+  "iterations": 10,
+  "results": [
+    {
+      "loader": "unrun",
+      "totalMs": 22.197542,
+      "averageMs": 2.2197541999999997,
+      "minMs": 1.459292,
+      "maxMs": 6.790041
+    },
+    {
+      "loader": "jiti",
+      "totalMs": 122.51308200000001,
+      "averageMs": 12.2513082,
+      "minMs": 3.550583,
+      "maxMs": 79.461458
+    }
+  ]
+}
