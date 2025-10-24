@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { pathToFileURL } from 'node:url'
@@ -18,6 +19,12 @@ import {
 import type { ResolvedOptions } from '../options'
 
 export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
+  // Resolve tsconfig.json if present
+  const resolvedTsconfigPath = path.resolve(process.cwd(), 'tsconfig.json')
+  const tsconfig = existsSync(resolvedTsconfigPath)
+    ? resolvedTsconfigPath
+    : undefined
+
   // Input options (https://rolldown.rs/reference/config-options#inputoptions)
   const inputOptions: InputOptions = {
     input: options.path,
@@ -41,8 +48,6 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
           ]
         : []),
     ],
-    // Resolve tsconfig.json from cwd if present
-    tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),
     transform: {
       // Keep __dirname/__filename/import.meta definitions
       define: {
@@ -56,6 +61,11 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
     },
     // Finally, apply user-provided overrides
     ...options.inputOptions,
+  }
+
+  // Apply tsconfig if resolved
+  if (tsconfig) {
+    inputOptions.tsconfig = tsconfig
   }
 
   // Setup bundle
