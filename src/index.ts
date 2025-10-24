@@ -3,6 +3,9 @@ import { createSyncFn } from 'synckit'
 import { resolveOptions, type Options } from './options'
 import { jit } from './utils/jit'
 
+// Export types
+export type { Options } from './options'
+
 /**
  * Loads a module with JIT compilation based on the provided options.
  *

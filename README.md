@@ -10,9 +10,6 @@ It is highly inspired by tools like :
 
 - [jiti](https://github.com/unjs/jiti)
 - [bundle-require](https://github.com/egoist/bundle-require)
-- [tsx](https://tsx.is/)
-
-In fact, unrun is tested against most of the same test cases as jiti and bundle-require to ensure backward compatibility.
 
 ## Install
 
@@ -47,57 +44,6 @@ npm i unrun
 
 ```bash
 npx unrun ./path/to/file
-```
-
-## Options
-
-| Option          | Type                                   | Default      | Description                                                             |
-| --------------- | -------------------------------------- | ------------ | ----------------------------------------------------------------------- |
-| `path`          | `string`                               | `'index.ts'` | Path to the module to load.                                             |
-| `debug`         | `boolean`                              | `false`      | Keep temporary build artifacts to help with debugging.                  |
-| `preset`        | `'none' \| 'jiti' \| 'bundle-require'` | `'none'`     | The preset to use for bundling and output format.                       |
-| `inputOptions`  | `rolldown.InputOptions`                | `undefined`  | Extra rolldown input options that override the defaults used by unrun.  |
-| `outputOptions` | `rolldown.OutputOptions`               | `undefined`  | Extra rolldown output options that override the defaults used by unrun. |
-
-## Advanced Usage
-
-### JSX
-
-When loading files that contain JSX syntax, you may need to customize Rolldown's JSX transform options :
-
-```ts
-import { unrun } from 'unrun'
-
-const mod = await unrun({
-  path: './path/to/file-with-jsx.tsx',
-  inputOptions: {
-    transform: {
-      jsx: {
-        // Adjust these options according to your needs
-        importSource: 'react',
-        pragma: 'React.createElement',
-        pragmaFrag: 'React.Fragment',
-      },
-    },
-  },
-})
-```
-
-For example, when using JSX with Vue, you need to set the `importSource` to `'vue'` :
-
-```ts
-import { unrun } from 'unrun'
-
-const mod = await unrun({
-  path: './path/to/file-with-jsx.tsx',
-  inputOptions: {
-    transform: {
-      jsx: {
-        importSource: 'vue',
-      },
-    },
-  },
-})
 ```
 
 <!-- Badges -->
