@@ -22,11 +22,13 @@ export async function loadModule(
   let moduleUrl = ''
 
   try {
-    // Generate a stable filename from the code content
-    const hash = crypto.createHash('sha1').update(code).digest('hex')
+    // Using a stable hash from the code content can lead to conflicts
+    // when multiple tests or processes run in parallel with the same code.
+    // Thus, we prefer generating a random key.
+    const randomKey = crypto.randomBytes(16).toString('hex')
 
-    // Construct a readable filename: <hint>.<hash>.mjs
-    const fname = `${filenameHint ? `${sanitize(filenameHint)}.` : ''}${hash}.mjs`
+    // Construct a readable filename: <hint>.<random>.mjs
+    const fname = `${filenameHint ? `${sanitize(filenameHint)}.` : ''}${randomKey}.mjs`
 
     // Store in project-local cache if possible to aid debugging, tooling and dependency resolution
     const projectNodeModules = path.join(process.cwd(), 'node_modules')
