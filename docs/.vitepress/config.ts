@@ -36,7 +36,10 @@ export default defineConfig({
       },
       {
         text: 'Advanced',
-        items: [{ text: 'JSX', link: '/advanced/jsx' }],
+        items: [
+          { text: 'JSX', link: '/advanced/jsx' },
+          { text: 'Presets', link: '/advanced/presets' },
+        ],
       },
       {
         text: 'API Reference',
