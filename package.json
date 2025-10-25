@@ -5,16 +5,16 @@
   "description": "A tool to load and execute any JavaScript or TypeScript code at runtime.",
   "type": "module",
   "license": "MIT",
-  "homepage": "https://github.com/gugustinette/unrun#readme",
+  "homepage": "https://github.com/Gugustinette/unrun#readme",
   "bugs": {
-    "url": "https://github.com/gugustinette/unrun/issues"
+    "url": "https://github.com/Gugustinette/unrun/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gugustinette/unrun.git"
+    "url": "git+https://github.com/Gugustinette/unrun.git"
   },
   "author": "Augustin Mercier <gugustinette@proton.me>",
-  "funding": "https://github.com/sponsors/gugustinette",
+  "funding": "https://github.com/sponsors/Gugustinette",
   "files": [
     "dist"
   ],
