@@ -5,19 +5,20 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { pathToFileURL } from 'node:url'
-import type { ResolvedOptions } from '../options'
+import type { ResolvedOptions } from '../../options'
+
+function sanitize(name: string) {
+  // Allow word chars plus dot and dash
+  return name.replaceAll(/[^\w.-]/g, '_')
+}
 
 /**
- * Import a JS module from code string.
- * Write ESM code to a temp file (prefer project-local node_modules/.unrun) and import it.
- * @param code - The JavaScript code to be imported as a module.
- * @param options - Resolved options including debug preferences.
- * @returns The imported module.
+ * Writes a module to the filesystem.
+ * @param code - The JavaScript code to be written as a module.
+ * @param options - Resolved options.
+ * @returns The file URL of the written module.
  */
-export async function loadModule(
-  code: string,
-  options: ResolvedOptions,
-): Promise<any> {
+export function writeModule(code: string, options: ResolvedOptions): string {
   const filenameHint = path.basename(options.path)
   let moduleUrl = ''
 
@@ -59,24 +60,5 @@ export async function loadModule(
     // This avoids touching the filesystem entirely
     moduleUrl = `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`
   }
-
-  let _module
-  try {
-    // Dynamically import the generated module
-    _module = await import(moduleUrl)
-  } finally {
-    // Clean up the temp file unless debug is true
-    // Only applicable for file:// URLs
-    if (!options.debug && moduleUrl.startsWith('file://')) {
-      try {
-        fs.unlinkSync(new URL(moduleUrl))
-      } catch {}
-    }
-  }
-  return _module
-}
-
-function sanitize(name: string) {
-  // Allow word chars plus dot and dash
-  return name.replaceAll(/[^\w.-]/g, '_')
+  return moduleUrl
 }

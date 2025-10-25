@@ -4,3 +4,10 @@ export interface Result {
    */
   module: any
 }
+
+export interface CliResult {
+  /**
+   * The exit code of the CLI execution.
+   */
+  exitCode: number
+}

@@ -1,0 +1,15 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`cli > should display nothing when no command line arguments are given > cli-no-args 1`] = `
+"[]
+"
+`;
+
+exports[`cli > should display nothing when no command line arguments are given > cli-no-args-stderr 1`] = `""`;
+
+exports[`cli > should not display command line arguments before the file path > cli-with-args 1`] = `
+"[ '--some-arg', 'value', '--another-arg=42' ]
+"
+`;
+
+exports[`cli > should not display command line arguments before the file path > cli-with-args-stderr 1`] = `""`;

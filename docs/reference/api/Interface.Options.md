@@ -1,6 +1,6 @@
 # Interface: Options
 
-Defined in: [options.ts:4](https://github.com/Gugustinette/unrun/blob/7887433aed88966d6e4547e5f4fa1d7ad5fdc0d0/src/options.ts#L4)
+Defined in: [options.ts:7](https://github.com/Gugustinette/unrun/blob/820eb49cc19e3f61445feaad271174649b79ff69/src/options.ts#L7)
 
 ## Properties
 
@@ -10,7 +10,7 @@ Defined in: [options.ts:4](https://github.com/Gugustinette/unrun/blob/7887433aed
 optional debug: boolean;
 ```
 
-Defined in: [options.ts:18](https://github.com/Gugustinette/unrun/blob/7887433aed88966d6e4547e5f4fa1d7ad5fdc0d0/src/options.ts#L18)
+Defined in: [options.ts:21](https://github.com/Gugustinette/unrun/blob/820eb49cc19e3f61445feaad271174649b79ff69/src/options.ts#L21)
 
 Debug mode.
 Wether or not to keep temporary files to help with debugging.
@@ -31,7 +31,7 @@ false;
 optional inputOptions: InputOptions;
 ```
 
-Defined in: [options.ts:30](https://github.com/Gugustinette/unrun/blob/7887433aed88966d6e4547e5f4fa1d7ad5fdc0d0/src/options.ts#L30)
+Defined in: [options.ts:33](https://github.com/Gugustinette/unrun/blob/820eb49cc19e3f61445feaad271174649b79ff69/src/options.ts#L33)
 
 Additional rolldown input options. These options will be merged with the
 defaults provided by unrun, with these options always taking precedence.
@@ -44,7 +44,7 @@ defaults provided by unrun, with these options always taking precedence.
 optional outputOptions: OutputOptions;
 ```
 
-Defined in: [options.ts:36](https://github.com/Gugustinette/unrun/blob/7887433aed88966d6e4547e5f4fa1d7ad5fdc0d0/src/options.ts#L36)
+Defined in: [options.ts:39](https://github.com/Gugustinette/unrun/blob/820eb49cc19e3f61445feaad271174649b79ff69/src/options.ts#L39)
 
 Additional rolldown output options. These options will be merged with the
 defaults provided by unrun, with these options always taking precedence.
@@ -57,7 +57,7 @@ defaults provided by unrun, with these options always taking precedence.
 optional path: string | URL;
 ```
 
-Defined in: [options.ts:9](https://github.com/Gugustinette/unrun/blob/7887433aed88966d6e4547e5f4fa1d7ad5fdc0d0/src/options.ts#L9)
+Defined in: [options.ts:12](https://github.com/Gugustinette/unrun/blob/820eb49cc19e3f61445feaad271174649b79ff69/src/options.ts#L12)
 
 The path to the file to be imported. Supports filesystem paths, file URLs or URL objects.
 
@@ -75,7 +75,7 @@ The path to the file to be imported. Supports filesystem paths, file URLs or URL
 optional preset: "none" | "jiti" | "bundle-require";
 ```
 
-Defined in: [options.ts:24](https://github.com/Gugustinette/unrun/blob/7887433aed88966d6e4547e5f4fa1d7ad5fdc0d0/src/options.ts#L24)
+Defined in: [options.ts:27](https://github.com/Gugustinette/unrun/blob/820eb49cc19e3f61445feaad271174649b79ff69/src/options.ts#L27)
 
 The preset to use for bundling and output format.
 

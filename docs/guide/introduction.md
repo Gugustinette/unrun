@@ -10,6 +10,7 @@ Unrun was highly inspired by existing tools like :
 
 - [jiti](https://github.com/unjs/jiti)
 - [bundle-require](https://github.com/egoist/bundle-require)
+- [tsx](https://tsx.is/)
 
 In fact, unrun is tested against most of the test cases from `jiti` and `bundle-require` to ensure high compatibility.
 

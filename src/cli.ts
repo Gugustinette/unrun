@@ -1,58 +1,132 @@
 import process from 'node:process'
-import { cac } from 'cac'
-import { version } from '../package.json'
 import type { Options } from './options'
 
-const cli = cac('unrun')
-cli.help().version(version)
+interface ParseResult {
+  debug: boolean
+  filePath?: string
+  preset?: string
+  beforeArgs: string[]
+  afterArgs: string[]
+}
 
-cli
-  .command('[...files]', 'Run a given JS/TS file', {
-    allowUnknownOptions: true,
-  })
-  .option('--debug', 'Show debug logs', {
-    default: false,
-  })
-  .option('--preset <preset>', 'Set the preset (none|jiti|bundle-require)', {
-    default: 'none' as const,
-  })
-  .action(async (input: string[], options: Options) => {
-    // Verify an input was given
-    if (input.length === 0) {
-      throw new Error('[unrun] No input files provided')
+function parseCLIArguments(argv: string[]): ParseResult {
+  let debug = false
+  let preset: string | undefined
+  let filePath: string | undefined
+  const beforeArgs: string[] = []
+  const afterArgs: string[] = []
+  let expectFilePathAfterDelimiter = false
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const argument = argv[index]
+
+    if (filePath !== undefined) {
+      if (argument === '--') {
+        afterArgs.push(...argv.slice(index + 1))
+        break
+      }
+      afterArgs.push(argument)
+      continue
     }
 
-    if (
-      options.preset !== undefined &&
-      options.preset !== 'none' &&
-      options.preset !== 'jiti' &&
-      options.preset !== 'bundle-require'
-    ) {
-      throw new Error(
-        `[unrun] Invalid preset "${options.preset}" (expected: none | jiti | bundle-require)`,
-      )
+    if (expectFilePathAfterDelimiter) {
+      filePath = argument
+      expectFilePathAfterDelimiter = false
+      continue
     }
 
-    // Lazy load unrun
-    const { unrun } = await import('./index')
+    if (argument === '--') {
+      expectFilePathAfterDelimiter = true
+      beforeArgs.push(argument)
+      continue
+    }
 
-    // Run unrun with provided options
-    await unrun({
-      path: input[0],
-      debug: options.debug,
-      preset: options.preset,
-    })
-  })
+    if (argument === '--debug') {
+      debug = true
+      beforeArgs.push(argument)
+      continue
+    }
+
+    if (argument === '--no-debug') {
+      debug = false
+      beforeArgs.push(argument)
+      continue
+    }
+
+    if (argument.startsWith('--preset=')) {
+      preset = argument.slice('--preset='.length)
+      beforeArgs.push(argument)
+      continue
+    }
+
+    if (argument === '--preset') {
+      const presetValue = argv[index + 1]
+      if (!presetValue || presetValue.startsWith('-')) {
+        throw new Error('[unrun] Missing preset value after --preset')
+      }
+      preset = presetValue
+      beforeArgs.push(argument, presetValue)
+      index += 1
+      continue
+    }
+
+    if (argument.startsWith('-')) {
+      beforeArgs.push(argument)
+      continue
+    }
+
+    filePath = argument
+  }
+
+  return {
+    debug,
+    preset,
+    filePath,
+    beforeArgs,
+    afterArgs,
+  }
+}
 
 async function runCLI(): Promise<void> {
-  cli.parse(process.argv, { run: false })
+  // Parse the CLI arguments
+  let parsedArguments: ParseResult
+  try {
+    parsedArguments = parseCLIArguments(process.argv.slice(2))
+  } catch (error) {
+    console.error((error as Error).message)
+    process.exit(1)
+  }
+
+  // Verify that a file path was provided
+  if (!parsedArguments.filePath) {
+    console.error('[unrun] No input files provided')
+    process.exit(1)
+  }
+
+  // Only keep arguments meant for the target module after the file path.
+  process.argv = [
+    process.argv[0],
+    parsedArguments.filePath,
+    ...parsedArguments.afterArgs,
+  ]
 
   try {
-    await cli.runMatchedCommand()
+    const { unrunCli } = await import('./index')
+    await unrunCli(
+      {
+        path: parsedArguments.filePath,
+        debug: parsedArguments.debug,
+        preset: parsedArguments.preset as Options['preset'],
+      },
+      parsedArguments.afterArgs,
+    )
   } catch (error) {
     console.error((error as Error).message)
     process.exit(1)
   }
 }
 
-runCLI()
+runCLI().catch((error) => {
+  console.error((error as Error).message)
+  process.exit(1)
+})

@@ -4,9 +4,9 @@
 function unrun(options): Promise<Result>;
 ```
 
-Defined in: [index.ts:17](https://github.com/Gugustinette/unrun/blob/7887433aed88966d6e4547e5f4fa1d7ad5fdc0d0/src/index.ts#L17)
+Defined in: [index.ts:21](https://github.com/Gugustinette/unrun/blob/820eb49cc19e3f61445feaad271174649b79ff69/src/index.ts#L21)
 
-Loads a module with JIT compilation based on the provided options.
+Loads a module with JIT transpilation based on the provided options.
 
 ## Parameters
 

@@ -1,3 +1,6 @@
+import fs from 'node:fs'
+import path from 'node:path'
+import process from 'node:process'
 import { normalizePath } from './utils/normalize-path'
 import type { InputOptions, OutputOptions } from 'rolldown'
 
@@ -72,11 +75,26 @@ export interface ResolvedOptions {
 }
 
 export function resolveOptions(options: Options = {}): ResolvedOptions {
-  return {
-    path: normalizePath(options.path),
+  const resolvedOptions: ResolvedOptions = {
+    path: path.resolve(process.cwd(), normalizePath(options.path)),
     debug: options.debug || false,
     preset: options.preset || 'none',
     inputOptions: options.inputOptions,
     outputOptions: options.outputOptions,
   }
+
+  // Check if the file exists
+  if (!fs.existsSync(resolvedOptions.path)) {
+    throw new Error(`[unrun] File not found: ${resolvedOptions.path}`)
+  }
+
+  // Verify that the preset is valid
+  const validPresets = new Set(['none', 'jiti', 'bundle-require'])
+  if (!validPresets.has(resolvedOptions.preset)) {
+    throw new Error(
+      `[unrun] Invalid preset "${resolvedOptions.preset}" (expected: none | jiti | bundle-require)`,
+    )
+  }
+
+  return resolvedOptions
 }

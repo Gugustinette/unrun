@@ -4,9 +4,9 @@
 function unrunSync(options): Result;
 ```
 
-Defined in: [index.ts:37](https://github.com/Gugustinette/unrun/blob/7887433aed88966d6e4547e5f4fa1d7ad5fdc0d0/src/index.ts#L37)
+Defined in: [index.ts:51](https://github.com/Gugustinette/unrun/blob/820eb49cc19e3f61445feaad271174649b79ff69/src/index.ts#L51)
 
-Loads a module with JIT compilation based on the provided options.
+Loads a module with JIT transpilation based on the provided options.
 This function runs synchronously using a worker thread.
 
 ## Parameters

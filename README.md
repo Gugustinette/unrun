@@ -10,6 +10,7 @@ It is highly inspired by tools like :
 
 - [jiti](https://github.com/unjs/jiti)
 - [bundle-require](https://github.com/egoist/bundle-require)
+- [tsx](https://tsx.is/)
 
 ## Install
 
@@ -27,7 +28,7 @@ npm i unrun
 import { unrun } from 'unrun'
 
 const { module } = await unrun({
-  path: './path/to/file', // Path to the module to load
+  path: './path/to/file.ts', // Path to the module to load
 })
 ```
 
@@ -37,14 +38,14 @@ const { module } = await unrun({
 import { unrunSync } from 'unrun'
 
 const { module } = unrunSync({
-  path: './path/to/file', // Path to the module to load
+  path: './path/to/file.ts', // Path to the module to load
 })
 ```
 
 ### CLI
 
 ```bash
-npx unrun ./path/to/file
+npx unrun ./path/to/file.ts
 ```
 
 <!-- Badges -->

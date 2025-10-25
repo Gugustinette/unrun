@@ -36,7 +36,7 @@ You can use `unrun` both asynchronously and synchronously to load and execute mo
 import { unrun } from 'unrun'
 
 const { module } = await unrun({
-  path: './path/to/file', // Path to the module to load
+  path: './path/to/file.ts', // Path to the module to load
 })
 ```
 
@@ -46,7 +46,7 @@ const { module } = await unrun({
 import { unrunSync } from 'unrun'
 
 const { module } = unrunSync({
-  path: './path/to/file', // Path to the module to load
+  path: './path/to/file.ts', // Path to the module to load
 })
 ```
 
@@ -68,13 +68,4 @@ pnpx unrun ./path/to/file.ts
 yarn dlx unrun ./path/to/file.ts
 ```
 
-```sh [bun]
-bunx unrun ./path/to/file.ts
-```
-
 :::
-
-## Next Steps
-
-- Explore advanced usage in the [JSX](../advanced/jsx.md) guide.
-- Check out the [API Reference](../reference/api/Interface.Options.md) for detailed information on all available options and features.

@@ -11,9 +11,6 @@ importers:
       '@oxc-project/runtime':
         specifier: ^0.95.0
         version: 0.95.0
-      cac:
-        specifier: ^6.7.14
-        version: 6.7.14
       rolldown:
         specifier: 1.0.0-beta.44
         version: 1.0.0-beta.44
