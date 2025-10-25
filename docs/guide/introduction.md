@@ -12,3 +12,7 @@ Unrun was highly inspired by existing tools like :
 - [bundle-require](https://github.com/egoist/bundle-require)
 
 In fact, unrun is tested against most of the test cases from `jiti` and `bundle-require` to ensure high compatibility.
+
+::: info
+Logo was made by [Jason Moulin](https://www.zukaa.fr/)
+:::
