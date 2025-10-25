@@ -6,10 +6,20 @@ import {
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: 'unrun',
+  title: 'unrun - Unything at runtime',
   description: 'Unything at runtime',
   base: '/unrun/',
+  head: [
+    ['link', { rel: 'icon', href: '/unrun/public/favicon.ico' }],
+    ['meta', { name: 'theme-color', content: '#ff9143' }],
+  ],
   themeConfig: {
+    siteTitle: 'unrun',
+    logo: {
+      src: '/unrun-logo.webp',
+      alt: 'unrun logo',
+      height: 32,
+    },
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
