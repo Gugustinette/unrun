@@ -12,7 +12,7 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: API Reference
-      link: /api-reference
+      link: /reference/api/Interface.Options
 
 features:
   - icon: ⚡

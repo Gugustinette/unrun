@@ -77,4 +77,4 @@ bunx unrun ./path/to/file.ts
 ## Next Steps
 
 - Explore advanced usage in the [JSX](../advanced/jsx.md) guide.
-- Check out the [API Reference](../reference/api/) for detailed information on all available options and features.
+- Check out the [API Reference](../reference/api/Interface.Options.md) for detailed information on all available options and features.
