@@ -8,9 +8,9 @@ import {
 export default defineConfig({
   title: 'unrun - Unything at runtime',
   description: 'Unything at runtime',
-  base: '/unrun/',
+  base: '/unrun',
   head: [
-    ['link', { rel: 'icon', href: '/unrun/public/favicon.ico' }],
+    ['link', { rel: 'icon', href: '/unrun/favicon.ico' }],
     ['meta', { name: 'theme-color', content: '#ff9143' }],
   ],
   themeConfig: {
