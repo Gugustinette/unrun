@@ -5,7 +5,7 @@ layout: home
 hero:
   name: 'unrun'
   text: 'Unything at runtime'
-  tagline: 'A tool to dynamically load and execute any JavaScript or TypeScript code at runtime.'
+  tagline: 'A tool to load and execute any JavaScript or TypeScript code at runtime.'
   image:
     src: /unrun-logo.webp
     alt: unrun

@@ -1,8 +1,8 @@
 {
   "name": "unrun",
-  "version": "0.0.0",
+  "version": "0.2.0",
   "packageManager": "pnpm@10.15.0",
-  "description": "Load anything at runtime",
+  "description": "A tool to load and execute any JavaScript or TypeScript code at runtime.",
   "type": "module",
   "license": "MIT",
   "homepage": "https://github.com/gugustinette/unrun#readme",
