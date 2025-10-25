@@ -5,7 +5,7 @@
   "description": "A tool to load and execute any JavaScript or TypeScript code at runtime.",
   "type": "module",
   "license": "MIT",
-  "homepage": "https://github.com/Gugustinette/unrun#readme",
+  "homepage": "https://gugustinette.github.io/unrun/",
   "bugs": {
     "url": "https://github.com/Gugustinette/unrun/issues"
   },
