@@ -1,10 +1,12 @@
-import path from 'node:path'
 import { createSyncFn } from 'synckit'
+import { preset } from './features/preset'
 import { resolveOptions, type Options } from './options'
 import { jit } from './utils/jit'
+import type { Result } from './types'
 
 // Export types
 export type { Options } from './options'
+export type { Result } from './types'
 
 /**
  * Loads a module with JIT compilation based on the provided options.
@@ -12,39 +14,17 @@ export type { Options } from './options'
  * @param options - The options for loading the module.
  * @returns A promise that resolves to the loaded module.
  */
-export async function unrun(options: Options): Promise<any> {
+export async function unrun(options: Options): Promise<Result> {
   // Resolve options
   const resolvedOptions = resolveOptions(options)
 
   // Load the module using JIT compilation
   const module = await jit(resolvedOptions)
 
-  // If the output preset is 'bundle-require', directly return the module
-  if (resolvedOptions.preset === 'bundle-require') {
-    return module
-  }
+  // Apply preset handling
+  const finalModule = preset(resolvedOptions, module)
 
-  // If the output preset is 'jiti', mimic jiti's export behavior
-  if (resolvedOptions.preset === 'jiti') {
-    const ext = path.extname(resolvedOptions.path)
-    // If it's an ESM namespace with no exports, return a plain object like jiti
-    if (
-      module &&
-      typeof module === 'object' &&
-      (module as any)[Symbol.toStringTag] === 'Module' &&
-      Object.keys(module as any).length === 0
-    ) {
-      return ext === '.mjs' ? module : {}
-    }
-  }
-
-  // Otherwise, if the module has a default export, return it
-  if (module && typeof module === 'object' && 'default' in module) {
-    return module.default
-  }
-
-  // Fallback: return the module as is
-  return module
+  return { module: finalModule }
 }
 
 /**
@@ -54,7 +34,7 @@ export async function unrun(options: Options): Promise<any> {
  * @param options - The options for loading the module.
  * @returns The loaded module.
  */
-export function unrunSync(options: Options): any {
+export function unrunSync(options: Options): Result {
   const syncFn = createSyncFn(require.resolve('./sync/worker'), {
     tsRunner: 'node',
   })

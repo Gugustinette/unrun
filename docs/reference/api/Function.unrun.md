@@ -1,10 +1,10 @@
 # Function: unrun()
 
 ```ts
-function unrun(options): Promise<any>;
+function unrun(options): Promise<Result>;
 ```
 
-Defined in: [index.ts:15](https://github.com/Gugustinette/unrun/blob/8a9ded37d6301e096d513875042f8e88334bc098/src/index.ts#L15)
+Defined in: [index.ts:17](https://github.com/Gugustinette/unrun/blob/7887433aed88966d6e4547e5f4fa1d7ad5fdc0d0/src/index.ts#L17)
 
 Loads a module with JIT compilation based on the provided options.
 
@@ -18,6 +18,6 @@ The options for loading the module.
 
 ## Returns
 
-`Promise`\<`any`\>
+`Promise`\<[`Result`](Interface.Result.md)\>
 
 A promise that resolves to the loaded module.

@@ -3,7 +3,7 @@ import { unrun } from '../src'
 
 describe('unrun', () => {
   test('should load config from ts', async () => {
-    const config = await unrun({
+    const { module: config } = await unrun({
       path: './tests/fixtures/custom.config.ts',
     })
 
@@ -14,7 +14,7 @@ describe('unrun', () => {
   })
 
   test('should load config from esm', async () => {
-    const config = await unrun({
+    const { module: config } = await unrun({
       path: './tests/fixtures/custom.config.mjs',
     })
 
@@ -25,7 +25,7 @@ describe('unrun', () => {
   })
 
   test('should load config from cjs', async () => {
-    const config = await unrun({
+    const { module: config } = await unrun({
       path: './tests/fixtures/custom.config.cjs',
     })
 
@@ -36,7 +36,7 @@ describe('unrun', () => {
   })
 
   test('should load config from json', async () => {
-    const config = await unrun({
+    const { module: config } = await unrun({
       path: './tests/fixtures/custom.config.json',
     })
 

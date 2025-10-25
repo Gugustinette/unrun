@@ -3,6 +3,7 @@
 ## Interfaces
 
 - [Options](Interface.Options.md)
+- [Result](Interface.Result.md)
 
 ## Functions
 

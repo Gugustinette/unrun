@@ -4,7 +4,7 @@ import { unrunSync } from '../dist'
 
 describe('unrun', () => {
   test('should load config from ts', () => {
-    const config = unrunSync({
+    const { module: config } = unrunSync({
       path: './tests/fixtures/custom.config.ts',
     })
 
@@ -15,7 +15,7 @@ describe('unrun', () => {
   })
 
   test('should load config from esm', () => {
-    const config = unrunSync({
+    const { module: config } = unrunSync({
       path: './tests/fixtures/custom.config.mjs',
     })
 
@@ -26,7 +26,7 @@ describe('unrun', () => {
   })
 
   test('should load config from cjs', () => {
-    const config = unrunSync({
+    const { module: config } = unrunSync({
       path: './tests/fixtures/custom.config.cjs',
     })
 
@@ -37,7 +37,7 @@ describe('unrun', () => {
   })
 
   test('should load config from json', () => {
-    const config = unrunSync({
+    const { module: config } = unrunSync({
       path: './tests/fixtures/custom.config.json',
     })
 

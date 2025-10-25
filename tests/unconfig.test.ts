@@ -12,17 +12,19 @@ describe('unrun', () => {
         {
           files: 'custom.config',
           extensions: ['ts'],
-          parser: (id: string) => {
-            return unrun({
-              path: pathToFileURL(id).href,
-            })
+          parser: async (id: string) => {
+            return (
+              await unrun({
+                path: pathToFileURL(id).href,
+              })
+            ).module
           },
         },
       ],
       cwd: path.resolve(process.cwd(), './tests/fixtures/'),
     })
 
-    const configUnrun = await unrun({
+    const { module: configUnrun } = await unrun({
       path: './tests/fixtures/custom.config.ts',
     })
 

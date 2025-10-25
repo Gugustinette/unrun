@@ -5,7 +5,7 @@ When loading files that contain JSX syntax, you may need to customize Rolldown's
 ```ts
 import { unrun } from 'unrun'
 
-const mod = await unrun({
+const { module } = await unrun({
   path: './path/to/file-with-jsx.tsx',
   inputOptions: {
     transform: {
@@ -25,7 +25,7 @@ For example, when using JSX with Vue, you need to set the `importSource` to `'vu
 ```ts
 import { unrun } from 'unrun'
 
-const mod = await unrun({
+const { module } = await unrun({
   path: './path/to/file-with-jsx.tsx',
   inputOptions: {
     transform: {

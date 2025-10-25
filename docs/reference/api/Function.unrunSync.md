@@ -1,10 +1,10 @@
 # Function: unrunSync()
 
 ```ts
-function unrunSync(options): any;
+function unrunSync(options): Result;
 ```
 
-Defined in: [index.ts:57](https://github.com/Gugustinette/unrun/blob/8a9ded37d6301e096d513875042f8e88334bc098/src/index.ts#L57)
+Defined in: [index.ts:37](https://github.com/Gugustinette/unrun/blob/7887433aed88966d6e4547e5f4fa1d7ad5fdc0d0/src/index.ts#L37)
 
 Loads a module with JIT compilation based on the provided options.
 This function runs synchronously using a worker thread.
@@ -19,6 +19,6 @@ The options for loading the module.
 
 ## Returns
 
-`any`
+[`Result`](Interface.Result.md)
 
 The loaded module.

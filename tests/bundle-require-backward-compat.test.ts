@@ -26,14 +26,15 @@ describe.concurrent('backward compatibility with bundle-require', () => {
 
       await captureConsole(async () => {
         // Load the module with bundle-require
-        const result = await bundleRequire({ filepath: fixturePath })
-        bundleModule = result.mod
+        bundleModule = (await bundleRequire({ filepath: fixturePath })).mod
 
         // Load the module with unrun
-        unrunModule = await unrun({
-          path: fixturePath,
-          preset: 'bundle-require',
-        })
+        unrunModule = (
+          await unrun({
+            path: fixturePath,
+            preset: 'bundle-require',
+          })
+        ).module
       })
 
       expect(unrunModule).toEqual(bundleModule)

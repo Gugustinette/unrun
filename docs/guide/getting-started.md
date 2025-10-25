@@ -35,7 +35,7 @@ You can use `unrun` both asynchronously and synchronously to load and execute mo
 ```ts
 import { unrun } from 'unrun'
 
-const mod = await unrun({
+const { module } = await unrun({
   path: './path/to/file', // Path to the module to load
 })
 ```
@@ -45,7 +45,7 @@ const mod = await unrun({
 ```ts
 import { unrunSync } from 'unrun'
 
-const mod = unrunSync({
+const { module } = unrunSync({
   path: './path/to/file', // Path to the module to load
 })
 ```
