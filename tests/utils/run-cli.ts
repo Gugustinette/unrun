@@ -15,7 +15,7 @@ const execFile = promisify(execFileCallback) as (
 
 const testsDir = resolve(__dirname, '..')
 export const repoRoot: string = dirname(testsDir)
-export const unrunCliEntry: string = resolve(repoRoot, 'dist/cli.js')
+export const unrunCliEntry: string = resolve(repoRoot, 'dist/cli.mjs')
 
 const require = createRequire(import.meta.url)
 const jitiPackagePath = require.resolve('jiti/package.json')

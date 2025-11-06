@@ -49,7 +49,7 @@ export async function unrun(options: Options): Promise<Result> {
  * @returns The loaded module.
  */
 export function unrunSync(options: Options): Result {
-  const syncFn = createSyncFn(require.resolve('./sync/worker'), {
+  const syncFn = createSyncFn(require.resolve('./sync/worker.mjs'), {
     tsRunner: 'node',
   })
 
