@@ -18,15 +18,15 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
   "exports": {
-    ".": "./dist/index.js",
+    ".": "./dist/index.mjs",
     "./package.json": "./package.json"
   },
   "bin": {
-    "unrun": "./dist/cli.js"
+    "unrun": "./dist/cli.mjs"
   },
   "publishConfig": {
     "access": "public"
@@ -38,7 +38,7 @@
     "dev": "tsdown --watch",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:update-fixtures": "node ./dist/cli.js ./scripts/update-fixtures.ts",
+    "test:update-fixtures": "node ./dist/cli.mjs ./scripts/update-fixtures.ts",
     "benchmark": "tsdown -c benchmark/tsdown.config.ts && node ./benchmark/dist/benchmark.mjs",
     "typecheck": "tsc --noEmit",
     "format": "prettier --cache --write .",
@@ -47,7 +47,7 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "docs:generate-reference": "node ./dist/cli.js ./docs/.vitepress/scripts/generate-reference.ts"
+    "docs:generate-reference": "node ./dist/cli.mjs ./docs/.vitepress/scripts/generate-reference.ts"
   },
   "dependencies": {
     "@oxc-project/runtime": "^0.96.0",
