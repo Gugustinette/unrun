@@ -50,6 +50,10 @@ const { module } = unrunSync({
 })
 ```
 
+::: warning
+The synchronous API requires [`synckit`](https://github.com/un-ts/synckit) to be installed. If you don't have it installed, please run `npm install synckit` or the equivalent command for your package manager.
+:::
+
 ### CLI
 
 You can also use `unrun` via the command line interface (CLI) to run a JavaScript or TypeScript file directly.

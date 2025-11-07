@@ -49,10 +49,17 @@
     "docs:preview": "vitepress preview docs",
     "docs:generate-reference": "node ./dist/cli.mjs ./docs/.vitepress/scripts/generate-reference.ts"
   },
+  "peerDependencies": {
+    "synckit": "^0.11.11"
+  },
+  "peerDependenciesMeta": {
+    "synckit": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "@oxc-project/runtime": "^0.96.0",
-    "rolldown": "1.0.0-beta.47",
-    "synckit": "^0.11.11"
+    "rolldown": "1.0.0-beta.47"
   },
   "devDependencies": {
     "@sxzz/eslint-config": "^7.1.4",
@@ -82,6 +89,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "reflect-metadata": "^0.2.2",
+    "synckit": "^0.11.11",
     "tinyexec": "^1.0.1",
     "tsdown": "^0.16.0",
     "tsx": "^4.20.6",

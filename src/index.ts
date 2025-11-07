@@ -1,4 +1,3 @@
-import { createSyncFn } from 'synckit'
 import { preset } from './features/preset'
 import { resolveOptions, type Options } from './options'
 import { bundle } from './utils/bundle'
@@ -49,6 +48,9 @@ export async function unrun(options: Options): Promise<Result> {
  * @returns The loaded module.
  */
 export function unrunSync(options: Options): Result {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { createSyncFn } = require('synckit')
+
   const syncFn = createSyncFn(require.resolve('./sync/worker.mjs'), {
     tsRunner: 'node',
   })
