@@ -18,6 +18,18 @@ function replacePathLike(
   return input.replace(new RegExp(flexibleSlashes, flags), replacement)
 }
 
+function replacePath(
+  input: string,
+  target: string,
+  replacement: string,
+): string {
+  if (!target) return input
+
+  return /^[A-Z]:\//i.test(target)
+    ? replacePathLike(input, target, replacement)
+    : input.split(target).join(replacement)
+}
+
 export function normalizeOutput(
   str: string,
   cwd: string,
@@ -28,8 +40,8 @@ export function normalizeOutput(
 
   let normalized = `${str}\n`.replaceAll('\n\t', '\n').replaceAll('\\', '/')
 
-  normalized = replacePathLike(normalized, normCwd, '<cwd>')
-  normalized = replacePathLike(normalized, normRoot, '<root>')
+  normalized = replacePath(normalized, normCwd, '<cwd>')
+  normalized = replacePath(normalized, normRoot, '<root>')
 
   return (
     normalized
