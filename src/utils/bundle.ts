@@ -18,7 +18,12 @@ import {
 } from '../plugins'
 import type { ResolvedOptions } from '../options'
 
-export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
+export interface BundleOutput {
+  chunk: OutputChunk
+  dependencies: string[]
+}
+
+export async function bundle(options: ResolvedOptions): Promise<BundleOutput> {
   // Resolve tsconfig.json if present
   const resolvedTsconfigPath = path.resolve(process.cwd(), 'tsconfig.json')
   const tsconfig = existsSync(resolvedTsconfigPath)
@@ -88,6 +93,12 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
     throw new Error('[unrun] No output chunk found')
   }
 
-  // Return the output chunk
-  return rolldownOutput.output[0]
+  // Get files involved in the bundle
+  const files = await bundle.watchFiles
+
+  // Return the output
+  return {
+    chunk: rolldownOutput.output[0] as OutputChunk,
+    dependencies: files,
+  }
 }

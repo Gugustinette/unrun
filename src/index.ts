@@ -22,22 +22,23 @@ export async function unrun(options: Options): Promise<Result> {
   const resolvedOptions = resolveOptions(options)
 
   // Bundle the code
-  const outputChunk = await bundle(resolvedOptions)
+  const output = await bundle(resolvedOptions)
 
   // Load the generated module
   let module
   try {
-    module = await loadModule(outputChunk.code, resolvedOptions)
+    module = await loadModule(output.chunk.code, resolvedOptions)
   } catch (error) {
     throw new Error(
-      `[unrun] Import failed (code length: ${outputChunk.code.length}): ${(error as Error).message}`,
+      `[unrun] Import failed (code length: ${output.chunk.code.length}): ${(error as Error).message}`,
     )
   }
 
   // Apply output preset handling
   const finalModule = preset(resolvedOptions, module)
 
-  return { module: finalModule }
+  // Construct and return the result
+  return { module: finalModule, dependencies: output.dependencies }
 }
 
 /**
@@ -76,10 +77,10 @@ export async function unrunCli(
   const resolvedOptions = resolveOptions(options)
 
   // Bundle the code
-  const outputChunk = await bundle(resolvedOptions)
+  const output = await bundle(resolvedOptions)
 
   // Write the module to the filesystem
-  const moduleUrl = writeModule(outputChunk.code, resolvedOptions)
+  const moduleUrl = writeModule(output.chunk.code, resolvedOptions)
 
   // Run the generated module
   let cliResult: CliResult
@@ -87,7 +88,7 @@ export async function unrunCli(
     cliResult = await execModule(moduleUrl, args)
   } catch (error) {
     throw new Error(
-      `[unrun] Run failed (code length: ${outputChunk.code.length}): ${(error as Error).message}`,
+      `[unrun] Run failed (code length: ${output.chunk.code.length}): ${(error as Error).message}`,
     )
   }
 
