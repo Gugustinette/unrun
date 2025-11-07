@@ -24,7 +24,7 @@ export async function loadModule(
     _module = await import(moduleUrl)
   } finally {
     // Clean up the module file
-    cleanModule(moduleUrl)
+    cleanModule(moduleUrl, options)
   }
   return _module
 }

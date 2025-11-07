@@ -33,7 +33,7 @@ export async function bundle(options: ResolvedOptions): Promise<OutputChunk> {
     platform: 'node',
     // Treat all non-relative and non-absolute imports as external dependencies
     external: (id: string) =>
-      !id.startsWith('.') && !id.startsWith('/') && !id.startsWith('#'),
+      !id.startsWith('.') && !path.isAbsolute(id) && !id.startsWith('#'),
     // Compose feature-specific plugins
     plugins: [
       createMakeCjsWrapperAsyncFriendlyPlugin(),

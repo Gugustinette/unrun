@@ -90,7 +90,7 @@ export async function unrunCli(
   }
 
   // Clean the module
-  cleanModule(moduleUrl)
+  cleanModule(moduleUrl, resolvedOptions)
 
   // Return the execution result
   return cliResult

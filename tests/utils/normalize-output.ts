@@ -1,3 +1,23 @@
+const SPECIAL_REGEX_CHARS = /[.*+?^${}()|[\]\\]/g
+
+function escapeRegExp(value: string): string {
+  return value.replaceAll(SPECIAL_REGEX_CHARS, String.raw`\$&`)
+}
+
+function replacePathLike(
+  input: string,
+  target: string,
+  replacement: string,
+): string {
+  if (!target) return input
+
+  const flags = /^[A-Z]:\//i.test(target) ? 'gi' : 'g'
+  const escapedTarget = escapeRegExp(target)
+  const slashPattern = String.raw`\/+`
+  const flexibleSlashes = escapedTarget.replaceAll('/', slashPattern)
+  return input.replace(new RegExp(flexibleSlashes, flags), replacement)
+}
+
 export function normalizeOutput(
   str: string,
   cwd: string,
@@ -5,14 +25,14 @@ export function normalizeOutput(
 ): string {
   const normCwd = cwd.replaceAll('\\', '/')
   const normRoot = root.replaceAll('\\', '/')
+
+  let normalized = `${str}\n`.replaceAll('\n\t', '\n').replaceAll('\\', '/')
+
+  normalized = replacePathLike(normalized, normCwd, '<cwd>')
+  normalized = replacePathLike(normalized, normRoot, '<root>')
+
   return (
-    `${str}\n`
-      .replaceAll('\n\t', '\n')
-      .replaceAll('\\', '/')
-      .split(normCwd)
-      .join('<cwd>')
-      .split(normRoot)
-      .join('<root>')
+    normalized
       // remove line:column numbers in stack-like messages
       .replaceAll(/:(\d+):(\d+)([\s')])/g, '$3')
       // node:internal becomes internal in some node versions
