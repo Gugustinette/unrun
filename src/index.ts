@@ -17,7 +17,7 @@ export type { CliResult, Result } from './types'
  * @param options - The options for loading the module.
  * @returns A promise that resolves to the loaded module.
  */
-export async function unrun(options: Options): Promise<Result> {
+export async function unrun<T>(options: Options): Promise<Result<T>> {
   // Resolve options
   const resolvedOptions = resolveOptions(options)
 
@@ -48,7 +48,7 @@ export async function unrun(options: Options): Promise<Result> {
  * @param options - The options for loading the module.
  * @returns The loaded module.
  */
-export function unrunSync(options: Options): Result {
+export function unrunSync<T>(options: Options): Result<T> {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { createSyncFn } = require('synckit')
 

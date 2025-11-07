@@ -1,8 +1,9 @@
-export interface Result {
+export interface Result<T = unknown> {
   /**
    * The module that was loaded.
+   * You can specify the type of the module by providing a type argument when using the `unrun` function.
    */
-  module: any
+  module: T
   /**
    * The dependencies involved when loading the targeted module.
    * Note: this only includes local file dependencies, npm-resolved dependencies are excluded.
