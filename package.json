@@ -1,7 +1,7 @@
 {
   "name": "unrun",
   "version": "0.2.6",
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@10.20.0",
   "description": "A tool to load and execute any JavaScript or TypeScript code at runtime.",
   "type": "module",
   "license": "MIT",

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-06T21:59:40.332Z",
+  "timestamp": "2025-11-09T11:41:29.130Z",
   "device": {
     "platform": "darwin",
     "arch": "arm64",
@@ -9,17 +9,17 @@
   "results": [
     {
       "loader": "unrun",
-      "totalMs": 24.702876,
-      "averageMs": 2.4702876,
-      "minMs": 1.708792,
-      "maxMs": 7.207083
+      "totalMs": 23.385875,
+      "averageMs": 2.3385875,
+      "minMs": 1.579209,
+      "maxMs": 6.6865
     },
     {
       "loader": "jiti",
-      "totalMs": 124.31112700000003,
-      "averageMs": 12.431112700000003,
-      "minMs": 3.593625,
-      "maxMs": 81.166791
+      "totalMs": 123.16216800000001,
+      "averageMs": 12.316216800000001,
+      "minMs": 3.41525,
+      "maxMs": 80.58775
     }
   ]
 }
