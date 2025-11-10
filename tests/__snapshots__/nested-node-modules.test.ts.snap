@@ -1,0 +1,6 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`unrun > should load a module that imports from nested node_modules > stdout-unrun 1`] = `
+"a
+npm:zod: true"
+`;
