@@ -3,6 +3,7 @@ import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, test } from 'vitest'
 import { unrun } from '../src'
+import { captureConsole } from './utils/capture-console'
 
 function normalizeFileId(id: string) {
   const normalized = id.startsWith('file:') ? fileURLToPath(id) : id
@@ -49,7 +50,15 @@ describe('dependencies tracking', () => {
 
   for (const scenario of scenarios) {
     test(scenario.name, async () => {
-      const { module, dependencies } = await unrun({ path: scenario.entry })
+      let module
+      let dependencies: string[] = []
+
+      await captureConsole(async () => {
+        const { module: tempModule, dependencies: tempDependencies } =
+          await unrun({ path: scenario.entry })
+        module = tempModule
+        dependencies = tempDependencies
+      })
 
       expect(module).toBeDefined()
 

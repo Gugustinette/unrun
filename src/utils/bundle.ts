@@ -8,6 +8,7 @@ import {
   type OutputChunk,
   type OutputOptions,
 } from 'rolldown'
+import { createExternalResolver } from '../features/external'
 import {
   createConsoleOutputCustomizer,
   createJsonLoader,
@@ -36,9 +37,8 @@ export async function bundle(options: ResolvedOptions): Promise<BundleOutput> {
     // Use Node platform for better Node-compatible resolution & builtins
     // See https://rolldown.rs/guide/in-depth/bundling-cjs#require-external-modules
     platform: 'node',
-    // Treat all non-relative and non-absolute imports as external dependencies
-    external: (id: string) =>
-      !id.startsWith('.') && !path.isAbsolute(id) && !id.startsWith('#'),
+    // Configure external resolver
+    external: createExternalResolver(options),
     // Compose feature-specific plugins
     plugins: [
       createMakeCjsWrapperAsyncFriendlyPlugin(),
