@@ -18,7 +18,6 @@ describe('unrun', () => {
     let config
     await captureConsole(async () => {
       const { module } = await unrun({
-        debug: true,
         path: fixturePath,
       })
       config = module
