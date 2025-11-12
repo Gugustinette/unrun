@@ -35,6 +35,9 @@ jobs:
       - name: Unit Test
         run: pnpm run test
 
+      - name: Ecosystem CI
+        run: pnpm run ecosystem-ci
+
   # Custom test job that runs only on Windows
   test-windows:
     runs-on: windows-latest
@@ -53,3 +56,6 @@ jobs:
 
       - name: Unit Test
         run: pnpm run test
+
+      - name: Ecosystem CI
+        run: pnpm run ecosystem-ci

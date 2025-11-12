@@ -6,3 +6,4 @@ dist
 .eslintcache
 
 docs/.vitepress/cache
+.ecosystem-ci/
