@@ -25,7 +25,7 @@ describe('unrun', () => {
 
     // Execute tsdown CLI to ensure the Vue config builds
     const { stdout: tsdownCliStdout } = await runTsdownCli(
-      ['-c', 'tsdown.config.ts'],
+      ['-c', 'tsdown.config.ts', '--config-loader', 'unrun'],
       { cwd },
     )
     const tsdownStdout = normalizeOutput(tsdownCliStdout, cwd, repoRoot)
