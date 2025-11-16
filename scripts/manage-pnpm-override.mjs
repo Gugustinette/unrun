@@ -51,12 +51,29 @@ if (shouldWriteFile) {
   )
 }
 
-const installResult = spawnSync('pnpm', ['i', '--no-frozen-lockfile'], {
-  cwd: projectRoot,
-  stdio: 'inherit',
-})
+const runPnpmInstall = () => {
+  const cliArgs = ['install', '--no-frozen-lockfile']
+  if (process.env.npm_execpath?.includes('pnpm')) {
+    return spawnSync(process.execPath, [process.env.npm_execpath, ...cliArgs], {
+      cwd: projectRoot,
+      stdio: 'inherit',
+    })
+  }
+
+  const pnpmCommand = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
+  return spawnSync(pnpmCommand, cliArgs, {
+    cwd: projectRoot,
+    stdio: 'inherit',
+    shell: process.platform === 'win32',
+  })
+}
+
+const installResult = runPnpmInstall()
 
 if (installResult.status !== 0) {
+  if (installResult.error) {
+    console.error(installResult.error)
+  }
   console.error(`pnpm install failed during ${MODE} step`)
   process.exit(installResult.status ?? 1)
 }
