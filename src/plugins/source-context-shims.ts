@@ -28,6 +28,11 @@ export function createSourceContextShimsPlugin(): Plugin {
         // Flag to track if we modified the code
         let __MODIFIED_CODE__ = false
 
+        const normalizedId = id.replaceAll('\\', '/')
+        if (normalizedId.includes('/node_modules/')) {
+          return null
+        }
+
         // Replace import.meta.resolve calls with resolved file URLs
         if (code.includes('import.meta.resolve')) {
           const re = /import\.meta\.resolve!?\s*\(\s*(["'])([^"']+)\1\s*\)/g
@@ -42,45 +47,65 @@ export function createSourceContextShimsPlugin(): Plugin {
           }
         }
 
-        // Check if there are any source path constants to inject
-        if (/__filename|__dirname|import\s*\.\s*meta\s*\.\s*url/.test(code)) {
+        const usesFilename = /\b__filename\b/.test(code)
+        const declaresFilename = /\b(?:const|let|var)\s+__filename\b/.test(code)
+        const usesDirname = /\b__dirname\b/.test(code)
+        const declaresDirname = /\b(?:const|let|var)\s+__dirname\b/.test(code)
+        const hasImportMetaUrl = /\bimport\s*\.\s*meta\s*\.\s*url\b/.test(code)
+
+        const needsFilenameShim = usesFilename && !declaresFilename
+        const needsDirnameShim = usesDirname && !declaresDirname
+
+        if (needsFilenameShim || needsDirnameShim || hasImportMetaUrl) {
           const file = id
           const dir = path.dirname(id)
           const url = pathToFileURL(id).href
 
-          const prologue =
-            `const __filename = ${JSON.stringify(file)}\n` +
-            `const __dirname = ${JSON.stringify(dir)}\n`
-
-          // Protect object literal keys like "import.meta.url": to avoid replacing inside keys
-          const protectedStrings: string[] = []
-          let protectedCode = code.replaceAll(
-            /(["'])[^"']*import\s*\.\s*meta\s*\.\s*url[^"']*\1\s*:/g,
-            (match) => {
-              const placeholder = `__PROTECTED_STRING_${protectedStrings.length}__`
-              protectedStrings.push(match)
-              return placeholder
-            },
-          )
-
-          // Replace bare import.meta.url occurrences
-          protectedCode = protectedCode.replaceAll(
-            /\bimport\s*\.\s*meta\s*\.\s*url\b/g,
-            JSON.stringify(url),
-          )
-
-          // Restore protected strings
-          for (const [i, protectedString] of protectedStrings.entries()) {
-            protectedCode = protectedCode.replace(
-              `__PROTECTED_STRING_${i}__`,
-              protectedString,
-            )
+          const prologueLines: string[] = []
+          if (needsFilenameShim) {
+            prologueLines.push(`const __filename = ${JSON.stringify(file)}`)
+          }
+          if (needsDirnameShim) {
+            prologueLines.push(`const __dirname = ${JSON.stringify(dir)}`)
           }
 
-          // Prepend the prologue to the modified code
-          code = prologue + protectedCode
-          // Flag that we modified the code
-          __MODIFIED_CODE__ = true
+          let transformedCode = code
+
+          if (hasImportMetaUrl) {
+            // Protect object literal keys like "import.meta.url": to avoid replacing inside keys
+            const protectedStrings: string[] = []
+            transformedCode = transformedCode.replaceAll(
+              /(["'])[^"']*import\s*\.\s*meta\s*\.\s*url[^"']*\1\s*:/g,
+              (match) => {
+                const placeholder = `__PROTECTED_STRING_${protectedStrings.length}__`
+                protectedStrings.push(match)
+                return placeholder
+              },
+            )
+
+            // Replace bare import.meta.url occurrences
+            transformedCode = transformedCode.replaceAll(
+              /\bimport\s*\.\s*meta\s*\.\s*url\b/g,
+              JSON.stringify(url),
+            )
+
+            // Restore protected strings
+            for (const [i, protectedString] of protectedStrings.entries()) {
+              transformedCode = transformedCode.replace(
+                `__PROTECTED_STRING_${i}__`,
+                protectedString,
+              )
+            }
+          }
+
+          if (prologueLines.length > 0) {
+            transformedCode = `${prologueLines.join('\n')}\n${transformedCode}`
+          }
+
+          if (transformedCode !== code) {
+            code = transformedCode
+            __MODIFIED_CODE__ = true
+          }
         }
 
         // If code was modified, return the new code

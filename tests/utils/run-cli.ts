@@ -18,27 +18,27 @@ export const repoRoot: string = dirname(testsDir)
 export const unrunCliEntry: string = resolve(repoRoot, 'dist/cli.mjs')
 
 const require = createRequire(import.meta.url)
-const jitiPackagePath = require.resolve('jiti/package.json')
-const jitiPackage = require('jiti/package.json') as {
-  bin?: string | Record<string, string>
+
+function resolvePackageBin(packageName: string, binName: string): string {
+  const packagePath = require.resolve(`${packageName}/package.json`)
+  const packageJson = require(`${packageName}/package.json`) as {
+    bin?: string | Record<string, string>
+  }
+
+  const binRelative =
+    typeof packageJson.bin === 'string'
+      ? packageJson.bin
+      : packageJson.bin?.[binName]
+
+  if (!binRelative) {
+    throw new Error(`Unable to resolve ${packageName} binary path`)
+  }
+
+  return resolve(dirname(packagePath), binRelative)
 }
 
-let jitiBinRelative: string | undefined
-
-if (typeof jitiPackage.bin === 'string') {
-  jitiBinRelative = jitiPackage.bin
-} else {
-  jitiBinRelative = jitiPackage.bin?.jiti
-}
-
-if (!jitiBinRelative) {
-  throw new Error('Unable to resolve jiti binary path')
-}
-
-export const jitiCliEntry: string = resolve(
-  dirname(jitiPackagePath),
-  jitiBinRelative,
-)
+export const jitiCliEntry: string = resolvePackageBin('jiti', 'jiti')
+export const tsdownCliEntry: string = resolvePackageBin('tsdown', 'tsdown')
 
 function buildExecOptions(
   overrides?: ExecFileOptionsWithStringEncoding,
@@ -65,6 +65,13 @@ export function runJitiCli(
   modulePath: string,
 ): Promise<{ stdout: string; stderr: string }> {
   return runNodeCli(jitiCliEntry, [modulePath])
+}
+
+export function runTsdownCli(
+  args: string[] = [],
+  options?: ExecFileOptionsWithStringEncoding,
+): Promise<{ stdout: string; stderr: string }> {
+  return runNodeCli(tsdownCliEntry, args, options)
 }
 
 export function runUnrunCli(

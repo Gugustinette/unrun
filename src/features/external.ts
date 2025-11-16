@@ -1,6 +1,5 @@
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import process from 'node:process'
 import {
   isBuiltinModuleSpecifier,
   isPathWithinDirectory,
@@ -16,7 +15,7 @@ import type { ResolvedOptions } from '../options'
 export function createExternalResolver(
   options: ResolvedOptions,
 ): (id: string, importer?: string) => boolean {
-  const projectNodeModules = path.resolve(process.cwd(), 'node_modules')
+  const entryDir = path.dirname(options.path)
 
   return function external(id: string, importer?: string): boolean {
     if (!id || id.startsWith('\0')) return false
@@ -33,8 +32,17 @@ export function createExternalResolver(
     try {
       const resolver = createRequire(importerPath)
       const resolved = resolver.resolve(id)
+      const containingNodeModules = findContainingNodeModules(resolved)
 
-      if (!isPathWithinDirectory(projectNodeModules, resolved)) {
+      if (!containingNodeModules) {
+        return false
+      }
+
+      const ownerDir = path.dirname(containingNodeModules)
+      const ownerInsideEntry = isPathWithinDirectory(entryDir, ownerDir)
+      const entryInsideOwner = isPathWithinDirectory(ownerDir, entryDir)
+
+      if (ownerInsideEntry && !entryInsideOwner) {
         return false
       }
     } catch {
@@ -43,4 +51,21 @@ export function createExternalResolver(
 
     return true
   }
+}
+
+function findContainingNodeModules(filePath: string): string | undefined {
+  let current = path.dirname(filePath)
+  const { root } = path.parse(current)
+
+  while (true) {
+    if (path.basename(current) === 'node_modules') {
+      return current
+    }
+    if (current === root) {
+      break
+    }
+    current = path.dirname(current)
+  }
+
+  return undefined
 }
