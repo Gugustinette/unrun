@@ -29,6 +29,7 @@ export function createSourceContextShimsPlugin(): Plugin {
         let __MODIFIED_CODE__ = false
 
         const normalizedId = id.replaceAll('\\', '/')
+        // Skip files inside node_modules
         if (normalizedId.includes('/node_modules/')) {
           return null
         }
@@ -47,6 +48,7 @@ export function createSourceContextShimsPlugin(): Plugin {
           }
         }
 
+        // Detect whether the module references these globals and whether it defines them itself
         const usesFilename = /\b__filename\b/.test(code)
         const declaresFilename = /\b(?:const|let|var)\s+__filename\b/.test(code)
         const usesDirname = /\b__dirname\b/.test(code)
@@ -99,6 +101,7 @@ export function createSourceContextShimsPlugin(): Plugin {
           }
 
           if (prologueLines.length > 0) {
+            // Inject generated __filename/__dirname definitions
             transformedCode = `${prologueLines.join('\n')}\n${transformedCode}`
           }
 

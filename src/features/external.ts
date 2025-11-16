@@ -18,7 +18,9 @@ export function createExternalResolver(
   const entryDir = path.dirname(options.path)
 
   return function external(id: string, importer?: string): boolean {
+    // Ignore empty specifiers and rolldown internals (null-byte prefixed ids)
     if (!id || id.startsWith('\0')) return false
+    // Relative, hash-import, or absolute paths get bundled, not treated as external
     if (id.startsWith('.') || id.startsWith('#') || path.isAbsolute(id)) {
       return false
     }
@@ -30,6 +32,7 @@ export function createExternalResolver(
     const importerPath = normalizeImporterPath(importer, options.path)
 
     try {
+      // Ask Node's resolver to find where this bare specifier would load from
       const resolver = createRequire(importerPath)
       const resolved = resolver.resolve(id)
       const containingNodeModules = findContainingNodeModules(resolved)
@@ -42,6 +45,7 @@ export function createExternalResolver(
       const ownerInsideEntry = isPathWithinDirectory(entryDir, ownerDir)
       const entryInsideOwner = isPathWithinDirectory(ownerDir, entryDir)
 
+      // Only inline packages that ship nested node_modules under our entry; otherwise stay external
       if (ownerInsideEntry && !entryInsideOwner) {
         return false
       }
@@ -64,6 +68,7 @@ function findContainingNodeModules(filePath: string): string | undefined {
     if (current === root) {
       break
     }
+    // Walk up one directory at a time until we either find node_modules or hit the filesystem root
     current = path.dirname(current)
   }
 
