@@ -110,10 +110,5 @@
   "engines": {
     "node": ">=20.19.0"
   },
-  "pnpm": {
-    "overrides": {
-      "tsdown@*>unrun": "link:./"
-    }
-  },
   "prettier": "@sxzz/prettier-config"
 }
