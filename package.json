@@ -42,6 +42,7 @@
     "pretest:run": "node ./scripts/manage-pnpm-override.mjs add",
     "test:run": "vitest run",
     "posttest:run": "node ./scripts/manage-pnpm-override.mjs remove",
+    "ecosystem-ci": "ecosystem-ci",
     "test:update-fixtures": "node ./dist/cli.mjs ./scripts/update-fixtures.ts",
     "benchmark": "tsdown -c benchmark/tsdown.config.ts && node ./benchmark/dist/benchmark.mjs",
     "typecheck": "tsc --noEmit",
@@ -62,8 +63,8 @@
     }
   },
   "dependencies": {
-    "@oxc-project/runtime": "^0.97.0",
-    "rolldown": "1.0.0-beta.50"
+    "@oxc-project/runtime": "^0.96.0",
+    "rolldown": "1.0.0-beta.49"
   },
   "devDependencies": {
     "@sxzz/eslint-config": "^7.2.10",
@@ -76,7 +77,7 @@
     "consola": "^3.4.2",
     "defu": "^6.1.4",
     "destr": "^2.0.5",
-    "esbuild": "^0.27.0",
+    "esbuild": "^0.25.12",
     "eslint": "^9.39.1",
     "estree-walker": "^3.0.3",
     "etag": "^1.8.1",
@@ -94,6 +95,7 @@
     "react-dom": "^19.2.0",
     "reflect-metadata": "^0.2.2",
     "synckit": "^0.11.11",
+    "test-ecosystem-ci": "^0.0.1",
     "tinyexec": "^1.0.2",
     "tsdown": "^0.16.4",
     "tsx": "^4.20.6",
