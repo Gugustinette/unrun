@@ -51,7 +51,7 @@ if (shouldWriteFile) {
   )
 }
 
-const installResult = spawnSync('pnpm', ['i'], {
+const installResult = spawnSync('pnpm', ['i', '--no-frozen-lockfile'], {
   cwd: projectRoot,
   stdio: 'inherit',
 })
