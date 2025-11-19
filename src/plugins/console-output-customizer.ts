@@ -1,12 +1,89 @@
-import type { Plugin } from 'rolldown'
+import type { OutputChunk, Plugin } from 'rolldown'
 
-/**
- * Attach a util.inspect customizer to namespace-like module objects produced by rolldown helpers
- * so console.log prints concrete values instead of [Getter], while preserving live bindings.
- *
- * Cleaner strategy: inject a tiny helper at the top of the chunk and minimally augment
- * rolldown helpers (__export and __copyProps) right inside their definitions, before use.
- */
+const INSPECT_HELPER_SNIPPET = `(function(){
+  function __unrun__fmt(names, getter, np){
+    var onlyDefault = names.length === 1 && names[0] === "default";
+    var o = np ? Object.create(null) : {};
+    for (var i = 0; i < names.length; i++) {
+      var n = names[i];
+      try { o[n] = getter(n) } catch {}
+    }
+    if (onlyDefault) {
+      try {
+          var s = JSON.stringify(o.default);
+        if (s !== undefined) {
+            s = s.replace(/"([^"]+)":/g, "$1: ").replace(/,/g, ", ").replace(/{/g, "{ ").replace(/}/g, " }");
+          return "[Module: null prototype] { default: " + s + " }";
+        }
+      } catch {}
+      return "[Module: null prototype] { default: " + String(o.default) + " }";
+    }
+    return o;
+  }
+  function __unrun__setInspect(obj, names, getter, np){
+    try {
+      var __insp = Symbol.for('nodejs.util.inspect.custom');
+      Object.defineProperty(obj, __insp, {
+        value: function(){ return __unrun__fmt(names, getter, np) },
+        enumerable: false, configurable: true
+      });
+    } catch {}
+    return obj;
+  }
+  try {
+    Object.defineProperty(globalThis, "__unrun__setInspect", {
+      value: __unrun__setInspect,
+      enumerable: false,
+    });
+  } catch {}
+})();`
+
+const WRAPPER_SNIPPET = `(function __unrun__wrapRolldownHelpers(){
+  if (typeof __unrun__setInspect !== "function") return;
+  if (typeof __export === "function" && !__export.__unrunPatched) {
+    var __unrun__origExport = __export;
+    var __unrun__patchedExport = (...__unrun__args) => {
+      var __unrun__target = __unrun__origExport(...__unrun__args);
+      if (__unrun__target && typeof __unrun__target === "object") {
+        try {
+          var __unrun__map = (__unrun__args[0] && typeof __unrun__args[0] === "object") ? __unrun__args[0] : {};
+          var __unrun__names = Object.keys(__unrun__map).filter(function(n){ return n !== "__esModule" });
+          __unrun__setInspect(
+            __unrun__target,
+            __unrun__names,
+            function(n){
+              var getter = __unrun__map[n];
+              return typeof getter === "function" ? getter() : getter;
+            },
+            false,
+          );
+        } catch {}
+      }
+      return __unrun__target;
+    };
+    __unrun__patchedExport.__unrunPatched = true;
+    __export = __unrun__patchedExport;
+  }
+  if (typeof __copyProps === "function" && !__copyProps.__unrunPatched) {
+    var __unrun__origCopyProps = __copyProps;
+    var __unrun__patchedCopyProps = (...__unrun__args) => {
+      var __unrun__result = __unrun__origCopyProps(...__unrun__args);
+      if (__unrun__result && typeof __unrun__result === "object") {
+        try {
+          var __unrun__names = Object.keys(__unrun__result).filter(function(n){ return n !== "__esModule" });
+          __unrun__setInspect(__unrun__result, __unrun__names, function(n){ return __unrun__result[n] }, true);
+        } catch {}
+      }
+      return __unrun__result;
+    };
+    __unrun__patchedCopyProps.__unrunPatched = true;
+    __copyProps = __unrun__patchedCopyProps;
+  }
+})();`
+
+const HELPER_DECLARATION_PATTERN = /__unrun__setInspect\b/
+const WRAPPER_MARKER = '__unrun__wrapRolldownHelpers'
+
 export function createConsoleOutputCustomizer(): Plugin {
   return {
     name: 'unrun-console-output-customizer',
@@ -15,88 +92,47 @@ export function createConsoleOutputCustomizer(): Plugin {
         for (const chunk of Object.values(bundle)) {
           if (chunk.type !== 'chunk') continue
 
-          // 1) Inject small helper once, preserving shebang position
-          if (!/__unrun__setInspect\b/.test(chunk.code)) {
-            const helper = [
-              '(function(){',
-              '  function __unrun__fmt(names, getter, np){',
-              '    var onlyDefault = names.length === 1 && names[0] === "default";',
-              '    var o = np ? Object.create(null) : {};',
-              '    for (var i = 0; i < names.length; i++) {',
-              '      var n = names[i];',
-              '      try { o[n] = getter(n) } catch {}',
-              '    }',
-              '    if (onlyDefault) {',
-              '      try {',
-              '        var s = JSON.stringify(o.default);',
-              '        if (s !== undefined) {',
-              '          s = s.replace(/"([^"]+)":/g, "$1: ").replace(/,/g, ", ").replace(/{/g, "{ ").replace(/}/g, " }");',
-              '          return "[Module: null prototype] { default: " + s + " }";',
-              '        }',
-              '      } catch {}',
-              '      return "[Module: null prototype] { default: " + String(o.default) + " }";',
-              '    }',
-              '    return o;',
-              '  }',
-              '  function __unrun__setInspect(obj, names, getter, np){',
-              '    try {',
-              "      var __insp = Symbol.for('nodejs.util.inspect.custom')",
-              '      Object.defineProperty(obj, __insp, {',
-              '        value: function(){ return __unrun__fmt(names, getter, np) },',
-              '        enumerable: false, configurable: true',
-              '      })',
-              '    } catch {}',
-              '    return obj;',
-              '  }',
-              '  try { Object.defineProperty(globalThis, "__unrun__setInspect", { value: __unrun__setInspect, enumerable: false }) } catch {}',
-              '})();',
-            ].join('\n')
-            if (chunk.code.startsWith('#!')) {
-              const nl = chunk.code.indexOf('\n')
-              // eslint-disable-next-line unicorn/no-negated-condition
-              if (nl !== -1) {
-                chunk.code = `${chunk.code.slice(0, nl + 1)}${helper}\n${chunk.code.slice(nl + 1)}`
-              } else {
-                chunk.code = `${helper}\n${chunk.code}`
-              }
-            } else {
-              chunk.code = `${helper}\n${chunk.code}`
-            }
-          }
-
-          // 2) Lightly augment __export
-          chunk.code = chunk.code.replace(
-            /var\s+__export\s*=\s*\(all\)\s*=>\s*\{([\s\S]*?)return\s+target;\s*\}/,
-            (_m, body: string) => {
-              const injected = [
-                body,
-                '  try {',
-                '    var __names = Object.keys(all).filter(function(n){ return n !== "__esModule" })',
-                '    __unrun__setInspect(target, __names, function(n){ return all[n]() }, false)',
-                '  } catch {}',
-                '  return target;',
-              ].join('\n')
-              return `var __export = (all) => {\n${injected}\n}`
-            },
-          )
-
-          // 3) Lightly augment __copyProps
-          chunk.code = chunk.code.replace(
-            /var\s+__copyProps\s*=\s*\(to,\s*from,\s*except,\s*desc\)\s*=>\s*\{([\s\S]*?)return\s+to;\s*\};/,
-            (_m, body: string) => {
-              const injected = [
-                body,
-                '  try {',
-                '    var __names = Object.keys(to).filter(function(n){ return n !== "__esModule" })',
-                '    __unrun__setInspect(to, __names, function(n){ return to[n] }, true)',
-                '  } catch {}',
-                '  return to;',
-              ].join('\n')
-              return `var __copyProps = (to, from, except, desc) => {\n${injected}\n};`
-            },
-          )
+          injectInspectHelper(chunk)
+          injectHelperWrappers(chunk)
         }
       },
     },
   }
+}
+
+function injectInspectHelper(chunk: OutputChunk) {
+  if (HELPER_DECLARATION_PATTERN.test(chunk.code)) return
+
+  const codeWithHelper = chunk.code.startsWith('#!')
+    ? insertAfterShebang(chunk.code, `${INSPECT_HELPER_SNIPPET}\n`)
+    : `${INSPECT_HELPER_SNIPPET}\n${chunk.code}`
+
+  chunk.code = codeWithHelper
+}
+
+function injectHelperWrappers(chunk: OutputChunk) {
+  if (chunk.code.includes(WRAPPER_MARKER)) return
+
+  const insertIndex = findRuntimeBoundary(chunk.code)
+  const snippet = `${WRAPPER_SNIPPET}\n`
+
+  if (insertIndex === -1) {
+    chunk.code = `${chunk.code}\n${snippet}`
+    return
+  }
+
+  chunk.code = `${chunk.code.slice(0, insertIndex)}${snippet}${chunk.code.slice(insertIndex)}`
+}
+
+function findRuntimeBoundary(code: string): number {
+  const markerIndex = code.indexOf('//#endregion')
+  if (markerIndex === -1) return -1
+  const newlineIndex = code.indexOf('\n', markerIndex)
+  return newlineIndex === -1 ? code.length : newlineIndex + 1
+}
+
+function insertAfterShebang(code: string, insertion: string): string {
+  const nl = code.indexOf('\n')
+  if (nl === -1) return `${code}\n${insertion}`
+  return `${code.slice(0, nl + 1)}${insertion}${code.slice(nl + 1)}`
 }
