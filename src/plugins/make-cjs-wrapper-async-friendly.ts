@@ -19,67 +19,56 @@ export function createMakeCjsWrapperAsyncFriendlyPlugin(): Plugin {
           // Work on a mutable copy of the chunk code
           let code = chunk.code
 
-          // Rolldown CJS helper starts as: __commonJS({ ... })
-          // We use this marker to quickly skip files that don't contain such wrappers
-          const marker = '__commonJS({'
-          if (!code.includes(marker)) return
+          const wrapperMarkers = ['__commonJS({', '__commonJSMin(']
+          if (!wrapperMarkers.some((marker) => code.includes(marker))) continue
 
-          // Cursor while scanning the string and a flag indicating any change
-          let pos = 0
-
-          // The common wrapper pattern produced by rolldown uses an arrow function:
-          // (() => { /* module body */ })
           const arrowToken = '(() => {'
           const asyncArrowToken = '(async () => {'
 
-          while (true) {
-            // 1) Find the next CJS wrapper occurrence
-            const markerIdx = code.indexOf(marker, pos)
-            if (markerIdx === -1) break
+          const patchMarker = (marker: string) => {
+            let pos = 0
 
-            // 2) Find the arrow function that contains the module body
-            const fnStart = code.indexOf(arrowToken, markerIdx)
-            if (fnStart === -1) {
-              // If we didn't find the arrow function after a marker, continue scanning
-              pos = markerIdx + marker.length
-              continue
+            while (true) {
+              const markerIdx = code.indexOf(marker, pos)
+              if (markerIdx === -1) break
+
+              const fnStart = code.indexOf(arrowToken, markerIdx)
+              if (fnStart === -1) {
+                pos = markerIdx + marker.length
+                continue
+              }
+
+              const bodyStart = fnStart + arrowToken.length
+              let i = bodyStart
+              let depth = 1
+              while (i < code.length && depth > 0) {
+                const ch = code[i++]
+                if (ch === '{') depth++
+                else if (ch === '}') depth--
+              }
+              if (depth !== 0) break
+
+              const bodyEnd = i - 1
+              const body = code.slice(bodyStart, bodyEnd)
+
+              if (
+                /\bawait\b/.test(body) &&
+                code.slice(fnStart, fnStart + asyncArrowToken.length) !==
+                  asyncArrowToken
+              ) {
+                code = `${code.slice(0, fnStart + 1)}async ${code.slice(fnStart + 1)}`
+                pos = fnStart + 1 + 'async '.length
+                continue
+              }
+
+              pos = bodyEnd
             }
-
-            // 3) Determine the body boundaries by walking balanced braces
-            const bodyStart = fnStart + arrowToken.length
-            let i = bodyStart
-            let depth = 1
-            while (i < code.length && depth > 0) {
-              const ch = code[i++]
-              if (ch === '{') depth++
-              else if (ch === '}') depth--
-            }
-            // If we exit without closing, the code is malformed or truncated; stop here
-            if (depth !== 0) break
-
-            const bodyEnd = i - 1
-            const body = code.slice(bodyStart, bodyEnd)
-
-            if (
-              // 4) Only convert to async if the body uses top-level await
-              /\bawait\b/.test(body) && // Only insert if not already async
-              code.slice(fnStart, fnStart + asyncArrowToken.length) !==
-                asyncArrowToken
-            ) {
-              // Insert the "async" keyword right after the opening parenthesis,
-              // turning "(() => {" into "(async () => {".
-              // We build the new string to avoid shifting indexes mid-scan.
-              code = `${code.slice(0, fnStart + 1)}async ${code.slice(fnStart + 1)}`
-              // Move the scanning position forward past the newly inserted keyword
-              pos = fnStart + 1 + 'async '.length
-              continue
-            }
-
-            // If no change was needed for this wrapper, continue scanning after its body
-            pos = bodyEnd
           }
 
-          // Update the chunk code only if we made changes; this helps preserve referential
+          for (const marker of wrapperMarkers) {
+            patchMarker(marker)
+          }
+
           if (code !== chunk.code) {
             chunk.code = code
           }
