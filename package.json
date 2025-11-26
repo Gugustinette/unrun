@@ -1,6 +1,6 @@
 {
   "name": "unrun",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "packageManager": "pnpm@10.22.0",
   "description": "A tool to load and execute any JavaScript or TypeScript code at runtime.",
   "type": "module",
