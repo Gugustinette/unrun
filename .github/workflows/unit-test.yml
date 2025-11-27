@@ -35,6 +35,12 @@ jobs:
       - name: Unit Test
         run: pnpm run test
 
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Browser Test
+        run: pnpm run test:browser
+
       - name: Ecosystem CI
         run: pnpm run ecosystem-ci
 

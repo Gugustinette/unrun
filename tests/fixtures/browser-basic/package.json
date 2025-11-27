@@ -1,0 +1,17 @@
+{
+  "name": "webcontainer-unrun-basic",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node run-unrun.mjs"
+  },
+  "dependencies": {
+    "unrun": "file:./local-unrun"
+  },
+  "resolutions": {
+    "rolldown": "npm:@rolldown/browser@latest"
+  },
+  "overrides": {
+    "rolldown": "npm:@rolldown/browser@latest"
+  }
+}
