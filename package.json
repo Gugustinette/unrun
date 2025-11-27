@@ -70,9 +70,8 @@
     "rolldown": "1.0.0-beta.52"
   },
   "devDependencies": {
-    "@prettier/plugin-oxc": "^0.1.1",
     "@sxzz/eslint-config": "^7.3.2",
-    "@sxzz/prettier-config": "^2.2.5",
+    "@sxzz/prettier-config": "^2.2.6",
     "@types/node": "^24.10.1",
     "@vitest/browser": "4.0.14",
     "@vitest/browser-playwright": "^4.0.14",
@@ -105,7 +104,7 @@
     "synckit": "^0.11.11",
     "test-ecosystem-ci": "^0.0.1",
     "tinyexec": "^1.0.2",
-    "tsdown": "^0.16.7",
+    "tsdown": "^0.16.8",
     "tsx": "^4.20.6",
     "typedoc": "^0.28.14",
     "typedoc-plugin-markdown": "^4.9.0",
@@ -123,11 +122,6 @@
   },
   "engines": {
     "node": ">=20.19.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "@prettier/plugin-oxc": "^0.1.1"
-    }
   },
   "prettier": "@sxzz/prettier-config"
 }
