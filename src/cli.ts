@@ -112,7 +112,7 @@ async function runCLI(): Promise<void> {
 
   try {
     const { unrunCli } = await import('./index')
-    await unrunCli(
+    const cliResult = await unrunCli(
       {
         path: parsedArguments.filePath,
         debug: parsedArguments.debug,
@@ -120,6 +120,8 @@ async function runCLI(): Promise<void> {
       },
       parsedArguments.afterArgs,
     )
+
+    process.exit(cliResult.exitCode)
   } catch (error) {
     console.error((error as Error).message)
     process.exit(1)
