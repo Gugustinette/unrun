@@ -36,10 +36,12 @@
     "lint:fix": "pnpm run lint --fix",
     "build": "tsdown",
     "dev": "tsdown --watch",
-    "pretest": "node ./scripts/manage-pnpm-override.mjs add",
+    "pretest": "pnpm run build && node ./scripts/manage-pnpm-override.mjs add",
     "test": "vitest",
+    "pretest:browser": "pnpm run build",
+    "test:browser": "vitest run --browser --config vitest.browser.config.ts",
     "posttest": "node ./scripts/manage-pnpm-override.mjs remove",
-    "pretest:run": "node ./scripts/manage-pnpm-override.mjs add",
+    "pretest:run": "pnpm run build && node ./scripts/manage-pnpm-override.mjs add",
     "test:run": "vitest run",
     "posttest:run": "node ./scripts/manage-pnpm-override.mjs remove",
     "ecosystem-ci": "ecosystem-ci",
@@ -68,10 +70,12 @@
     "rolldown": "1.0.0-beta.52"
   },
   "devDependencies": {
-    "@prettier/plugin-oxc": "^0.1.1",
     "@sxzz/eslint-config": "^7.3.2",
-    "@sxzz/prettier-config": "^2.2.5",
+    "@sxzz/prettier-config": "^2.2.6",
     "@types/node": "^24.10.1",
+    "@vitest/browser": "4.0.14",
+    "@vitest/browser-playwright": "^4.0.14",
+    "@webcontainer/api": "^1.6.1",
     "acorn": "^8.15.0",
     "bumpp": "^10.3.2",
     "bundle-require": "^5.1.0",
@@ -90,6 +94,7 @@
     "mime": "^4.1.0",
     "moment-timezone": "^0.6.0",
     "nano-jsx": "^0.2.1",
+    "playwright": "^1.57.0",
     "preact": "^10.27.2",
     "preact-render-to-string": "^6.6.3",
     "prettier": "^3.7.1",
@@ -99,7 +104,7 @@
     "synckit": "^0.11.11",
     "test-ecosystem-ci": "^0.0.1",
     "tinyexec": "^1.0.2",
-    "tsdown": "^0.16.7",
+    "tsdown": "^0.16.8",
     "tsx": "^4.20.6",
     "typedoc": "^0.28.14",
     "typedoc-plugin-markdown": "^4.9.0",
@@ -110,18 +115,13 @@
     "vite": "^7.2.4",
     "vitepress": "2.0.0-alpha.12",
     "vitepress-plugin-group-icons": "^1.6.5",
-    "vitest": "4.0.8",
+    "vitest": "4.0.14",
     "vue": "^3.5.25",
     "vue-tsc": "^3.1.5",
     "zod": "^4.1.13"
   },
   "engines": {
     "node": ">=20.19.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "@prettier/plugin-oxc": "^0.1.1"
-    }
   },
   "prettier": "@sxzz/prettier-config"
 }
