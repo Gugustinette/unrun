@@ -6,15 +6,18 @@ import { beforeAll, describe, expect, test } from 'vitest'
 
 const tempCwd = path.resolve(__dirname, 'fixtures', 'ramda-workspace')
 const pnpmCommand = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
+const execOptions = {
+  cwd: tempCwd,
+  env: Object.fromEntries(
+    Object.entries(process.env).filter(([, value]) => value !== undefined),
+  ) as NodeJS.ProcessEnv,
+}
 
 const execFile = promisify(execFileCallback)
 let installPromise: Promise<unknown> | undefined
 
 async function ensureFixtureDependencies(): Promise<void> {
-  installPromise ??= execFile(pnpmCommand, ['i'], {
-    cwd: tempCwd,
-    env: process.env,
-  })
+  installPromise ??= execFile(pnpmCommand, ['i'], execOptions)
   await installPromise
 }
 
@@ -24,10 +27,11 @@ describe('ramda-workspace', () => {
   })
 
   test('works as expected', async () => {
-    const { stdout } = await execFile(pnpmCommand, ['run', 'build'], {
-      cwd: tempCwd,
-      env: process.env,
-    })
+    const { stdout } = await execFile(
+      pnpmCommand,
+      ['run', 'build'],
+      execOptions,
+    )
 
     expect(stdout).toContain('example build: 24')
   })
