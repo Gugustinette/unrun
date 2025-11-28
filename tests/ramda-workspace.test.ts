@@ -27,7 +27,7 @@ async function ensureFixtureDependencies(): Promise<void> {
 describe('ramda-workspace', () => {
   beforeAll(async () => {
     await ensureFixtureDependencies()
-  })
+  }, 60000)
 
   test('works as expected', async () => {
     const { stdout } = await execFile(
@@ -37,5 +37,5 @@ describe('ramda-workspace', () => {
     )
 
     expect(stdout).toContain('example build: 24')
-  }, 30000)
+  })
 })
