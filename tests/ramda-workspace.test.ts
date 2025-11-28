@@ -9,8 +9,11 @@ const pnpmCommand = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
 const execOptions = {
   cwd: tempCwd,
   env: Object.fromEntries(
-    Object.entries(process.env).filter(([, value]) => value !== undefined),
+    Object.entries(process.env).flatMap(([key, value]) =>
+      value == null ? [] : [[key, String(value)]],
+    ),
   ) as NodeJS.ProcessEnv,
+  shell: process.platform === 'win32' ? true : undefined,
 }
 
 const execFile = promisify(execFileCallback)
