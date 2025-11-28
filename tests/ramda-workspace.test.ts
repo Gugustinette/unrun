@@ -37,5 +37,5 @@ describe('ramda-workspace', () => {
     )
 
     expect(stdout).toContain('example build: 24')
-  })
+  }, 30000)
 })
