@@ -1,0 +1,17 @@
+{
+  "name": "src",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "ramda": "^0.32.0"
+  },
+  "devDependencies": {
+    "@types/ramda": "^0.31.1"
+  }
+}

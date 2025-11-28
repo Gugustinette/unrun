@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import {
@@ -16,15 +17,29 @@ export function createExternalResolver(
   options: ResolvedOptions,
 ): (id: string, importer?: string) => boolean {
   const entryDir = path.dirname(options.path)
-  const entryRequire = createRequire(options.path)
-
   const canResolveFromEntry = (specifier: string): boolean => {
-    try {
-      entryRequire.resolve(specifier)
-      return true
-    } catch {
+    const packageName = getPackageName(specifier)
+    if (!packageName) {
       return false
     }
+
+    // Walk upward from the entry directory and look for a node_modules/<packageName>
+    // folder. If we can spot one, the entry point could resolve the specifier at runtime.
+    let currentDir = entryDir
+    while (true) {
+      const candidate = path.join(currentDir, 'node_modules', packageName)
+      if (existsSync(candidate)) {
+        return true
+      }
+
+      const parentDir = path.dirname(currentDir)
+      if (parentDir === currentDir) {
+        break
+      }
+      currentDir = parentDir
+    }
+
+    return false
   }
 
   return function external(id: string, importer?: string): boolean {
@@ -59,17 +74,31 @@ export function createExternalResolver(
       if (ownerInsideEntry && !entryInsideOwner) {
         return false
       }
-
-      // If the entry package cannot resolve this specifier at runtime, inline it
-      if (!canResolveFromEntry(id)) {
-        return false
-      }
     } catch {
-      // If we cannot resolve the specifier, keep previous external behavior
+      // If we cannot resolve the specifier from the importer, fall through to the entry resolution check
+    }
+
+    // If the entry package cannot resolve this specifier at runtime, inline it
+    if (!canResolveFromEntry(id)) {
+      return false
     }
 
     return true
   }
+}
+
+function getPackageName(specifier: string): string | undefined {
+  if (!specifier) return undefined
+  if (specifier.startsWith('@')) {
+    const segments = specifier.split('/')
+    if (segments.length >= 2) {
+      return `${segments[0]}/${segments[1]}`
+    }
+    return undefined
+  }
+
+  const [name] = specifier.split('/')
+  return name || undefined
 }
 
 function findContainingNodeModules(filePath: string): string | undefined {

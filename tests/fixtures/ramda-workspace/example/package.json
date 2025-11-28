@@ -1,0 +1,11 @@
+{
+  "name": "example",
+  "type": "module",
+  "scripts": {
+    "build": "unrun index.ts"
+  },
+  "dependencies": {
+    "src": "workspace:^"
+  },
+  "packageManager": "pnpm@10.24.0"
+}

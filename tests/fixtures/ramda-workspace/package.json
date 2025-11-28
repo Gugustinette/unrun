@@ -1,0 +1,11 @@
+{
+  "name": "ramda-workspace",
+  "scripts": {
+    "build": "pnpm -r build"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "unrun": "file:../../../"
+  },
+  "packageManager": "pnpm@10.24.0"
+}
