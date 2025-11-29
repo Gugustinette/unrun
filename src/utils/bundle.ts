@@ -64,6 +64,8 @@ export async function bundle(options: ResolvedOptions): Promise<BundleOutput> {
         'import.meta.env': 'process.env',
       },
     },
+    // Hide all logs by default
+    logLevel: 'silent',
     // Finally, apply user-provided overrides
     ...options.inputOptions,
   }

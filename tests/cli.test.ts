@@ -3,6 +3,10 @@ import { describe, expect, test } from 'vitest'
 import { runNodeCli, unrunCliEntry } from './utils/run-cli'
 
 const fixturePath = resolve(__dirname, 'fixtures/cli.fixture.ts')
+const warningDepsFixturePath = resolve(
+  __dirname,
+  'fixtures/warning-deps.fixture.ts',
+)
 
 describe('cli', () => {
   test('should display nothing when no command line arguments are given', async () => {
@@ -25,5 +29,15 @@ describe('cli', () => {
     // Snapshot the outputs
     expect(stdout).toMatchSnapshot('cli-with-args')
     expect(stderr).toMatchSnapshot('cli-with-args-stderr')
+  })
+
+  test('should not emit warnings for optional dependencies', async () => {
+    const { stdout, stderr } = await runNodeCli(unrunCliEntry, [
+      warningDepsFixturePath,
+    ])
+    console.log('STDOUT:', stdout)
+    console.log('STDERR:', stderr)
+    expect(stdout).toBe('')
+    expect(stderr).toBe('')
   })
 })
