@@ -4,7 +4,7 @@
 function unrunCli(options, args): Promise<CliResult>;
 ```
 
-Defined in: [index.ts:72](https://github.com/Gugustinette/unrun/blob/bae8f2c2e2ebb9973307777da1471f84fa253869/src/index.ts#L72)
+Defined in: [index.ts:72](https://github.com/Gugustinette/unrun/blob/b64adabdf32121df1c2a5f2e0fb417df89d458ee/src/index.ts#L72)
 
 Runs a given module with JIT transpilation based on the provided options.
 This function does not return the module, as it simply executes it.

@@ -26,9 +26,29 @@ bun add unrun
 
 ## Usage
 
+### CLI
+
+You can use `unrun` via the command line interface (CLI) to run a JavaScript or TypeScript file directly.
+
+::: code-group
+
+```sh [npm]
+npx unrun ./path/to/file.ts
+```
+
+```sh [pnpm]
+pnpx unrun ./path/to/file.ts
+```
+
+```sh [yarn]
+yarn dlx unrun ./path/to/file.ts
+```
+
+:::
+
 ### Programmatic API
 
-You can use `unrun` both asynchronously and synchronously to load and execute modules.
+You can also use `unrun` programmatically in your code, either asynchronously or synchronously.
 
 - Async usage
 
@@ -52,24 +72,4 @@ const { module } = unrunSync({
 
 ::: warning
 The synchronous API requires [`synckit`](https://github.com/un-ts/synckit) to be installed. If you don't have it installed, please run `npm install synckit` or the equivalent command for your package manager.
-:::
-
-### CLI
-
-You can also use `unrun` via the command line interface (CLI) to run a JavaScript or TypeScript file directly.
-
-::: code-group
-
-```sh [npm]
-npx unrun ./path/to/file.ts
-```
-
-```sh [pnpm]
-pnpx unrun ./path/to/file.ts
-```
-
-```sh [yarn]
-yarn dlx unrun ./path/to/file.ts
-```
-
 :::

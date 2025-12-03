@@ -4,13 +4,9 @@
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![Unit Test][unit-test-src]][unit-test-href]
 
-unrun is a tool that enables running any module at runtime (TypeScript, ESM, CJS, JSX, etc.) by bundling it with [Rolldown](https://rolldown.rs/).
+unrun is a tool that enables running and loading any module at runtime (TypeScript, ESM, CJS, JSX, etc.) by bundling it with [Rolldown](https://rolldown.rs/).
 
-It is highly inspired by tools like :
-
-- [jiti](https://github.com/unjs/jiti)
-- [bundle-require](https://github.com/egoist/bundle-require)
-- [tsx](https://tsx.is/)
+Check the [documentation](https://gugustinette.github.io/unrun/) for more details.
 
 ## Install
 
@@ -19,6 +15,12 @@ npm i unrun
 ```
 
 ## Usage
+
+### CLI
+
+```bash
+npx unrun ./path/to/file.ts
+```
 
 ### Programmatic API
 
@@ -42,11 +44,13 @@ const { module } = unrunSync({
 })
 ```
 
-### CLI
+## Credits
 
-```bash
-npx unrun ./path/to/file.ts
-```
+`unrun` is highly inspired by tools like :
+
+- [jiti](https://github.com/unjs/jiti)
+- [bundle-require](https://github.com/egoist/bundle-require)
+- [tsx](https://tsx.is/)
 
 <!-- Badges -->
 

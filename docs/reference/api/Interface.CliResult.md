@@ -1,6 +1,6 @@
 # Interface: CliResult
 
-Defined in: [types.ts:13](https://github.com/Gugustinette/unrun/blob/bae8f2c2e2ebb9973307777da1471f84fa253869/src/types.ts#L13)
+Defined in: [types.ts:14](https://github.com/Gugustinette/unrun/blob/b64adabdf32121df1c2a5f2e0fb417df89d458ee/src/types.ts#L14)
 
 ## Properties
 
@@ -10,6 +10,6 @@ Defined in: [types.ts:13](https://github.com/Gugustinette/unrun/blob/bae8f2c2e2e
 exitCode: number;
 ```
 
-Defined in: [types.ts:17](https://github.com/Gugustinette/unrun/blob/bae8f2c2e2ebb9973307777da1471f84fa253869/src/types.ts#L17)
+Defined in: [types.ts:18](https://github.com/Gugustinette/unrun/blob/b64adabdf32121df1c2a5f2e0fb417df89d458ee/src/types.ts#L18)
 
 The exit code of the CLI execution.
