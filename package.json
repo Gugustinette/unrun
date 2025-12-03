@@ -1,35 +1,38 @@
 {
   "name": "unrun",
-  "version": "0.2.15",
-  "packageManager": "pnpm@10.22.0",
-  "description": "A tool to load and execute any JavaScript or TypeScript code at runtime.",
   "type": "module",
+  "version": "0.2.15",
+  "packageManager": "pnpm@10.24.0",
+  "description": "A tool to load and execute any JavaScript or TypeScript code at runtime.",
+  "author": "Augustin Mercier <gugustinette@proton.me>",
   "license": "MIT",
+  "funding": "https://github.com/sponsors/Gugustinette",
   "homepage": "https://gugustinette.github.io/unrun/",
-  "bugs": {
-    "url": "https://github.com/Gugustinette/unrun/issues"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Gugustinette/unrun.git"
   },
-  "author": "Augustin Mercier <gugustinette@proton.me>",
-  "funding": "https://github.com/sponsors/Gugustinette",
-  "files": [
-    "dist"
-  ],
-  "main": "./dist/index.mjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
+  "bugs": {
+    "url": "https://github.com/Gugustinette/unrun/issues"
+  },
   "exports": {
     ".": "./dist/index.mjs",
     "./package.json": "./package.json"
   },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
   "bin": {
     "unrun": "./dist/cli.mjs"
   },
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
+  },
+  "engines": {
+    "node": ">=20.19.0"
   },
   "scripts": {
     "lint": "eslint --no-cache .",
@@ -66,15 +69,15 @@
     }
   },
   "dependencies": {
-    "@oxc-project/runtime": "^0.99.0",
-    "rolldown": "1.0.0-beta.52"
+    "@oxc-project/runtime": "^0.101.0",
+    "rolldown": "1.0.0-beta.53"
   },
   "devDependencies": {
-    "@sxzz/eslint-config": "^7.3.2",
+    "@sxzz/eslint-config": "^7.4.1",
     "@sxzz/prettier-config": "^2.2.6",
     "@types/node": "^24.10.1",
-    "@vitest/browser": "4.0.14",
-    "@vitest/browser-playwright": "^4.0.14",
+    "@vitest/browser": "4.0.15",
+    "@vitest/browser-playwright": "^4.0.15",
     "@webcontainer/api": "^1.6.1",
     "acorn": "^8.15.0",
     "bumpp": "^10.3.2",
@@ -83,7 +86,7 @@
     "consola": "^3.4.2",
     "defu": "^6.1.4",
     "destr": "^2.0.5",
-    "esbuild": "^0.25.12",
+    "esbuild": "^0.27.0",
     "eslint": "^9.39.1",
     "estree-walker": "^3.0.3",
     "etag": "^1.8.1",
@@ -95,33 +98,30 @@
     "moment-timezone": "^0.6.0",
     "nano-jsx": "^0.2.1",
     "playwright": "^1.57.0",
-    "preact": "^10.27.2",
+    "preact": "^10.28.0",
     "preact-render-to-string": "^6.6.3",
-    "prettier": "^3.7.1",
+    "prettier": "^3.7.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "reflect-metadata": "^0.2.2",
     "synckit": "^0.11.11",
-    "test-ecosystem-ci": "^0.0.1",
+    "test-ecosystem-ci": "^0.0.2",
     "tinyexec": "^1.0.2",
-    "tsdown": "^0.16.8",
-    "tsx": "^4.20.6",
-    "typedoc": "^0.28.14",
+    "tsdown": "^0.17.0-beta.5",
+    "tsx": "^4.21.0",
+    "typedoc": "^0.28.15",
     "typedoc-plugin-markdown": "^4.9.0",
     "typedoc-vitepress-theme": "^1.1.2",
     "typescript": "^5.9.3",
     "unconfig": "^7.4.1",
     "unplugin-vue": "^7.0.8",
-    "vite": "^7.2.4",
+    "vite": "^7.2.6",
     "vitepress": "2.0.0-alpha.12",
     "vitepress-plugin-group-icons": "^1.6.5",
-    "vitest": "4.0.14",
+    "vitest": "4.0.15",
     "vue": "^3.5.25",
     "vue-tsc": "^3.1.5",
     "zod": "^4.1.13"
-  },
-  "engines": {
-    "node": ">=20.19.0"
   },
   "prettier": "@sxzz/prettier-config"
 }
