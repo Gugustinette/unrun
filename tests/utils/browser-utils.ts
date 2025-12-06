@@ -1,4 +1,5 @@
 import rootPackageJson from '../../package.json?raw'
+import { delay } from './process-utils'
 import type {
   DirectoryNode,
   FileNode,
@@ -216,12 +217,6 @@ function createFileInserter(tree: FileSystemTree) {
       },
     }
   }
-}
-
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms)
-  })
 }
 
 function isAbortError(error: unknown): boolean {

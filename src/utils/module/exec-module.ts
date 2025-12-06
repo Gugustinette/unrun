@@ -63,12 +63,58 @@ export function execModule(
       stdio: ['inherit', 'inherit', 'inherit'],
     })
 
+    const lifecycleSignals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM', 'SIGQUIT']
+    const signalListeners = new Map<NodeJS.Signals, NodeJS.SignalsListener>()
+    let exitListener: (() => void) | undefined
+
+    const cleanupChildProcess = (signal?: NodeJS.Signals) => {
+      if (childProcess.killed || childProcess.exitCode !== null) {
+        return
+      }
+      try {
+        childProcess.kill(signal)
+      } catch {
+        // Ignore errors caused by already exited children
+      }
+    }
+
+    const removeLifecycleListeners = () => {
+      if (exitListener) {
+        process.removeListener('exit', exitListener)
+        exitListener = undefined
+      }
+      for (const [signal, listener] of signalListeners) {
+        process.removeListener(signal, listener)
+      }
+      signalListeners.clear()
+    }
+
+    exitListener = () => {
+      cleanupChildProcess()
+    }
+    process.on('exit', exitListener)
+
+    for (const signal of lifecycleSignals) {
+      const listener: NodeJS.SignalsListener = () => {
+        cleanupChildProcess(signal)
+        removeLifecycleListeners()
+        // Allow Node.js default signal handling to continue
+        process.nextTick(() => {
+          process.kill(process.pid, signal)
+        })
+      }
+      signalListeners.set(signal, listener)
+      process.on(signal, listener)
+    }
+
     childProcess.on('close', (exitCode) => {
+      removeLifecycleListeners()
       resolve({
         exitCode: exitCode ?? 0,
       })
     })
     childProcess.on('error', (error) => {
+      removeLifecycleListeners()
       reject(
         new Error(`[unrun]: Failed to start child process: ${error.message}`),
       )
