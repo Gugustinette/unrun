@@ -9,11 +9,18 @@ import type {
   WebContainerProcess,
 } from '@webcontainer/api'
 
-const fixtureFiles = import.meta.glob('../fixtures/browser-basic/**/*', {
+const browserFixtureFiles = import.meta.glob('../fixtures/browser/**/*', {
   eager: true,
   query: '?raw',
   import: 'default',
 }) as Record<string, string>
+
+const BROWSER_FIXTURE_PATHS = {
+  basic: '../fixtures/browser/basic/',
+  tsdown: '../fixtures/browser/tsdown/',
+} as const
+
+export type BrowserFixtureName = keyof typeof BROWSER_FIXTURE_PATHS
 
 const distFiles = import.meta.glob('../../dist/**/*', {
   eager: true,
@@ -30,15 +37,17 @@ export interface WebContainerCommandResult {
   output: string
 }
 
-export function createFixtureTree(): FileSystemTree {
+export function createFixtureTree(
+  fixture: BrowserFixtureName = 'basic',
+): FileSystemTree {
   assertDistArtifacts()
   const tree: FileSystemTree = {}
   const insertFile = createFileInserter(tree)
+  const fixturePrefix = BROWSER_FIXTURE_PATHS[fixture]
+  const fixtureFiles = selectFixtureFiles(fixture)
 
-  addFilesFromGlob(
-    fixtureFiles,
-    '../fixtures/browser-basic/',
-    (segments, contents) => insertFile(segments, contents),
+  addFilesFromGlob(fixtureFiles, fixturePrefix, (segments, contents) =>
+    insertFile(segments, contents),
   )
 
   insertFile(['local-unrun', 'package.json'], localPackageJson)
@@ -232,4 +241,19 @@ function isDirectoryNode(
   node: DirectoryNode | FileNode | SymlinkNode,
 ): node is DirectoryNode {
   return 'directory' in node && !!node.directory
+}
+
+function selectFixtureFiles(
+  fixture: BrowserFixtureName,
+): Record<string, string> {
+  const prefix = BROWSER_FIXTURE_PATHS[fixture]
+  const entries = Object.entries(browserFixtureFiles).filter(([path]) =>
+    path.startsWith(prefix),
+  )
+
+  if (entries.length === 0) {
+    throw new Error(`Unknown browser fixture: ${fixture}`)
+  }
+
+  return Object.fromEntries(entries)
 }
