@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import process from 'node:process'
 import type { ChildProcess } from 'node:child_process'
+import { delay } from './timers'
 
 export async function waitForProcessExit(child: ChildProcess): Promise<void> {
   await new Promise<void>((resolve, reject) => {
@@ -59,10 +60,4 @@ export function isProcessAlive(pid: number): boolean {
     }
     return true
   }
-}
-
-export function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms)
-  })
 }

@@ -1,5 +1,5 @@
 import rootPackageJson from '../../package.json?raw'
-import { delay } from './process-utils'
+import { delay } from './timers'
 import type {
   DirectoryNode,
   FileNode,
