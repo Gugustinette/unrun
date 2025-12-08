@@ -52,7 +52,7 @@ if (shouldWriteFile) {
 }
 
 const runPnpmInstall = () => {
-  const cliArgs = ['install', '--no-frozen-lockfile']
+  const cliArgs = ['install', '--no-frozen-lockfile', '--prefer-offline']
   if (process.env.npm_execpath?.includes('pnpm')) {
     return spawnSync(process.execPath, [process.env.npm_execpath, ...cliArgs], {
       cwd: projectRoot,
