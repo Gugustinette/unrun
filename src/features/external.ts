@@ -1,11 +1,6 @@
 import { existsSync } from 'node:fs'
-import { createRequire } from 'node:module'
 import path from 'node:path'
-import {
-  isBuiltinModuleSpecifier,
-  isPathWithinDirectory,
-  normalizeImporterPath,
-} from '../utils/module-resolution'
+import { isBuiltinModuleSpecifier } from '../utils/module-resolution'
 import type { ResolvedOptions } from '../options'
 
 /**
@@ -42,7 +37,7 @@ export function createExternalResolver(
     return false
   }
 
-  return function external(id: string, importer?: string): boolean {
+  return function external(id: string): boolean {
     // Ignore empty specifiers and rolldown internals (null-byte prefixed ids)
     if (!id || id.startsWith('\0')) return false
     // Relative, hash-import, or absolute paths get bundled, not treated as external
@@ -50,35 +45,12 @@ export function createExternalResolver(
       return false
     }
 
+    // Builtin modules are always external
     if (isBuiltinModuleSpecifier(id)) {
       return true
     }
 
-    const importerPath = normalizeImporterPath(importer, options.path)
-
-    try {
-      // Ask Node's resolver to find where this bare specifier would load from
-      const resolver = createRequire(importerPath)
-      const resolved = resolver.resolve(id)
-      const containingNodeModules = findContainingNodeModules(resolved)
-
-      if (!containingNodeModules) {
-        return false
-      }
-
-      const ownerDir = path.dirname(containingNodeModules)
-      const ownerInsideEntry = isPathWithinDirectory(entryDir, ownerDir)
-      const entryInsideOwner = isPathWithinDirectory(ownerDir, entryDir)
-
-      // Only inline packages that ship nested node_modules under our entry; otherwise stay external
-      if (ownerInsideEntry && !entryInsideOwner) {
-        return false
-      }
-    } catch {
-      // If we cannot resolve the specifier from the importer, fall through to the entry resolution check
-    }
-
-    // If the entry package cannot resolve this specifier at runtime, inline it
+    // If the entry package cannot resolve this specifier at runtime, inlines it
     if (!canResolveFromEntry(id)) {
       return false
     }
@@ -99,22 +71,4 @@ function getPackageName(specifier: string): string | undefined {
 
   const [name] = specifier.split('/')
   return name || undefined
-}
-
-function findContainingNodeModules(filePath: string): string | undefined {
-  let current = path.dirname(filePath)
-  const { root } = path.parse(current)
-
-  while (true) {
-    if (path.basename(current) === 'node_modules') {
-      return current
-    }
-    if (current === root) {
-      break
-    }
-    // Walk up one directory at a time until we either find node_modules or hit the filesystem root
-    current = path.dirname(current)
-  }
-
-  return undefined
 }
