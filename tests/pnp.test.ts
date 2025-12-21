@@ -1,10 +1,13 @@
+import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { withPnpNodeArgs, type PnpRuntime } from '../src/utils/module/pnp'
 
 describe('withPnpNodeArgs', () => {
+  const mockPnpApiPath = '/workspace/.pnp.cjs'
+  const mockLoaderPath = path.resolve(mockPnpApiPath, '../.pnp.loader.mjs')
   const mockRuntime: PnpRuntime = {
     hasPnp: true,
-    resolvePnpApiPath: () => '/workspace/.pnp.cjs',
+    resolvePnpApiPath: () => mockPnpApiPath,
     loaderExists: (loaderPath) => loaderPath.endsWith('.pnp.loader.mjs'),
   }
 
@@ -13,23 +16,23 @@ describe('withPnpNodeArgs', () => {
 
     expect(result).toEqual([
       '--require',
-      '/workspace/.pnp.cjs',
+      mockPnpApiPath,
       '--loader',
-      '/workspace/.pnp.loader.mjs',
+      mockLoaderPath,
       '--eval',
       'console.log("ok")',
     ])
   })
 
   it('avoids duplicating flags when already present', () => {
-    const baseArgs = ['--require', '/workspace/.pnp.cjs', 'script.mjs']
+    const baseArgs = ['--require', mockPnpApiPath, 'script.mjs']
     const result = withPnpNodeArgs(baseArgs, mockRuntime)
 
     expect(result).toEqual([
       '--loader',
-      '/workspace/.pnp.loader.mjs',
+      mockLoaderPath,
       '--require',
-      '/workspace/.pnp.cjs',
+      mockPnpApiPath,
       'script.mjs',
     ])
   })
