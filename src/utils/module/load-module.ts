@@ -1,6 +1,6 @@
-import type { ResolvedOptions } from '../../options'
 import { cleanModule } from './clean-module'
 import { writeModule } from './write-module'
+import type { ResolvedOptions } from '../../options'
 
 /**
  * Import a JS module from code string.

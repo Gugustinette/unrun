@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import process from 'node:process'
-import type { ChildProcess } from 'node:child_process'
 import { delay } from './timers'
+import type { ChildProcess } from 'node:child_process'
 
 export async function waitForProcessExit(child: ChildProcess): Promise<void> {
   await new Promise<void>((resolve, reject) => {

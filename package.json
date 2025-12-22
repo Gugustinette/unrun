@@ -2,7 +2,7 @@
   "name": "unrun",
   "type": "module",
   "version": "0.2.20",
-  "packageManager": "pnpm@10.26.1",
+  "packageManager": "pnpm@10.26.2",
   "description": "A tool to load and execute any JavaScript or TypeScript code at runtime.",
   "author": "Augustin Mercier <gugustinette@proton.me>",
   "license": "MIT",
@@ -69,13 +69,13 @@
     }
   },
   "dependencies": {
-    "rolldown": "1.0.0-beta.55"
+    "rolldown": "1.0.0-beta.57"
   },
   "devDependencies": {
-    "@sxzz/eslint-config": "^7.4.3",
+    "@sxzz/eslint-config": "^7.4.4",
     "@sxzz/prettier-config": "^2.2.6",
     "@types/node": "^25.0.3",
-    "@typescript/native-preview": "7.0.0-dev.20251221.1",
+    "@typescript/native-preview": "7.0.0-dev.20251223.1",
     "@vitest/browser": "4.0.16",
     "@vitest/browser-playwright": "4.0.16",
     "@webcontainer/api": "^1.6.1",
@@ -98,7 +98,7 @@
     "moment-timezone": "^0.6.0",
     "nano-jsx": "^0.2.1",
     "playwright": "^1.57.0",
-    "preact": "^10.28.0",
+    "preact": "^10.28.1",
     "preact-render-to-string": "^6.6.4",
     "prettier": "^3.7.4",
     "react": "^19.2.3",
@@ -120,7 +120,7 @@
     "vitepress-plugin-group-icons": "^1.6.5",
     "vitest": "4.0.16",
     "vue": "^3.5.26",
-    "vue-tsc": "^3.2.0",
+    "vue-tsc": "^3.2.1",
     "zod": "^4.2.1"
   },
   "prettier": "@sxzz/prettier-config"
