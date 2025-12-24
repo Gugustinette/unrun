@@ -61,6 +61,19 @@ export function runNodeCli(
   return execFile(process.execPath, [entry, ...args], buildExecOptions(options))
 }
 
+export function runNodeCliWithNodeArgs(
+  nodeArgs: string[],
+  entry: string,
+  args: string[] = [],
+  options?: ExecFileOptionsWithStringEncoding,
+): Promise<{ stdout: string; stderr: string }> {
+  return execFile(
+    process.execPath,
+    [...nodeArgs, entry, ...args],
+    buildExecOptions(options),
+  )
+}
+
 export function runJitiCli(
   modulePath: string,
 ): Promise<{ stdout: string; stderr: string }> {
