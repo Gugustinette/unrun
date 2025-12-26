@@ -3,6 +3,7 @@ import { spawn } from 'node:child_process'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import type { CliResult } from '../../types'
+import { withPnpNodeArgs } from './pnp'
 
 /**
  * Execute the module at the given URL, in a separate Node.js process.
@@ -58,7 +59,8 @@ export function execModule(
       spawnArgs.push(modulePath)
     }
 
-    const childProcess = spawn(nodePath, [...spawnArgs, ...args], {
+    const nodeArgs = withPnpNodeArgs(spawnArgs)
+    const childProcess = spawn(nodePath, [...nodeArgs, ...args], {
       // Inherit stdio so that output appears in the parent process console
       stdio: ['inherit', 'inherit', 'inherit'],
     })
