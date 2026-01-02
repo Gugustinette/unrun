@@ -1,7 +1,7 @@
 {
   "name": "unrun",
   "type": "module",
-  "version": "0.2.21",
+  "version": "0.2.22",
   "packageManager": "pnpm@10.27.0",
   "description": "A tool to load and execute any JavaScript or TypeScript code at runtime.",
   "author": "Augustin Mercier <gugustinette@proton.me>",
