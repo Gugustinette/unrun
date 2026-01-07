@@ -69,7 +69,7 @@
     }
   },
   "dependencies": {
-    "rolldown": "1.0.0-beta.58"
+    "rolldown": "1.0.0-beta.59"
   },
   "devDependencies": {
     "@sxzz/eslint-config": "^7.4.4",
