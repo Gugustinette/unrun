@@ -70,6 +70,7 @@ export function normalizeOutput(
 
   normalized = replacePath(normalized, normCwd, '<cwd>')
   normalized = replacePath(normalized, normRoot, '<root>')
+  normalized = normalized.replaceAll(/<(cwd|root)>\/{2,}/g, '<$1>/')
 
   return (
     normalized
