@@ -45,6 +45,7 @@ export function normalizeOutput(
     else if (value.startsWith('file://')) value = value.slice('file://'.length)
 
     value = value.replaceAll('\\', '/')
+    value = value.replaceAll(/\/{2,}/g, '/')
 
     // Some Node versions format file URLs as `file://Users/...` (no leading slash)
     if (!value.startsWith('/') && !/^[A-Z]:\//i.test(value)) value = `/${value}`
