@@ -8,6 +8,7 @@ import type { Plugin } from 'rolldown'
  * - Replaces import.meta.resolve calls with resolved file URLs
  * - Injects per-module __filename/__dirname
  * - Replaces import.meta.url with the source file URL
+ * - Replaces import.meta.dirname/import.meta.filename with source paths
  */
 export function createSourceContextShimsPlugin(): Plugin {
   return {
@@ -25,44 +26,28 @@ export function createSourceContextShimsPlugin(): Plugin {
           return null
         }
 
-        // Flag to track if we modified the code
-        let __MODIFIED_CODE__ = false
-
         const normalizedId = id.replaceAll('\\', '/')
         // Skip files inside node_modules
         if (normalizedId.includes('/node_modules/')) {
           return null
         }
 
-        // Replace import.meta.resolve calls with resolved file URLs
-        if (code.includes('import.meta.resolve')) {
-          const re = /import\.meta\.resolve!?\s*\(\s*(["'])([^"']+)\1\s*\)/g
-          const replaced = code.replaceAll(re, (_m, _q, spec) => {
-            const abs = path.resolve(path.dirname(id), spec)
-            const url = pathToFileURL(abs).href
-            return JSON.stringify(url)
-          })
-          if (replaced !== code) {
-            code = replaced
-            __MODIFIED_CODE__ = true
-          }
-        }
+        const file = id
+        const dir = path.dirname(id)
+        const url = pathToFileURL(id).href
+
+        const hasImportMeta = code.includes('import.meta')
 
         // Detect whether the module references these globals and whether it defines them itself
         const usesFilename = /\b__filename\b/.test(code)
         const declaresFilename = /\b(?:const|let|var)\s+__filename\b/.test(code)
         const usesDirname = /\b__dirname\b/.test(code)
         const declaresDirname = /\b(?:const|let|var)\s+__dirname\b/.test(code)
-        const hasImportMetaUrl = /\bimport\s*\.\s*meta\s*\.\s*url\b/.test(code)
 
         const needsFilenameShim = usesFilename && !declaresFilename
         const needsDirnameShim = usesDirname && !declaresDirname
 
-        if (needsFilenameShim || needsDirnameShim || hasImportMetaUrl) {
-          const file = id
-          const dir = path.dirname(id)
-          const url = pathToFileURL(id).href
-
+        if (needsFilenameShim || needsDirnameShim || hasImportMeta) {
           const prologueLines: string[] = []
           if (needsFilenameShim) {
             prologueLines.push(`const __filename = ${JSON.stringify(file)}`)
@@ -72,31 +57,200 @@ export function createSourceContextShimsPlugin(): Plugin {
           }
 
           let transformedCode = code
+          let replacedImportMeta = false
 
-          if (hasImportMetaUrl) {
-            // Protect object literal keys like "import.meta.url": to avoid replacing inside keys
-            const protectedStrings: string[] = []
-            transformedCode = transformedCode.replaceAll(
-              /(["'])[^"']*import\s*\.\s*meta\s*\.\s*url[^"']*\1\s*:/g,
-              (match) => {
-                const placeholder = `__PROTECTED_STRING_${protectedStrings.length}__`
-                protectedStrings.push(match)
-                return placeholder
-              },
-            )
+          if (hasImportMeta) {
+            const resolveRe =
+              /import\s*\.\s*meta\s*\.\s*resolve!?\s*\(\s*(["'])([^"']+)\1\s*\)/y
+            const urlRe = /import\s*\.\s*meta\s*\.\s*url\b/y
+            const dirnameRe = /import\s*\.\s*meta\s*\.\s*dirname\b/y
+            const filenameRe = /import\s*\.\s*meta\s*\.\s*filename\b/y
 
-            // Replace bare import.meta.url occurrences
-            transformedCode = transformedCode.replaceAll(
-              /\bimport\s*\.\s*meta\s*\.\s*url\b/g,
-              JSON.stringify(url),
-            )
+            type Mode =
+              | 'normal'
+              | 'single'
+              | 'double'
+              | 'template'
+              | 'templateExpr'
+              | 'lineComment'
+              | 'blockComment'
 
-            // Restore protected strings
-            for (const [i, protectedString] of protectedStrings.entries()) {
-              transformedCode = transformedCode.replace(
-                `__PROTECTED_STRING_${i}__`,
-                protectedString,
-              )
+            let out = ''
+            let mode: Mode = 'normal'
+            const modeStack: Mode[] = []
+            let templateExprBraceDepth = 0
+
+            const popMode = () => {
+              mode = modeStack.pop() ?? 'normal'
+            }
+
+            for (let i = 0; i < transformedCode.length; ) {
+              const ch = transformedCode[i]
+              const next = transformedCode[i + 1]
+
+              if (mode === 'lineComment') {
+                out += ch
+                i += 1
+                if (ch === '\n') {
+                  popMode()
+                }
+                continue
+              }
+
+              if (mode === 'blockComment') {
+                out += ch
+                i += 1
+                if (ch === '*' && next === '/') {
+                  out += '/'
+                  i += 1
+                  popMode()
+                }
+                continue
+              }
+
+              if (mode === 'single') {
+                out += ch
+                i += 1
+                if (ch === '\\') {
+                  out += transformedCode[i] ?? ''
+                  i += 1
+                  continue
+                }
+                if (ch === "'") {
+                  popMode()
+                }
+                continue
+              }
+
+              if (mode === 'double') {
+                out += ch
+                i += 1
+                if (ch === '\\') {
+                  out += transformedCode[i] ?? ''
+                  i += 1
+                  continue
+                }
+                if (ch === '"') {
+                  popMode()
+                }
+                continue
+              }
+
+              if (mode === 'template') {
+                out += ch
+                i += 1
+                if (ch === '\\') {
+                  out += transformedCode[i] ?? ''
+                  i += 1
+                  continue
+                }
+                if (ch === '`') {
+                  popMode()
+                  continue
+                }
+                if (ch === '$' && next === '{') {
+                  out += '{'
+                  i += 1
+                  modeStack.push(mode)
+                  mode = 'templateExpr'
+                  templateExprBraceDepth = 1
+                }
+                continue
+              }
+
+              if (mode === 'templateExpr') {
+                if (ch === '{') {
+                  templateExprBraceDepth += 1
+                } else if (ch === '}') {
+                  templateExprBraceDepth -= 1
+                  if (templateExprBraceDepth === 0) {
+                    out += ch
+                    i += 1
+                    popMode()
+                    continue
+                  }
+                }
+              }
+
+              // normal or templateExpr modes
+              if (ch === '/' && next === '/') {
+                out += '//'
+                i += 2
+                modeStack.push(mode)
+                mode = 'lineComment'
+                continue
+              }
+              if (ch === '/' && next === '*') {
+                out += '/*'
+                i += 2
+                modeStack.push(mode)
+                mode = 'blockComment'
+                continue
+              }
+              if (ch === "'") {
+                out += ch
+                i += 1
+                modeStack.push(mode)
+                mode = 'single'
+                continue
+              }
+              if (ch === '"') {
+                out += ch
+                i += 1
+                modeStack.push(mode)
+                mode = 'double'
+                continue
+              }
+              if (ch === '`') {
+                out += ch
+                i += 1
+                modeStack.push(mode)
+                mode = 'template'
+                continue
+              }
+
+              resolveRe.lastIndex = i
+              const resolveMatch = resolveRe.exec(transformedCode)
+              if (resolveMatch) {
+                const spec = resolveMatch[2]
+                const abs = path.resolve(path.dirname(id), spec)
+                const resolvedUrl = pathToFileURL(abs).href
+                out += JSON.stringify(resolvedUrl)
+                i = resolveRe.lastIndex
+                replacedImportMeta = true
+                continue
+              }
+
+              urlRe.lastIndex = i
+              if (urlRe.test(transformedCode)) {
+                out += JSON.stringify(url)
+                i = urlRe.lastIndex
+                replacedImportMeta = true
+                continue
+              }
+
+              dirnameRe.lastIndex = i
+              if (dirnameRe.test(transformedCode)) {
+                out += JSON.stringify(dir)
+                i = dirnameRe.lastIndex
+                replacedImportMeta = true
+                continue
+              }
+
+              filenameRe.lastIndex = i
+              if (filenameRe.test(transformedCode)) {
+                out += JSON.stringify(file)
+                i = filenameRe.lastIndex
+                replacedImportMeta = true
+                continue
+              }
+
+              out += ch
+              i += 1
+            }
+
+            if (replacedImportMeta) {
+              transformedCode = out
             }
           }
 
@@ -106,14 +260,13 @@ export function createSourceContextShimsPlugin(): Plugin {
           }
 
           if (transformedCode !== code) {
-            code = transformedCode
-            __MODIFIED_CODE__ = true
+            return { code: transformedCode }
           }
         }
 
         // If code was modified, return the new code
         // Else, return null to indicate no changes
-        return __MODIFIED_CODE__ ? { code } : null
+        return null
       },
     },
   }
