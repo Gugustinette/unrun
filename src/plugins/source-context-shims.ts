@@ -18,23 +18,26 @@ export function createSourceContextShimsPlugin(): Plugin {
         id: /\.(?:m?[jt]s|c?tsx?)(?:$|\?)/,
       },
       handler(id: string) {
+        const physicalId = id.split('?')[0].split('#')[0]
+        const normalizedPhysicalId = path.normalize(physicalId)
+
         // Read the original source code
         let code: string
         try {
-          code = fs.readFileSync(id, 'utf8')
+          code = fs.readFileSync(normalizedPhysicalId, 'utf8')
         } catch {
           return null
         }
 
-        const normalizedId = id.replaceAll('\\', '/')
+        const normalizedId = normalizedPhysicalId.replaceAll('\\', '/')
         // Skip files inside node_modules
         if (normalizedId.includes('/node_modules/')) {
           return null
         }
 
-        const file = id
-        const dir = path.dirname(id)
-        const url = pathToFileURL(id).href
+        const file = normalizedPhysicalId
+        const dir = path.dirname(normalizedPhysicalId)
+        const url = pathToFileURL(normalizedPhysicalId).href
 
         const hasImportMeta = code.includes('import.meta')
 
@@ -213,7 +216,10 @@ export function createSourceContextShimsPlugin(): Plugin {
               const resolveMatch = resolveRe.exec(transformedCode)
               if (resolveMatch) {
                 const spec = resolveMatch[2]
-                const abs = path.resolve(path.dirname(id), spec)
+                const abs = path.resolve(
+                  path.dirname(normalizedPhysicalId),
+                  spec,
+                )
                 const resolvedUrl = pathToFileURL(abs).href
                 out += JSON.stringify(resolvedUrl)
                 i = resolveRe.lastIndex
