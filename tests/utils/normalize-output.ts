@@ -38,10 +38,39 @@ export function normalizeOutput(
   const normCwd = cwd.replaceAll('\\', '/')
   const normRoot = root.replaceAll('\\', '/')
 
+  const normalizeAbsolutePath = (match: string): string => {
+    let value = match
+
+    if (value.startsWith('file:///')) value = value.slice('file:///'.length)
+    else if (value.startsWith('file://')) value = value.slice('file://'.length)
+
+    value = value.replaceAll('\\', '/')
+    value = value.replaceAll(/\/{2,}/g, '/')
+
+    // Some Node versions format file URLs as `file://Users/...` (no leading slash)
+    if (!value.startsWith('/') && !/^[A-Z]:\//i.test(value)) value = `/${value}`
+
+    const isWindowsPath = /^[A-Z]:\//i.test(value)
+    const normCwdForCompare = isWindowsPath ? normCwd.toLowerCase() : normCwd
+    const normRootForCompare = isWindowsPath ? normRoot.toLowerCase() : normRoot
+    const valueForCompare = isWindowsPath ? value.toLowerCase() : value
+
+    if (normCwdForCompare && valueForCompare.startsWith(normCwdForCompare)) {
+      return `<cwd>${value.slice(normCwd.length)}`
+    }
+
+    if (normRootForCompare && valueForCompare.startsWith(normRootForCompare)) {
+      return `<root>${value.slice(normRoot.length)}`
+    }
+
+    return match
+  }
+
   let normalized = `${str}\n`.replaceAll('\n\t', '\n').replaceAll('\\', '/')
 
   normalized = replacePath(normalized, normCwd, '<cwd>')
   normalized = replacePath(normalized, normRoot, '<root>')
+  normalized = normalized.replaceAll(/<(cwd|root)>\/{2,}/g, '<$1>/')
 
   return (
     normalized
@@ -67,8 +96,11 @@ export function normalizeOutput(
       // strip ANSI
       // eslint-disable-next-line no-control-regex
       .replaceAll(/\u001B\[[\d;]*m/gu, '')
-      // Replace any absolute path (with or without file:///) to a placeholder
-      .replaceAll(/(?:file:\/\/\/)?\/?(?:[A-Za-z]:)?(?:\/[\w.-]+)+/g, '<path>')
+      // Replace repo absolute paths, but keep repo-relative segments when possible
+      .replaceAll(
+        /(?:file:\/\/\/|file:\/\/)?\/?(?:[A-Z]:)?(?:\/[\w.-]+)+/gi,
+        normalizeAbsolutePath,
+      )
       .trim()
   )
 }

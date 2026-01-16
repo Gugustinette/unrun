@@ -64,6 +64,30 @@ const WRAPPER_SNIPPET = `(function __unrun__wrapRolldownHelpers(){
     __unrun__patchedExport.__unrunPatched = true;
     __export = __unrun__patchedExport;
   }
+  if (typeof __exportAll === "function" && !__exportAll.__unrunPatched) {
+    var __unrun__origExportAll = __exportAll;
+    var __unrun__patchedExportAll = (...__unrun__args) => {
+      var __unrun__target = __unrun__origExportAll(...__unrun__args);
+      if (__unrun__target && typeof __unrun__target === "object") {
+        try {
+          var __unrun__map = (__unrun__args[0] && typeof __unrun__args[0] === "object") ? __unrun__args[0] : {};
+          var __unrun__names = Object.keys(__unrun__map).filter(function(n){ return n !== "__esModule" });
+          __unrun__setInspect(
+            __unrun__target,
+            __unrun__names,
+            function(n){
+              var getter = __unrun__map[n];
+              return typeof getter === "function" ? getter() : getter;
+            },
+            false,
+          );
+        } catch {}
+      }
+      return __unrun__target;
+    };
+    __unrun__patchedExportAll.__unrunPatched = true;
+    __exportAll = __unrun__patchedExportAll;
+  }
   if (typeof __copyProps === "function" && !__copyProps.__unrunPatched) {
     var __unrun__origCopyProps = __copyProps;
     var __unrun__patchedCopyProps = (...__unrun__args) => {
