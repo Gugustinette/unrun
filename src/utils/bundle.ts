@@ -81,7 +81,7 @@ export async function bundle(options: ResolvedOptions): Promise<BundleOutput> {
   // Output options (https://rolldown.rs/reference/config-options#outputoptions)
   const outputOptions: OutputOptions = {
     format: 'esm',
-    inlineDynamicImports: true,
+    codeSplitting: false,
     keepNames: true,
     // Apply user-provided overrides last
     ...options.outputOptions,
