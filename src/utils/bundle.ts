@@ -83,6 +83,13 @@ export async function bundle(options: ResolvedOptions): Promise<BundleOutput> {
     format: 'esm',
     codeSplitting: false,
     keepNames: true,
+    ...(options.preset === 'bundle-require'
+      ? {
+          generatedCode: {
+            symbols: false,
+          },
+        }
+      : {}),
     // Apply user-provided overrides last
     ...options.outputOptions,
   }
