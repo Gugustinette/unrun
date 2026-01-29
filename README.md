@@ -54,8 +54,8 @@ const { module } = unrunSync({
 
 <!-- Badges -->
 
-[npmx-version-src]: https://npmx.dev/api/registry/badge/nuxt
-[npmx-version-href]: https://npmx.dev/nuxt
+[npmx-version-src]: https://npmx.dev/api/registry/badge/unrun
+[npmx-version-href]: https://npmx.dev/unrun
 [npm-downloads-src]: https://img.shields.io/npm/dm/unrun
 [npm-downloads-href]: https://www.npmcharts.com/compare/unrun?interval=30
 [unit-test-src]: https://github.com/gugustinette/unrun/actions/workflows/unit-test.yml/badge.svg
