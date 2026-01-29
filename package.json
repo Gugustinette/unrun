@@ -72,9 +72,9 @@
     "rolldown": "1.0.0-rc.1"
   },
   "devDependencies": {
-    "@sxzz/eslint-config": "^7.5.0",
+    "@sxzz/eslint-config": "^7.5.1",
     "@sxzz/prettier-config": "^2.2.6",
-    "@types/node": "^25.0.10",
+    "@types/node": "^25.1.0",
     "@typescript/native-preview": "7.0.0-dev.20260122.3",
     "@vitest/browser": "4.0.17",
     "@vitest/browser-playwright": "4.0.17",
@@ -97,12 +97,12 @@
     "mime": "^4.1.0",
     "moment-timezone": "^0.6.0",
     "nano-jsx": "^0.2.1",
-    "playwright": "^1.57.0",
+    "playwright": "^1.58.0",
     "preact": "^10.28.2",
     "preact-render-to-string": "^6.6.5",
     "prettier": "^3.8.1",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "reflect-metadata": "^0.2.2",
     "synckit": "^0.11.12",
     "test-ecosystem-ci": "^0.0.3",
@@ -114,14 +114,14 @@
     "typedoc-vitepress-theme": "^1.1.2",
     "typescript": "^5.9.3",
     "unconfig": "^7.4.2",
-    "unplugin-vue": "^7.1.0",
+    "unplugin-vue": "^7.1.1",
     "vite": "^7.3.1",
     "vitepress": "2.0.0-alpha.12",
     "vitepress-plugin-group-icons": "^1.7.1",
     "vitest": "4.0.17",
     "vue": "^3.5.27",
-    "vue-tsc": "^3.2.2",
-    "zod": "^4.3.5"
+    "vue-tsc": "^3.2.4",
+    "zod": "^4.3.6"
   },
   "prettier": "@sxzz/prettier-config"
 }
