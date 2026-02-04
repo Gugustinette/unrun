@@ -1,7 +1,8 @@
 # unrun
 
 [![Open on npmx][npmx-version-src]][npmx-version-href]
-[![npm downloads][npm-downloads-src]][npm-downloads-href]
+[![Open on npmx][npmx-downloads-src]][npmx-downloads-href]
+[![Open on npmx][npmx-vulnerabilities-src]][npmx-vulnerabilities-href]
 [![Unit Test][unit-test-src]][unit-test-href]
 
 unrun is a tool that enables running and loading any module at runtime (TypeScript, ESM, CJS, JSX, etc.) by bundling it with [Rolldown](https://rolldown.rs/).
@@ -54,9 +55,11 @@ const { module } = unrunSync({
 
 <!-- Badges -->
 
-[npmx-version-src]: https://npmx.dev/api/registry/badge/unrun
+[npmx-version-src]: https://npmx.dev/api/registry/badge/version/unrun
 [npmx-version-href]: https://npmx.dev/unrun
-[npm-downloads-src]: https://img.shields.io/npm/dm/unrun
-[npm-downloads-href]: https://www.npmcharts.com/compare/unrun?interval=30
+[npmx-downloads-src]: https://npmx.dev/api/registry/badge/downloads-month/unrun
+[npmx-downloads-href]: https://npmx.dev/unrun
+[npmx-vulnerabilities-src]: https://npmx.dev/api/registry/badge/vulnerabilities/unrun
+[npmx-vulnerabilities-href]: https://npmx.dev/unrun
 [unit-test-src]: https://github.com/gugustinette/unrun/actions/workflows/unit-test.yml/badge.svg
 [unit-test-href]: https://github.com/gugustinette/unrun/actions/workflows/unit-test.yml
