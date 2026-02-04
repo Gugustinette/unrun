@@ -8,4 +8,5 @@ export default defineConfig({
   clean: true,
   dts: { vue: true },
   tsconfig: './tsconfig.json',
+  inlineOnly: false,
 })
