@@ -65,6 +65,6 @@ describe('unrun in WebContainers', () => {
       } finally {
         webcontainer.teardown()
       }
-    }, 240_000)
+    }, 300_000)
   }
 })

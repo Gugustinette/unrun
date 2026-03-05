@@ -31,6 +31,7 @@ export async function unrun<T>(options: Options): Promise<Result<T>> {
   } catch (error) {
     throw new Error(
       `[unrun] Import failed (code length: ${output.chunk.code.length}): ${(error as Error).message}`,
+      { cause: error },
     )
   }
 
@@ -89,6 +90,7 @@ export async function unrunCli(
   } catch (error) {
     throw new Error(
       `[unrun] Run failed (code length: ${output.chunk.code.length}): ${(error as Error).message}`,
+      { cause: error },
     )
   }
 
