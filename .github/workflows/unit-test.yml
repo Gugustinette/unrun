@@ -11,7 +11,7 @@ permissions: {}
 jobs:
   # Reuse sxzz workflow for lint/typecheck only
   lint-and-check:
-    uses: sxzz/workflows/.github/workflows/unit-test.yml@v1
+    uses: sxzz/workflows/.github/workflows/unit-test.yml@main
     with:
       # Run lint and typecheck, but skip the built-in test matrix (which includes Windows)
       skip-test: true
@@ -25,7 +25,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Setup JS
-        uses: sxzz/workflows/setup-js@v1
+        uses: sxzz/workflows/setup-js@main
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -53,7 +53,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Setup JS
-        uses: sxzz/workflows/setup-js@v1
+        uses: sxzz/workflows/setup-js@main
         with:
           node-version: ${{ matrix.node-version }}
 
