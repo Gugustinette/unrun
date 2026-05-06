@@ -3,11 +3,11 @@ name: Release
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
 
 jobs:
   release:
-    uses: ./.github/workflows/release-action.yml
+    uses: sxzz/workflows/.github/workflows/release.yml@main
     with:
       publish: true
     permissions:

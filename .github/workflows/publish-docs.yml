@@ -11,9 +11,9 @@ on:
     branches:
       - main
     paths:
-      - "package.json"
-      - "docs/**"
-      - ".github/workflows/publish-docs.yml"
+      - 'package.json'
+      - 'docs/**'
+      - '.github/workflows/publish-docs.yml'
   workflow_dispatch:
 
 jobs:
@@ -22,28 +22,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Setup JS
+        uses: sxzz/workflows/setup-js@main
         with:
-          fetch-depth: 0 # Not needed if lastUpdated is not enabled
-
-      - uses: pnpm/action-setup@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install
+          fetch-all: true
 
       - name: Build
         run: pnpm docs:build
 
       # Upload artifacts
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: docs/.vitepress/dist
 
@@ -61,4 +50,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
