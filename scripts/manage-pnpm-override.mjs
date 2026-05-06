@@ -52,20 +52,15 @@ if (shouldWriteFile) {
 }
 
 const runPnpmInstall = () => {
-  const cliArgs = ['install', '--no-frozen-lockfile', '--prefer-offline']
-  if (process.env.npm_execpath?.includes('pnpm')) {
-    return spawnSync(process.execPath, [process.env.npm_execpath, ...cliArgs], {
+  return spawnSync(
+    'pnpm',
+    ['install', '--no-frozen-lockfile', '--prefer-offline'],
+    {
       cwd: projectRoot,
       stdio: 'inherit',
-    })
-  }
-
-  const pnpmCommand = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
-  return spawnSync(pnpmCommand, cliArgs, {
-    cwd: projectRoot,
-    stdio: 'inherit',
-    shell: process.platform === 'win32',
-  })
+      shell: process.platform === 'win32',
+    },
+  )
 }
 
 const installResult = runPnpmInstall()
