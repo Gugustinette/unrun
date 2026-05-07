@@ -59,20 +59,20 @@ import.meta.env?.TEST true"
 `;
 
 exports[`backward compat snapshots with jiti > ./export-promise/index.mjs > stdout-jiti 1`] = `
-"module: Proxy([Module: null prototype] {
+"module: [Module: null prototype] {
   bar: 'bar',
   default: Promise { 'foo' },
   foo: [AsyncFunction: foo]
-})
+}
 default module: foo"
 `;
 
 exports[`backward compat snapshots with jiti > ./export-promise/index.mjs > stdout-unrun 1`] = `
-"module: Proxy([Module: null prototype] {
+"module: [Module: null prototype] {
   bar: 'bar',
   default: Promise { 'foo' },
   foo: [AsyncFunction: foo]
-})
+}
 default module: foo"
 `;
 
