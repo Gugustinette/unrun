@@ -4,7 +4,7 @@
 function unrun<T>(options): Promise<Result<T>>;
 ```
 
-Defined in: [index.ts:20](https://github.com/Gugustinette/unrun/blob/b64adabdf32121df1c2a5f2e0fb417df89d458ee/src/index.ts#L20)
+Defined in: [index.ts:20](https://github.com/Gugustinette/unrun/blob/1d96385dc157c7e6982ac12e98a5a41be1dab16e/src/index.ts#L20)
 
 Loads a module with JIT transpilation based on the provided options.
 

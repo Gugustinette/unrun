@@ -1,10 +1,10 @@
 # Function: unrunCli()
 
 ```ts
-function unrunCli(options, args): Promise<CliResult>;
+function unrunCli(options, args?): Promise<CliResult>;
 ```
 
-Defined in: [index.ts:72](https://github.com/Gugustinette/unrun/blob/b64adabdf32121df1c2a5f2e0fb417df89d458ee/src/index.ts#L72)
+Defined in: [index.ts:73](https://github.com/Gugustinette/unrun/blob/1d96385dc157c7e6982ac12e98a5a41be1dab16e/src/index.ts#L73)
 
 Runs a given module with JIT transpilation based on the provided options.
 This function does not return the module, as it simply executes it.
@@ -18,7 +18,7 @@ Corresponds to the CLI behavior.
 
 The options for running the module.
 
-### args
+### args?
 
 `string`[] = `[]`
 
