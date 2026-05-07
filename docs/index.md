@@ -3,9 +3,9 @@
 layout: home
 
 hero:
-  name: 'unrun'
-  text: 'Unything at runtime'
-  tagline: 'A tool to load and execute any JavaScript or TypeScript code at runtime.'
+  name: "unrun"
+  text: "Unything at runtime"
+  tagline: "A tool to load and execute any JavaScript or TypeScript code at runtime."
   image:
     src: /unrun-logo.webp
     alt: unrun

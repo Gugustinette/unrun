@@ -1,49 +1,49 @@
-import { describe, expect, test } from 'vitest'
+import { describe, expect, test } from "vitest";
 // @ts-ignore : dist won't be there during CI type checks
-import { unrunSync } from '../dist'
+import { unrunSync } from "../dist";
 
-describe('unrun', () => {
-  test('should load config from ts', () => {
+describe("unrun", () => {
+  test("should load config from ts", () => {
     const { module: config } = unrunSync({
-      path: './tests/fixtures/custom.config.ts',
-    })
+      path: "./tests/fixtures/custom.config.ts",
+    });
 
     expect(config).toEqual({
-      entry: './src/index.ts',
-      dir: 'parentDir/dist',
-    })
-  })
+      entry: "./src/index.ts",
+      dir: "parentDir/dist",
+    });
+  });
 
-  test('should load config from esm', () => {
+  test("should load config from esm", () => {
     const { module: config } = unrunSync({
-      path: './tests/fixtures/custom.config.mjs',
-    })
+      path: "./tests/fixtures/custom.config.mjs",
+    });
 
     expect(config).toEqual({
-      entry: './src/index.ts',
-      dir: 'parentDir/dist',
-    })
-  })
+      entry: "./src/index.ts",
+      dir: "parentDir/dist",
+    });
+  });
 
-  test('should load config from cjs', () => {
+  test("should load config from cjs", () => {
     const { module: config } = unrunSync({
-      path: './tests/fixtures/custom.config.cjs',
-    })
+      path: "./tests/fixtures/custom.config.cjs",
+    });
 
     expect(config).toEqual({
-      entry: './src/index.ts',
-      dir: 'parentDir/dist',
-    })
-  })
+      entry: "./src/index.ts",
+      dir: "parentDir/dist",
+    });
+  });
 
-  test('should load config from json', () => {
+  test("should load config from json", () => {
     const { module: config } = unrunSync({
-      path: './tests/fixtures/custom.config.json',
-    })
+      path: "./tests/fixtures/custom.config.json",
+    });
 
     expect(config).toEqual({
-      entry: './src/index.ts',
-      dir: 'parentDir/dist',
-    })
-  })
-})
+      entry: "./src/index.ts",
+      dir: "parentDir/dist",
+    });
+  });
+});

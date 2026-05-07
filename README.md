@@ -28,21 +28,21 @@ npx unrun ./path/to/file.ts
 - Async
 
 ```ts
-import { unrun } from 'unrun'
+import { unrun } from "unrun";
 
 const { module } = await unrun({
-  path: './path/to/file.ts', // Path to the module to load
-})
+  path: "./path/to/file.ts", // Path to the module to load
+});
 ```
 
 - Sync
 
 ```ts
-import { unrunSync } from 'unrun'
+import { unrunSync } from "unrun";
 
 const { module } = unrunSync({
-  path: './path/to/file.ts', // Path to the module to load
-})
+  path: "./path/to/file.ts", // Path to the module to load
+});
 ```
 
 ## Credits

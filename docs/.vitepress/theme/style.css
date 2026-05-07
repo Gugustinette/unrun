@@ -92,17 +92,9 @@
 
 :root {
   --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: -webkit-linear-gradient(
-    120deg,
-    #ff9143 30%,
-    #20bdff
-  );
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #ff9143 30%, #20bdff);
 
-  --vp-home-hero-image-background-image: linear-gradient(
-    20deg,
-    #ff914365 50%,
-    #20bcff58 50%
-  );
+  --vp-home-hero-image-background-image: linear-gradient(20deg, #ff914365 50%, #20bcff58 50%);
   --vp-home-hero-image-filter: blur(44px);
 }
 

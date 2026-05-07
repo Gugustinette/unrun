@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath } from "node:url";
 
 /**
  * Normalize a path-like input to a string path.
@@ -7,31 +7,31 @@ import { fileURLToPath } from 'node:url'
  */
 export function normalizePath(pathLike?: string | URL): string {
   if (!pathLike) {
-    return 'index.ts'
+    return "index.ts";
   }
 
   if (pathLike instanceof URL) {
-    if (pathLike.protocol === 'file:') {
-      return fileURLToPath(pathLike)
+    if (pathLike.protocol === "file:") {
+      return fileURLToPath(pathLike);
     }
-    return pathLike.href
+    return pathLike.href;
   }
 
-  if (typeof pathLike === 'string') {
-    if (!pathLike.startsWith('file:')) {
-      return pathLike
+  if (typeof pathLike === "string") {
+    if (!pathLike.startsWith("file:")) {
+      return pathLike;
     }
 
     try {
-      return fileURLToPath(pathLike)
+      return fileURLToPath(pathLike);
     } catch {
       try {
-        return fileURLToPath(new URL(pathLike))
+        return fileURLToPath(new URL(pathLike));
       } catch {
-        return pathLike
+        return pathLike;
       }
     }
   }
 
-  return String(pathLike)
+  return String(pathLike);
 }

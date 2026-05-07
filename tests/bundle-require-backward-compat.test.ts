@@ -1,45 +1,45 @@
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { bundleRequire } from 'bundle-require'
-import { assert, describe, expect, test } from 'vitest'
-import { unrun } from '../src'
-import { captureConsole } from './utils/capture-console'
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { bundleRequire } from "bundle-require";
+import { assert, describe, expect, test } from "vitest";
+import { unrun } from "../src";
+import { captureConsole } from "./utils/capture-console";
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // bundle-require fixtures (success cases)
 const fixtures = [
-  './input.ts',
-  './a.ts',
-  './preserve-temporary-file/input.ts',
-  './replace-path/input.ts',
-]
+  "./input.ts",
+  "./a.ts",
+  "./preserve-temporary-file/input.ts",
+  "./replace-path/input.ts",
+];
 
 // Compare module outputs
-describe.concurrent('backward compatibility with bundle-require', () => {
+describe.concurrent("backward compatibility with bundle-require", () => {
   for (const fixture of fixtures) {
-    const fixturePath = resolve(__dirname, 'fixtures/bundle-require', fixture)
+    const fixturePath = resolve(__dirname, "fixtures/bundle-require", fixture);
 
     test(fixture, { timeout: 20000 }, async () => {
-      let bundleModule: any
-      let unrunModule: any
+      let bundleModule: any;
+      let unrunModule: any;
 
       await captureConsole(async () => {
         // Load the module with bundle-require
-        bundleModule = (await bundleRequire({ filepath: fixturePath })).mod
+        bundleModule = (await bundleRequire({ filepath: fixturePath })).mod;
 
         // Load the module with unrun
         unrunModule = (
           await unrun({
             path: fixturePath,
-            preset: 'bundle-require',
+            preset: "bundle-require",
           })
-        ).module
-      })
+        ).module;
+      });
 
-      expect(unrunModule).toEqual(bundleModule)
-      assert.deepEqual(unrunModule, bundleModule)
-    })
+      expect(unrunModule).toEqual(bundleModule);
+      assert.deepEqual(unrunModule, bundleModule);
+    });
   }
 
   /**
@@ -47,38 +47,30 @@ describe.concurrent('backward compatibility with bundle-require', () => {
    */
 
   // Intentionally unresolved dependency from node_modules
-  test('ignore-node_modules throws when unresolved', async () => {
+  test("ignore-node_modules throws when unresolved", async () => {
     const fixturePath = resolve(
       __dirname,
-      'fixtures/bundle-require',
-      './ignore-node_modules/input.ts',
-    )
+      "fixtures/bundle-require",
+      "./ignore-node_modules/input.ts",
+    );
 
+    await expect(captureConsole(() => bundleRequire({ filepath: fixturePath }))).rejects.toThrow();
     await expect(
-      captureConsole(() => bundleRequire({ filepath: fixturePath })),
-    ).rejects.toThrow()
-    await expect(
-      captureConsole(() =>
-        unrun({ path: fixturePath, preset: 'bundle-require' }),
-      ),
-    ).rejects.toThrow()
-  })
+      captureConsole(() => unrun({ path: fixturePath, preset: "bundle-require" })),
+    ).rejects.toThrow();
+  });
 
   // tsconfig paths resolution may not be enabled by default; expecting both to error
-  test('resolve-tsconfig-paths throws without path resolution', async () => {
+  test("resolve-tsconfig-paths throws without path resolution", async () => {
     const fixturePath = resolve(
       __dirname,
-      'fixtures/bundle-require',
-      './resolve-tsconfig-paths/input.ts',
-    )
+      "fixtures/bundle-require",
+      "./resolve-tsconfig-paths/input.ts",
+    );
 
+    await expect(captureConsole(() => bundleRequire({ filepath: fixturePath }))).rejects.toThrow();
     await expect(
-      captureConsole(() => bundleRequire({ filepath: fixturePath })),
-    ).rejects.toThrow()
-    await expect(
-      captureConsole(() =>
-        unrun({ path: fixturePath, preset: 'bundle-require' }),
-      ),
-    ).rejects.toThrow()
-  })
-})
+      captureConsole(() => unrun({ path: fixturePath, preset: "bundle-require" })),
+    ).rejects.toThrow();
+  });
+});

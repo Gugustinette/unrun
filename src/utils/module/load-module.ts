@@ -1,6 +1,6 @@
-import { cleanModule } from './clean-module'
-import { writeModule } from './write-module'
-import type { ResolvedOptions } from '../../options'
+import { cleanModule } from "./clean-module";
+import { writeModule } from "./write-module";
+import type { ResolvedOptions } from "../../options";
 
 /**
  * Import a JS module from code string.
@@ -9,22 +9,19 @@ import type { ResolvedOptions } from '../../options'
  * @param options - Resolved options.
  * @returns The imported module.
  */
-export async function loadModule(
-  code: string,
-  options: ResolvedOptions,
-): Promise<any> {
+export async function loadModule(code: string, options: ResolvedOptions): Promise<any> {
   // Write the module to the filesystem
-  const moduleUrl = writeModule(code, options)
+  const moduleUrl = writeModule(code, options);
 
   // Placeholder for the imported module
-  let _module
+  let _module;
 
   try {
     // Dynamically import the generated module
-    _module = await import(moduleUrl)
+    _module = await import(moduleUrl);
   } finally {
     // Clean up the module file
-    cleanModule(moduleUrl, options)
+    cleanModule(moduleUrl, options);
   }
-  return _module
+  return _module;
 }

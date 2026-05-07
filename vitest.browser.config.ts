@@ -1,12 +1,12 @@
-import { playwright } from '@vitest/browser-playwright'
-import { defineConfig, mergeConfig } from 'vitest/config'
-import { sharedConfig } from './vitest.config'
+import { playwright } from "@vitest/browser-playwright";
+import { defineConfig, mergeConfig } from "vitest/config";
+import { sharedConfig } from "./vitest.config";
 
 export default mergeConfig(
   sharedConfig,
   defineConfig({
     test: {
-      include: ['tests/browser/**/*.test.ts'],
+      include: ["tests/browser/**/*.test.ts"],
       testTimeout: 120_000,
       browser: {
         enabled: true,
@@ -18,19 +18,19 @@ export default mergeConfig(
         headless: true,
         instances: [
           {
-            browser: 'chromium',
+            browser: "chromium",
           },
         ],
       },
     },
     server: {
       headers: {
-        'Cross-Origin-Opener-Policy': 'same-origin',
-        'Cross-Origin-Embedder-Policy': 'require-corp',
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
       },
     },
     optimizeDeps: {
-      exclude: ['@webcontainer/api'],
+      exclude: ["@webcontainer/api"],
     },
   }),
-)
+);

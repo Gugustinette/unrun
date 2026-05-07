@@ -1,15 +1,15 @@
-import { preset } from './features/preset'
-import { resolveOptions, type Options } from './options'
-import { bundle } from './utils/bundle'
-import { cleanModule } from './utils/module/clean-module'
-import { execModule } from './utils/module/exec-module'
-import { loadModule } from './utils/module/load-module'
-import { writeModule } from './utils/module/write-module'
-import type { CliResult, Result } from './types'
+import { preset } from "./features/preset";
+import { resolveOptions, type Options } from "./options";
+import { bundle } from "./utils/bundle";
+import { cleanModule } from "./utils/module/clean-module";
+import { execModule } from "./utils/module/exec-module";
+import { loadModule } from "./utils/module/load-module";
+import { writeModule } from "./utils/module/write-module";
+import type { CliResult, Result } from "./types";
 
 // Export types
-export type { Options } from './options'
-export type { CliResult, Result } from './types'
+export type { Options } from "./options";
+export type { CliResult, Result } from "./types";
 
 /**
  * Loads a module with JIT transpilation based on the provided options.
@@ -19,27 +19,27 @@ export type { CliResult, Result } from './types'
  */
 export async function unrun<T>(options: Options): Promise<Result<T>> {
   // Resolve options
-  const resolvedOptions = resolveOptions(options)
+  const resolvedOptions = resolveOptions(options);
 
   // Bundle the code
-  const output = await bundle(resolvedOptions)
+  const output = await bundle(resolvedOptions);
 
   // Load the generated module
-  let module
+  let module;
   try {
-    module = await loadModule(output.chunk.code, resolvedOptions)
+    module = await loadModule(output.chunk.code, resolvedOptions);
   } catch (error) {
     throw new Error(
       `[unrun] Import failed (code length: ${output.chunk.code.length}): ${(error as Error).message}`,
       { cause: error },
-    )
+    );
   }
 
   // Apply output preset handling
-  const finalModule = preset(resolvedOptions, module)
+  const finalModule = preset(resolvedOptions, module);
 
   // Construct and return the result
-  return { module: finalModule, dependencies: output.dependencies }
+  return { module: finalModule, dependencies: output.dependencies };
 }
 
 /**
@@ -51,15 +51,15 @@ export async function unrun<T>(options: Options): Promise<Result<T>> {
  */
 export function unrunSync<T>(options: Options): Result<T> {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { createSyncFn } = require('synckit')
+  const { createSyncFn } = require("synckit");
 
-  const syncFn = createSyncFn(require.resolve('./sync/worker.mjs'), {
-    tsRunner: 'node',
-  })
+  const syncFn = createSyncFn(require.resolve("./sync/worker.mjs"), {
+    tsRunner: "node",
+  });
 
-  const result = syncFn(options)
+  const result = syncFn(options);
 
-  return result
+  return result;
 }
 
 /**
@@ -70,33 +70,30 @@ export function unrunSync<T>(options: Options): Result<T> {
  * @param options - The options for running the module.
  * @param args - Additional command-line arguments to pass to the module.
  */
-export async function unrunCli(
-  options: Options,
-  args: string[] = [],
-): Promise<CliResult> {
+export async function unrunCli(options: Options, args: string[] = []): Promise<CliResult> {
   // Resolve options
-  const resolvedOptions = resolveOptions(options)
+  const resolvedOptions = resolveOptions(options);
 
   // Bundle the code
-  const output = await bundle(resolvedOptions)
+  const output = await bundle(resolvedOptions);
 
   // Write the module to the filesystem
-  const moduleUrl = writeModule(output.chunk.code, resolvedOptions)
+  const moduleUrl = writeModule(output.chunk.code, resolvedOptions);
 
   // Run the generated module
-  let cliResult: CliResult
+  let cliResult: CliResult;
   try {
-    cliResult = await execModule(moduleUrl, args)
+    cliResult = await execModule(moduleUrl, args);
   } catch (error) {
     throw new Error(
       `[unrun] Run failed (code length: ${output.chunk.code.length}): ${(error as Error).message}`,
       { cause: error },
-    )
+    );
   }
 
   // Clean the module
-  cleanModule(moduleUrl, resolvedOptions)
+  cleanModule(moduleUrl, resolvedOptions);
 
   // Return the execution result
-  return cliResult
+  return cliResult;
 }

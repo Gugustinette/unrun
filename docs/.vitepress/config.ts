@@ -1,70 +1,65 @@
-import { defineConfig } from 'vitepress'
-import {
-  groupIconMdPlugin,
-  groupIconVitePlugin,
-} from 'vitepress-plugin-group-icons'
+import { defineConfig } from "vitepress";
+import { groupIconMdPlugin, groupIconVitePlugin } from "vitepress-plugin-group-icons";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: 'unrun - Unything at runtime',
-  description: 'Unything at runtime',
-  base: '/unrun',
+  title: "unrun - Unything at runtime",
+  description: "Unything at runtime",
+  base: "/unrun",
   head: [
-    ['link', { rel: 'icon', href: '/unrun/favicon.ico' }],
-    ['meta', { name: 'theme-color', content: '#ff9143' }],
+    ["link", { rel: "icon", href: "/unrun/favicon.ico" }],
+    ["meta", { name: "theme-color", content: "#ff9143" }],
   ],
   themeConfig: {
-    siteTitle: 'unrun',
+    siteTitle: "unrun",
     logo: {
-      src: '/unrun-logo.webp',
-      alt: 'unrun logo',
+      src: "/unrun-logo.webp",
+      alt: "unrun logo",
       height: 32,
     },
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Guide', link: '/guide/introduction' },
+      { text: "Home", link: "/" },
+      { text: "Guide", link: "/guide/introduction" },
     ],
 
     sidebar: [
       {
-        text: 'Guide',
+        text: "Guide",
         items: [
-          { text: 'Introduction', link: '/guide/introduction' },
-          { text: 'Getting started', link: '/guide/getting-started' },
-          { text: 'CLI', link: '/guide/cli' },
+          { text: "Introduction", link: "/guide/introduction" },
+          { text: "Getting started", link: "/guide/getting-started" },
+          { text: "CLI", link: "/guide/cli" },
         ],
       },
       {
-        text: 'Advanced',
+        text: "Advanced",
         items: [
-          { text: 'JSX', link: '/advanced/jsx' },
-          { text: 'Presets', link: '/advanced/presets' },
+          { text: "JSX", link: "/advanced/jsx" },
+          { text: "Presets", link: "/advanced/presets" },
         ],
       },
       {
-        text: 'API Reference',
-        items: [
-          { text: 'Config options', link: '/reference/api/Interface.Options' },
-        ],
+        text: "API Reference",
+        items: [{ text: "Config options", link: "/reference/api/Interface.Options" }],
       },
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/gugustinette/unrun' },
-      { icon: 'npm', link: 'https://www.npmjs.com/package/unrun' },
+      { icon: "github", link: "https://github.com/gugustinette/unrun" },
+      { icon: "npm", link: "https://www.npmjs.com/package/unrun" },
     ],
 
     search: {
-      provider: 'local',
+      provider: "local",
     },
   },
   markdown: {
     config(md) {
-      md.use(groupIconMdPlugin)
+      md.use(groupIconMdPlugin);
     },
   },
   vite: {
     plugins: [groupIconVitePlugin()],
   },
-})
+});

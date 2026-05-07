@@ -1,7 +1,7 @@
-import fs from 'node:fs'
-import path from 'node:path'
-import process from 'node:process'
-import type { Plugin } from 'rolldown'
+import fs from "node:fs";
+import path from "node:path";
+import process from "node:process";
+import type { Plugin } from "rolldown";
 
 /**
  * Minimal JSON loader to mimic jiti/Node behavior expected by tests:
@@ -11,28 +11,28 @@ import type { Plugin } from 'rolldown'
  */
 export function createJsonLoader(): Plugin {
   return {
-    name: 'unrun-json-loader',
+    name: "unrun-json-loader",
     resolveId: {
       handler(source: string, importer: string | undefined) {
-        if (!source.endsWith('.json')) return null
-        const basedir = importer ? path.dirname(importer) : process.cwd()
-        const resolved = path.resolve(basedir, source)
+        if (!source.endsWith(".json")) return null;
+        const basedir = importer ? path.dirname(importer) : process.cwd();
+        const resolved = path.resolve(basedir, source);
         // Heuristic: if importer text contains require("<source>") we emit a CJS-flavored
         // virtual module so require() returns the plain object (no default key).
-        let isRequire = false
+        let isRequire = false;
         try {
           if (importer) {
-            const src = fs.readFileSync(importer, 'utf8')
+            const src = fs.readFileSync(importer, "utf8");
             // Escape regex metacharacters in the literal source string
-            const escapeRe = /[.*+?^${}()|[\]\\]/g
-            const escaped = source.replaceAll(escapeRe, (m) => `\\${m}`)
-            const pattern = String.raw`\brequire\s*\(\s*['"]${escaped}['"]\s*\)`
-            const re = new RegExp(pattern)
-            isRequire = re.test(src)
+            const escapeRe = /[.*+?^${}()|[\]\\]/g;
+            const escaped = source.replaceAll(escapeRe, (m) => `\\${m}`);
+            const pattern = String.raw`\brequire\s*\(\s*['"]${escaped}['"]\s*\)`;
+            const re = new RegExp(pattern);
+            isRequire = re.test(src);
           }
         } catch {}
         // Force a JS module parse by rewriting extension with a query and suffix
-        return { id: `${resolved}?unrun-json.${isRequire ? 'cjs' : 'mjs'}` }
+        return { id: `${resolved}?unrun-json.${isRequire ? "cjs" : "mjs"}` };
       },
     },
     load: {
@@ -40,19 +40,19 @@ export function createJsonLoader(): Plugin {
       filter: { id: /\?unrun-json\.(?:mjs|cjs)$/ },
       handler(id: string) {
         try {
-          const realId = id.replace(/\?unrun-json\.(?:mjs|cjs)$/, '')
-          const src = fs.readFileSync(realId, 'utf8')
+          const realId = id.replace(/\?unrun-json\.(?:mjs|cjs)$/, "");
+          const src = fs.readFileSync(realId, "utf8");
           // Parse once to validate and to generate named exports
-          const data = JSON.parse(src)
+          const data = JSON.parse(src);
 
-          const jsonLiteral = JSON.stringify(data)
-          const isCjs = id.endsWith('?unrun-json.cjs')
+          const jsonLiteral = JSON.stringify(data);
+          const isCjs = id.endsWith("?unrun-json.cjs");
 
           if (isCjs) {
             // Emit CommonJS so require('./file.json') returns plain object
             // Also define a non-enumerable self-referential default like jiti
-            const code = `const __data = ${jsonLiteral}\ntry { Object.defineProperty(__data, 'default', { value: __data, enumerable: false, configurable: true }) } catch {}\nmodule.exports = __data\n`
-            return { code }
+            const code = `const __data = ${jsonLiteral}\ntry { Object.defineProperty(__data, 'default', { value: __data, enumerable: false, configurable: true }) } catch {}\nmodule.exports = __data\n`;
+            return { code };
           }
 
           // ESM flavor: default export is the parsed object, and attach a
@@ -61,7 +61,7 @@ export function createJsonLoader(): Plugin {
           const named = Object.keys(data)
             .filter((k) => /^[$A-Z_]\w*$/i.test(k))
             .map((k) => `export const ${k} = __data[${JSON.stringify(k)}]`)
-            .join('\n')
+            .join("\n");
 
           const code = [
             `const __data = ${jsonLiteral}`,
@@ -70,13 +70,13 @@ export function createJsonLoader(): Plugin {
             `export default __data`,
           ]
             .filter(Boolean)
-            .join('\n')
+            .join("\n");
 
-          return { code }
+          return { code };
         } catch {
-          return null
+          return null;
         }
       },
     },
-  }
+  };
 }

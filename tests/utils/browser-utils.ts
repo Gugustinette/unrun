@@ -1,5 +1,5 @@
-import rootPackageJson from '../../package.json?raw'
-import { delay } from './timers'
+import rootPackageJson from "../../package.json?raw";
+import { delay } from "./timers";
 import type {
   DirectoryNode,
   FileNode,
@@ -7,56 +7,54 @@ import type {
   SymlinkNode,
   WebContainer,
   WebContainerProcess,
-} from '@webcontainer/api'
+} from "@webcontainer/api";
 
-const browserFixtureFiles = import.meta.glob('../fixtures/browser/**/*', {
+const browserFixtureFiles = import.meta.glob("../fixtures/browser/**/*", {
   eager: true,
-  query: '?raw',
-  import: 'default',
-}) as Record<string, string>
+  query: "?raw",
+  import: "default",
+}) as Record<string, string>;
 
 const BROWSER_FIXTURE_PATHS = {
-  basic: '../fixtures/browser/basic/',
-  tsdown: '../fixtures/browser/tsdown/',
-} as const
+  basic: "../fixtures/browser/basic/",
+  tsdown: "../fixtures/browser/tsdown/",
+} as const;
 
-export type BrowserFixtureName = keyof typeof BROWSER_FIXTURE_PATHS
+export type BrowserFixtureName = keyof typeof BROWSER_FIXTURE_PATHS;
 
-const distFiles = import.meta.glob('../../dist/**/*', {
+const distFiles = import.meta.glob("../../dist/**/*", {
   eager: true,
-  query: '?raw',
-  import: 'default',
-}) as Record<string, string>
+  query: "?raw",
+  import: "default",
+}) as Record<string, string>;
 
-const localPackageJson = buildLocalPackageJson(rootPackageJson)
+const localPackageJson = buildLocalPackageJson(rootPackageJson);
 
-const STREAM_CLOSE_TIMEOUT_MS = 2_000
+const STREAM_CLOSE_TIMEOUT_MS = 2_000;
 
 export interface WebContainerCommandResult {
-  exitCode: number
-  output: string
+  exitCode: number;
+  output: string;
 }
 
-export function createFixtureTree(
-  fixture: BrowserFixtureName = 'basic',
-): FileSystemTree {
-  assertDistArtifacts()
-  const tree: FileSystemTree = {}
-  const insertFile = createFileInserter(tree)
-  const fixturePrefix = BROWSER_FIXTURE_PATHS[fixture]
-  const fixtureFiles = selectFixtureFiles(fixture)
+export function createFixtureTree(fixture: BrowserFixtureName = "basic"): FileSystemTree {
+  assertDistArtifacts();
+  const tree: FileSystemTree = {};
+  const insertFile = createFileInserter(tree);
+  const fixturePrefix = BROWSER_FIXTURE_PATHS[fixture];
+  const fixtureFiles = selectFixtureFiles(fixture);
 
   addFilesFromGlob(fixtureFiles, fixturePrefix, (segments, contents) =>
     insertFile(segments, contents),
-  )
+  );
 
-  insertFile(['local-unrun', 'package.json'], localPackageJson)
+  insertFile(["local-unrun", "package.json"], localPackageJson);
 
-  addFilesFromGlob(distFiles, '../../', (segments, contents) => {
-    insertFile(['local-unrun', ...segments], contents)
-  })
+  addFilesFromGlob(distFiles, "../../", (segments, contents) => {
+    insertFile(["local-unrun", ...segments], contents);
+  });
 
-  return tree
+  return tree;
 }
 
 export async function runWebContainerCommand(
@@ -65,52 +63,50 @@ export async function runWebContainerCommand(
   args: string[],
   label?: string,
 ): Promise<WebContainerCommandResult> {
-  const process = await webcontainer.spawn(command, args)
-  return collectProcessResult(process, label ?? command)
+  const process = await webcontainer.spawn(command, args);
+  return collectProcessResult(process, label ?? command);
 }
 
 export async function collectProcessResult(
   process: WebContainerProcess,
   label?: string,
 ): Promise<WebContainerCommandResult> {
-  const reader = process.output.getReader()
-  const decoder = typeof TextDecoder === 'undefined' ? null : new TextDecoder()
-  let output = ''
-  let readerFinished = false
+  const reader = process.output.getReader();
+  const decoder = typeof TextDecoder === "undefined" ? null : new TextDecoder();
+  let output = "";
+  let readerFinished = false;
 
   const pumpPromise = (async () => {
     try {
       while (true) {
-        const { done, value } = await reader.read()
+        const { done, value } = await reader.read();
         if (done) {
-          readerFinished = true
-          break
+          readerFinished = true;
+          break;
         }
 
         const chunk =
-          typeof value === 'string'
-            ? value
-            : (decoder?.decode(value, { stream: true }) ?? '')
+          typeof value === "string" ? value : (decoder?.decode(value, { stream: true }) ?? "");
 
         if (!chunk) {
-          continue
+          continue;
         }
 
-        output += chunk
+        output += chunk;
         if (label) {
-          console.info(`[webcontainer:${label}] ${chunk}`)
+          console.info(`[webcontainer:${label}] ${chunk}`);
         }
       }
     } catch (error) {
       if (!isAbortError(error)) {
-        throw error
+        throw error;
       }
     } finally {
-      reader.releaseLock()
+      reader.releaseLock();
     }
-  })()
+  })();
 
-  const exitCode = await process.exit
+  const exitCode = await process.exit;
 
   if (!readerFinished) {
     const completedNaturally = await Promise.race([
@@ -118,41 +114,41 @@ export async function collectProcessResult(
         .then(() => true)
         .catch((error) => {
           if (isAbortError(error)) {
-            return true
+            return true;
           }
-          throw error
+          throw error;
         }),
       delay(STREAM_CLOSE_TIMEOUT_MS).then(() => false),
-    ])
+    ]);
 
     if (!completedNaturally) {
-      await reader.cancel().catch(() => {})
+      await reader.cancel().catch(() => {});
     }
   }
 
   await pumpPromise.catch((error) => {
     if (!isAbortError(error)) {
-      throw error
+      throw error;
     }
-  })
+  });
 
   if (decoder) {
-    output += decoder.decode()
+    output += decoder.decode();
   }
 
-  return { exitCode, output }
+  return { exitCode, output };
 }
 
 export function assertDistArtifacts(): void {
   if (Object.keys(distFiles).length === 0) {
     throw new Error(
       '[browser-test] Missing build artifacts. Run "pnpm run build" before executing browser tests.',
-    )
+    );
   }
 }
 
 export function buildLocalPackageJson(source: string): string {
-  const parsed = JSON.parse(source)
+  const parsed = JSON.parse(source);
   const subset = {
     name: parsed.name,
     version: parsed.version,
@@ -167,9 +163,9 @@ export function buildLocalPackageJson(source: string): string {
     peerDependencies: parsed.peerDependencies,
     peerDependenciesMeta: parsed.peerDependenciesMeta,
     publishConfig: parsed.publishConfig,
-  }
+  };
 
-  return `${JSON.stringify(subset, null, 2)}\n`
+  return `${JSON.stringify(subset, null, 2)}\n`;
 }
 
 function addFilesFromGlob(
@@ -178,82 +174,76 @@ function addFilesFromGlob(
   insertFile: (segments: string[], contents: string) => void,
 ): void {
   for (const [absolutePath, contents] of Object.entries(files)) {
-    const relativePath = normalizeGlobPath(absolutePath, prefixToTrim)
+    const relativePath = normalizeGlobPath(absolutePath, prefixToTrim);
     if (!relativePath) {
-      continue
+      continue;
     }
 
-    insertFile(relativePath.split('/'), contents)
+    insertFile(relativePath.split("/"), contents);
   }
 }
 
 function normalizeGlobPath(path: string, prefix: string): string {
-  let normalized = path.replace(/\?raw$/, '')
+  let normalized = path.replace(/\?raw$/, "");
 
   if (normalized.startsWith(prefix)) {
-    normalized = normalized.slice(prefix.length)
+    normalized = normalized.slice(prefix.length);
   }
 
-  return normalized.replace(/^\/+/, '')
+  return normalized.replace(/^\/+/, "");
 }
 
 function createFileInserter(tree: FileSystemTree) {
   return (segments: string[], contents: string): void => {
-    const normalizedSegments = segments.filter(Boolean)
-    const fileName = normalizedSegments.pop()
+    const normalizedSegments = segments.filter(Boolean);
+    const fileName = normalizedSegments.pop();
 
     if (!fileName) {
-      throw new Error('Invalid path: missing file name')
+      throw new Error("Invalid path: missing file name");
     }
 
-    let current = tree
+    let current = tree;
 
     for (const segment of normalizedSegments) {
-      const existing = current[segment]
+      const existing = current[segment];
 
       if (!existing) {
-        current[segment] = { directory: {} }
+        current[segment] = { directory: {} };
       } else if (!isDirectoryNode(existing)) {
-        throw new Error(`Expected directory at ${segment}, but found a file`)
+        throw new Error(`Expected directory at ${segment}, but found a file`);
       }
 
-      current = (current[segment] as DirectoryNode).directory
+      current = (current[segment] as DirectoryNode).directory;
     }
 
     current[fileName] = {
       file: {
         contents,
       },
-    }
-  }
+    };
+  };
 }
 
 function isAbortError(error: unknown): boolean {
   return (
     !!error &&
-    typeof error === 'object' &&
-    'name' in error &&
-    (error as { name?: string }).name === 'AbortError'
-  )
+    typeof error === "object" &&
+    "name" in error &&
+    (error as { name?: string }).name === "AbortError"
+  );
 }
 
-function isDirectoryNode(
-  node: DirectoryNode | FileNode | SymlinkNode,
-): node is DirectoryNode {
-  return 'directory' in node && !!node.directory
+function isDirectoryNode(node: DirectoryNode | FileNode | SymlinkNode): node is DirectoryNode {
+  return "directory" in node && !!node.directory;
 }
 
-function selectFixtureFiles(
-  fixture: BrowserFixtureName,
-): Record<string, string> {
-  const prefix = BROWSER_FIXTURE_PATHS[fixture]
-  const entries = Object.entries(browserFixtureFiles).filter(([path]) =>
-    path.startsWith(prefix),
-  )
+function selectFixtureFiles(fixture: BrowserFixtureName): Record<string, string> {
+  const prefix = BROWSER_FIXTURE_PATHS[fixture];
+  const entries = Object.entries(browserFixtureFiles).filter(([path]) => path.startsWith(prefix));
 
   if (entries.length === 0) {
-    throw new Error(`Unknown browser fixture: ${fixture}`)
+    throw new Error(`Unknown browser fixture: ${fixture}`);
   }
 
-  return Object.fromEntries(entries)
+  return Object.fromEntries(entries);
 }

@@ -53,21 +53,21 @@ You can also use `unrun` programmatically in your code, either asynchronously or
 - Async usage
 
 ```ts
-import { unrun } from 'unrun'
+import { unrun } from "unrun";
 
 const { module } = await unrun({
-  path: './path/to/file.ts', // Path to the module to load
-})
+  path: "./path/to/file.ts", // Path to the module to load
+});
 ```
 
 - Sync usage
 
 ```ts
-import { unrunSync } from 'unrun'
+import { unrunSync } from "unrun";
 
 const { module } = unrunSync({
-  path: './path/to/file.ts', // Path to the module to load
-})
+  path: "./path/to/file.ts", // Path to the module to load
+});
 ```
 
 ::: warning

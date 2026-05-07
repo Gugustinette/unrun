@@ -4,4 +4,4 @@ export const settings = {
     verboseLogs: false,
   },
   retries: 3,
-}
+};

@@ -1,43 +1,38 @@
-import { resolve } from 'node:path'
-import { describe, expect, test } from 'vitest'
-import { runNodeCli, unrunCliEntry } from './utils/run-cli'
+import { resolve } from "node:path";
+import { describe, expect, test } from "vitest";
+import { runNodeCli, unrunCliEntry } from "./utils/run-cli";
 
-const fixturePath = resolve(__dirname, 'fixtures/cli.fixture.ts')
-const warningDepsFixturePath = resolve(
-  __dirname,
-  'fixtures/warning-deps.fixture.ts',
-)
+const fixturePath = resolve(__dirname, "fixtures/cli.fixture.ts");
+const warningDepsFixturePath = resolve(__dirname, "fixtures/warning-deps.fixture.ts");
 
-describe('cli', () => {
-  test('should display nothing when no command line arguments are given', async () => {
-    const { stdout, stderr } = await runNodeCli(unrunCliEntry, [fixturePath])
+describe("cli", () => {
+  test("should display nothing when no command line arguments are given", async () => {
+    const { stdout, stderr } = await runNodeCli(unrunCliEntry, [fixturePath]);
 
     // Snapshot the outputs
-    expect(stdout).toMatchSnapshot('cli-no-args')
-    expect(stderr).toMatchSnapshot('cli-no-args-stderr')
-  })
+    expect(stdout).toMatchSnapshot("cli-no-args");
+    expect(stderr).toMatchSnapshot("cli-no-args-stderr");
+  });
 
-  test('should not display command line arguments before the file path', async () => {
+  test("should not display command line arguments before the file path", async () => {
     const { stdout, stderr } = await runNodeCli(unrunCliEntry, [
-      '--option-that-should-not-appear',
+      "--option-that-should-not-appear",
       fixturePath,
-      '--some-arg',
-      'value',
-      '--another-arg=42',
-    ])
+      "--some-arg",
+      "value",
+      "--another-arg=42",
+    ]);
 
     // Snapshot the outputs
-    expect(stdout).toMatchSnapshot('cli-with-args')
-    expect(stderr).toMatchSnapshot('cli-with-args-stderr')
-  })
+    expect(stdout).toMatchSnapshot("cli-with-args");
+    expect(stderr).toMatchSnapshot("cli-with-args-stderr");
+  });
 
-  test('should not emit warnings for optional dependencies', async () => {
-    const { stdout, stderr } = await runNodeCli(unrunCliEntry, [
-      warningDepsFixturePath,
-    ])
-    console.log('STDOUT:', stdout)
-    console.log('STDERR:', stderr)
-    expect(stdout).toBe('')
-    expect(stderr).toBe('')
-  })
-})
+  test("should not emit warnings for optional dependencies", async () => {
+    const { stdout, stderr } = await runNodeCli(unrunCliEntry, [warningDepsFixturePath]);
+    console.log("STDOUT:", stdout);
+    console.log("STDERR:", stderr);
+    expect(stdout).toBe("");
+    expect(stderr).toBe("");
+  });
+});

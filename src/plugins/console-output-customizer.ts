@@ -1,4 +1,4 @@
-import type { OutputChunk, Plugin } from 'rolldown'
+import type { OutputChunk, Plugin } from "rolldown";
 
 const INSPECT_HELPER_SNIPPET = `(function(){
   function __unrun__fmt(names, getter, np){
@@ -36,7 +36,7 @@ const INSPECT_HELPER_SNIPPET = `(function(){
       enumerable: false,
     });
   } catch {}
-})();`
+})();`;
 
 const WRAPPER_SNIPPET = `(function __unrun__wrapRolldownHelpers(){
   if (typeof __unrun__setInspect !== "function") return;
@@ -103,60 +103,60 @@ const WRAPPER_SNIPPET = `(function __unrun__wrapRolldownHelpers(){
     __unrun__patchedCopyProps.__unrunPatched = true;
     __copyProps = __unrun__patchedCopyProps;
   }
-})();`
+})();`;
 
-const HELPER_DECLARATION_PATTERN = /__unrun__setInspect\b/
-const WRAPPER_MARKER = '__unrun__wrapRolldownHelpers'
+const HELPER_DECLARATION_PATTERN = /__unrun__setInspect\b/;
+const WRAPPER_MARKER = "__unrun__wrapRolldownHelpers";
 
 export function createConsoleOutputCustomizer(): Plugin {
   return {
-    name: 'unrun-console-output-customizer',
+    name: "unrun-console-output-customizer",
     generateBundle: {
       handler(_, bundle) {
         for (const chunk of Object.values(bundle)) {
-          if (chunk.type !== 'chunk') continue
+          if (chunk.type !== "chunk") continue;
 
-          injectInspectHelper(chunk)
-          injectHelperWrappers(chunk)
+          injectInspectHelper(chunk);
+          injectHelperWrappers(chunk);
         }
       },
     },
-  }
+  };
 }
 
 function injectInspectHelper(chunk: OutputChunk) {
-  if (HELPER_DECLARATION_PATTERN.test(chunk.code)) return
+  if (HELPER_DECLARATION_PATTERN.test(chunk.code)) return;
 
-  const codeWithHelper = chunk.code.startsWith('#!')
+  const codeWithHelper = chunk.code.startsWith("#!")
     ? insertAfterShebang(chunk.code, `${INSPECT_HELPER_SNIPPET}\n`)
-    : `${INSPECT_HELPER_SNIPPET}\n${chunk.code}`
+    : `${INSPECT_HELPER_SNIPPET}\n${chunk.code}`;
 
-  chunk.code = codeWithHelper
+  chunk.code = codeWithHelper;
 }
 
 function injectHelperWrappers(chunk: OutputChunk) {
-  if (chunk.code.includes(WRAPPER_MARKER)) return
+  if (chunk.code.includes(WRAPPER_MARKER)) return;
 
-  const insertIndex = findRuntimeBoundary(chunk.code)
-  const snippet = `${WRAPPER_SNIPPET}\n`
+  const insertIndex = findRuntimeBoundary(chunk.code);
+  const snippet = `${WRAPPER_SNIPPET}\n`;
 
   if (insertIndex === -1) {
-    chunk.code = `${chunk.code}\n${snippet}`
-    return
+    chunk.code = `${chunk.code}\n${snippet}`;
+    return;
   }
 
-  chunk.code = `${chunk.code.slice(0, insertIndex)}${snippet}${chunk.code.slice(insertIndex)}`
+  chunk.code = `${chunk.code.slice(0, insertIndex)}${snippet}${chunk.code.slice(insertIndex)}`;
 }
 
 function findRuntimeBoundary(code: string): number {
-  const markerIndex = code.indexOf('//#endregion')
-  if (markerIndex === -1) return -1
-  const newlineIndex = code.indexOf('\n', markerIndex)
-  return newlineIndex === -1 ? code.length : newlineIndex + 1
+  const markerIndex = code.indexOf("//#endregion");
+  if (markerIndex === -1) return -1;
+  const newlineIndex = code.indexOf("\n", markerIndex);
+  return newlineIndex === -1 ? code.length : newlineIndex + 1;
 }
 
 function insertAfterShebang(code: string, insertion: string): string {
-  const nl = code.indexOf('\n')
-  if (nl === -1) return `${code}\n${insertion}`
-  return `${code.slice(0, nl + 1)}${insertion}${code.slice(nl + 1)}`
+  const nl = code.indexOf("\n");
+  if (nl === -1) return `${code}\n${insertion}`;
+  return `${code.slice(0, nl + 1)}${insertion}${code.slice(nl + 1)}`;
 }

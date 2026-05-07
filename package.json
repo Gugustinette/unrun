@@ -1,42 +1,36 @@
 {
   "name": "unrun",
-  "type": "module",
   "version": "0.2.37",
-  "packageManager": "pnpm@11.0.5",
   "description": "A tool to load and execute any JavaScript or TypeScript code at runtime.",
-  "author": "Augustin Mercier <gugustinette@proton.me>",
-  "license": "MIT",
-  "funding": "https://github.com/sponsors/Gugustinette",
   "homepage": "https://gugustinette.github.io/unrun/",
+  "bugs": {
+    "url": "https://github.com/Gugustinette/unrun/issues"
+  },
+  "license": "MIT",
+  "author": "Augustin Mercier <gugustinette@proton.me>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Gugustinette/unrun.git"
   },
-  "bugs": {
-    "url": "https://github.com/Gugustinette/unrun/issues"
-  },
-  "exports": {
-    ".": "./dist/index.mjs",
-    "./package.json": "./package.json"
-  },
-  "main": "./dist/index.mjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
+  "funding": "https://github.com/sponsors/Gugustinette",
   "bin": {
     "unrun": "./dist/cli.mjs"
   },
   "files": [
     "dist"
   ],
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
   "publishConfig": {
     "access": "public"
   },
-  "engines": {
-    "node": "^22.13.0 || >=24.0.0"
-  },
   "scripts": {
-    "lint": "eslint --no-cache .",
-    "lint:fix": "pnpm run lint --fix",
     "build": "tsdown",
     "dev": "tsdown --watch",
     "playground": "node ./playground/build.mjs",
@@ -52,22 +46,17 @@
     "ecosystem-ci:force": "ecosystem-ci --force",
     "test:update-fixtures": "node ./dist/cli.mjs ./scripts/update-fixtures.ts",
     "benchmark": "tsdown -c benchmark/tsdown.config.ts && node ./benchmark/dist/benchmark.mjs",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
     "typecheck": "tsgo --noEmit",
-    "format": "prettier --cache --write .",
     "release": "bumpp",
     "prepublishOnly": "pnpm run build",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "docs:generate-reference": "node ./dist/cli.mjs ./docs/.vitepress/scripts/generate-reference.ts"
-  },
-  "peerDependencies": {
-    "synckit": "^0.11.11"
-  },
-  "peerDependenciesMeta": {
-    "synckit": {
-      "optional": true
-    }
   },
   "dependencies": {
     "rolldown": "^1.0.0"
@@ -98,6 +87,8 @@
     "mime": "^4.1.0",
     "moment-timezone": "^0.6.2",
     "nano-jsx": "^0.2.1",
+    "oxfmt": "^0.48.0",
+    "oxlint": "^1.63.0",
     "playwright": "^1.59.1",
     "preact": "^10.29.1",
     "preact-render-to-string": "^6.6.7",
@@ -124,5 +115,17 @@
     "vue-tsc": "^3.2.8",
     "zod": "^4.4.3"
   },
-  "prettier": "@sxzz/prettier-config"
+  "peerDependencies": {
+    "synckit": "^0.11.11"
+  },
+  "peerDependenciesMeta": {
+    "synckit": {
+      "optional": true
+    }
+  },
+  "prettier": "@sxzz/prettier-config",
+  "engines": {
+    "node": "^22.13.0 || >=24.0.0"
+  },
+  "packageManager": "pnpm@11.0.5"
 }

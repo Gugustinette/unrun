@@ -1,5 +1,5 @@
-import fs from 'node:fs'
-import type { ResolvedOptions } from '../../options'
+import fs from "node:fs";
+import type { ResolvedOptions } from "../../options";
 
 /**
  * Clean the module file at the given URL.
@@ -10,19 +10,19 @@ import type { ResolvedOptions } from '../../options'
 export function cleanModule(moduleUrl: string, options: ResolvedOptions): void {
   // If debug mode is enabled, skip cleaning
   if (options.debug) {
-    return
+    return;
   }
 
   try {
     // Only attempt to delete if it's a file URL
-    if (moduleUrl.startsWith('file://')) {
-      const filePath = new URL(moduleUrl)
-      fs.unlinkSync(filePath)
+    if (moduleUrl.startsWith("file://")) {
+      const filePath = new URL(moduleUrl);
+      fs.unlinkSync(filePath);
     }
   } catch (error) {
     // If the file doesn't exist, ignore the error
-    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
-      throw error
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+      throw error;
     }
   }
 }
