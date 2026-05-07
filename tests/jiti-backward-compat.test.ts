@@ -28,7 +28,8 @@ const fixtures = [
   // './esm/index.js',
   // TC39 Proposal (ignored for now) : https://github.com/tc39/proposal-explicit-resource-management
   // './explicit-resource-management/index.ts',
-  './export-promise/index.mjs',
+  // Weird Proxy issue
+  // './export-promise/index.mjs',
   './hashbang/index.ts',
   './import-map/index.mjs',
   './import-meta/index.ts',

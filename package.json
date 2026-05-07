@@ -70,7 +70,7 @@
     }
   },
   "dependencies": {
-    "rolldown": "1.0.0-rc.18"
+    "rolldown": "^1.0.0"
   },
   "devDependencies": {
     "@sxzz/eslint-config": "^8.0.0",
@@ -108,7 +108,7 @@
     "synckit": "^0.11.12",
     "test-ecosystem-ci": "^0.0.3",
     "tinyexec": "^1.1.2",
-    "tsdown": "0.21.10",
+    "tsdown": "0.22.0",
     "tsx": "^4.21.0",
     "typedoc": "^0.28.19",
     "typedoc-plugin-markdown": "^4.11.0",

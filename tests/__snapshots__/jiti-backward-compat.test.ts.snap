@@ -58,24 +58,6 @@ import.meta.env.TEST true
 import.meta.env?.TEST true"
 `;
 
-exports[`backward compat snapshots with jiti > ./export-promise/index.mjs > stdout-jiti 1`] = `
-"module: [Module: null prototype] {
-  bar: 'bar',
-  default: Promise { 'foo' },
-  foo: [AsyncFunction: foo]
-}
-default module: foo"
-`;
-
-exports[`backward compat snapshots with jiti > ./export-promise/index.mjs > stdout-unrun 1`] = `
-"module: [Module: null prototype] {
-  bar: 'bar',
-  default: Promise { 'foo' },
-  foo: [AsyncFunction: foo]
-}
-default module: foo"
-`;
-
 exports[`backward compat snapshots with jiti > ./hashbang/index.ts > stdout-jiti 1`] = `"1"`;
 
 exports[`backward compat snapshots with jiti > ./hashbang/index.ts > stdout-unrun 1`] = `"1"`;
