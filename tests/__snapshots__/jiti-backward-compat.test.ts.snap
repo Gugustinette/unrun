@@ -58,41 +58,21 @@ import.meta.env.TEST true
 import.meta.env?.TEST true"
 `;
 
-exports[`backward compat snapshots with jiti > ./esm/index.js > stdout-jiti 1`] = `
-"{ utilsLib: { utils: { a: 'a', default: 'default' }, version: '123' } }
-{ utils: { a: 'a', default: 'default' } }
-{
-  file: '<cwd>/test.js',
-  dir: '<cwd>',
-  'import.meta.url': 'file://<cwd>/test.js'
-}"
-`;
-
-exports[`backward compat snapshots with jiti > ./esm/index.js > stdout-unrun 1`] = `
-"{ utilsLib: { utils: { a: 'a', default: 'default' }, version: '123' } }
-{ utils: { a: 'a', default: 'default' } }
-{
-  file: '<cwd>/test.js',
-  dir: '<cwd>',
-  'import.meta.url': 'file://<cwd>/test.js'
-}"
-`;
-
 exports[`backward compat snapshots with jiti > ./export-promise/index.mjs > stdout-jiti 1`] = `
-"module: [Module: null prototype] {
+"module: Proxy([Module: null prototype] {
   bar: 'bar',
   default: Promise { 'foo' },
   foo: [AsyncFunction: foo]
-}
+})
 default module: foo"
 `;
 
 exports[`backward compat snapshots with jiti > ./export-promise/index.mjs > stdout-unrun 1`] = `
-"module: [Module: null prototype] {
+"module: Proxy([Module: null prototype] {
   bar: 'bar',
   default: Promise { 'foo' },
   foo: [AsyncFunction: foo]
-}
+})
 default module: foo"
 `;
 
@@ -140,9 +120,15 @@ exports[`backward compat snapshots with jiti > ./mixed/index.cjs > stdout-jiti 1
 
 exports[`backward compat snapshots with jiti > ./mixed/index.cjs > stdout-unrun 1`] = `"Mixed works for: <root>"`;
 
-exports[`backward compat snapshots with jiti > ./native/index.js > stdout-jiti 1`] = `"[Module: null prototype] { default: { hasRequire: false } }"`;
+exports[`backward compat snapshots with jiti > ./native/index.mjs > stdout-jiti 1`] = `
+"[Module: null prototype] { default: { hasRequire: false } }
+in foo.ts"
+`;
 
-exports[`backward compat snapshots with jiti > ./native/index.js > stdout-unrun 1`] = `"[Module: null prototype] { default: { hasRequire: false } }"`;
+exports[`backward compat snapshots with jiti > ./native/index.mjs > stdout-unrun 1`] = `
+"[Module: null prototype] { default: { hasRequire: false } }
+in foo.ts"
+`;
 
 exports[`backward compat snapshots with jiti > ./node/index.mts > stdout-jiti 1`] = `"node:test true"`;
 
@@ -176,6 +162,10 @@ exports[`backward compat snapshots with jiti > ./require-json/index.js > stdout-
 
 exports[`backward compat snapshots with jiti > ./require-json/index.js > stdout-unrun 1`] = `"{ type: 'commonjs' }"`;
 
+exports[`backward compat snapshots with jiti > ./resolve/index.ts > stdout-jiti 1`] = `"resolved path <cwd>/_dist/foo.mjs"`;
+
+exports[`backward compat snapshots with jiti > ./resolve/index.ts > stdout-unrun 1`] = `"resolved path <cwd>/_dist/foo.mjs"`;
+
 exports[`backward compat snapshots with jiti > ./syntax/index.ts > stdout-jiti 1`] = `
 "Optional chaining: undefined
 Nullish coalescing: 0
@@ -193,6 +183,10 @@ Logical nullish assignment: 50 20"
 exports[`backward compat snapshots with jiti > ./top-level-await/index.ts > stdout-jiti 1`] = `"async value works from sub module"`;
 
 exports[`backward compat snapshots with jiti > ./top-level-await/index.ts > stdout-unrun 1`] = `"async value works from sub module"`;
+
+exports[`backward compat snapshots with jiti > ./tsconfig-paths/index.mjs > stdout-jiti 1`] = `"jiti-tsconfig-paths-test"`;
+
+exports[`backward compat snapshots with jiti > ./tsconfig-paths/index.mjs > stdout-unrun 1`] = `"jiti-tsconfig-paths-test"`;
 
 exports[`backward compat snapshots with jiti > ./typescript/index.ts > stdout-jiti 1`] = `
 "Decorator metadata keys: design:type

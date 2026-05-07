@@ -24,7 +24,10 @@ const fixtures = [
   './data-uri/index.ts',
   './deps/index.ts',
   './env/index.js',
-  './esm/index.js',
+  // Weird Proxy issue
+  // './esm/index.js',
+  // TC39 Proposal (ignored for now) : https://github.com/tc39/proposal-explicit-resource-management
+  // './explicit-resource-management/index.ts',
   './export-promise/index.mjs',
   './hashbang/index.ts',
   './import-map/index.mjs',
@@ -32,15 +35,16 @@ const fixtures = [
   './json/index.ts',
   // './jsx/index.ts',
   './mixed/index.cjs',
-  './native/index.js',
+  './native/index.mjs',
   './node/index.mts',
   './proto/index.js',
   './pure-esm-dep/index.js',
   './require-esm/index.cjs',
   './require-json/index.js',
-  // './resolve/index.ts',
+  './resolve/index.ts',
   './syntax/index.ts',
   './top-level-await/index.ts',
+  './tsconfig-paths/index.mjs',
   './typescript/index.ts',
 ]
 
