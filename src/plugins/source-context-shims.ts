@@ -9,6 +9,7 @@ import type { Plugin } from 'rolldown'
  * - Injects per-module __filename/__dirname
  * - Replaces import.meta.url with the source file URL
  * - Replaces import.meta.dirname/import.meta.filename with source paths
+ * - Replaces import.meta entire object access
  */
 export function createSourceContextShimsPlugin(): Plugin {
   return {
@@ -59,8 +60,17 @@ export function createSourceContextShimsPlugin(): Plugin {
             prologueLines.push(`const __dirname = ${JSON.stringify(dir)}`)
           }
 
+          // If `import.meta` is used as a value (e.g. `const meta = import.meta; meta.url`)
+          // or parenthesized (e.g. `(import.meta).url`), we need a stable object shim.
+          // We only inject this when we actually replace an `import.meta` expression.
+          let importMetaShimName = '__unrun_import_meta'
+          if (/\b__unrun_import_meta\b/.test(code)) {
+            importMetaShimName = '__unrun_import_meta_'
+          }
+
           let transformedCode = code
           let replacedImportMeta = false
+          let replacedImportMetaObject = false
 
           if (hasImportMeta) {
             const resolveRe =
@@ -68,6 +78,9 @@ export function createSourceContextShimsPlugin(): Plugin {
             const urlRe = /import\s*\.\s*meta\s*\.\s*url\b/y
             const dirnameRe = /import\s*\.\s*meta\s*\.\s*dirname\b/y
             const filenameRe = /import\s*\.\s*meta\s*\.\s*filename\b/y
+
+            const metaRe = /import\s*\.\s*meta\b/y
+            const parenMetaRe = /\(\s*import\s*\.\s*meta\s*\)/y
 
             type Mode =
               | 'normal'
@@ -251,6 +264,27 @@ export function createSourceContextShimsPlugin(): Plugin {
                 continue
               }
 
+              // `(import.meta).url` and friends: rewrite the parenthesized meta object.
+              // This keeps the existing `.url` access intact.
+              parenMetaRe.lastIndex = i
+              if (parenMetaRe.test(transformedCode)) {
+                out += importMetaShimName
+                i = parenMetaRe.lastIndex
+                replacedImportMeta = true
+                replacedImportMetaObject = true
+                continue
+              }
+
+              // `const meta = import.meta; meta.url`
+              metaRe.lastIndex = i
+              if (metaRe.test(transformedCode)) {
+                out += importMetaShimName
+                i = metaRe.lastIndex
+                replacedImportMeta = true
+                replacedImportMetaObject = true
+                continue
+              }
+
               out += ch
               i += 1
             }
@@ -258,6 +292,18 @@ export function createSourceContextShimsPlugin(): Plugin {
             if (replacedImportMeta) {
               transformedCode = out
             }
+          }
+
+          if (replacedImportMetaObject) {
+            prologueLines.push(
+              `const ${importMetaShimName} = {` +
+                ` url: ${JSON.stringify(url)},` +
+                ` filename: ${JSON.stringify(file)},` +
+                ` dirname: ${JSON.stringify(dir)},` +
+                ` env: process.env,` +
+                ` resolve: (spec) => new URL(spec, ${JSON.stringify(url)}).href,` +
+                ` }`,
+            )
           }
 
           if (prologueLines.length > 0) {

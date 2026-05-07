@@ -39,6 +39,7 @@
     "lint:fix": "pnpm run lint --fix",
     "build": "tsdown",
     "dev": "tsdown --watch",
+    "playground": "node ./playground/build.mjs",
     "pretest": "pnpm run build && node ./scripts/manage-pnpm-override.mjs add",
     "test": "vitest",
     "pretest:browser": "pnpm run build",

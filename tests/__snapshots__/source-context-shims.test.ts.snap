@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`source context shims > should preserve source import.meta.url access patterns > import-meta-url 1`] = `
+"child > import.meta.url: file://<cwd>/child.ts
+child > (import.meta).url: file://<cwd>/child.ts
+import.meta.url: file://<cwd>/index.ts
+(import.meta).url: file://<cwd>/index.ts"
+`;
