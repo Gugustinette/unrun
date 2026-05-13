@@ -42,5 +42,5 @@ jobs:
         if: ${{ inputs.publish }}
 
       - name: Publish to NPM
-        run: pnpm publish --access public --no-git-checks --tag 0.2.39
+        run: pnpm publish --access public --no-git-checks --tag v0.2
         if: ${{ inputs.publish }}
