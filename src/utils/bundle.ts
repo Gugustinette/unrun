@@ -13,6 +13,7 @@ import {
   createSourceContextShimsPlugin,
 } from "../plugins";
 import type { ResolvedOptions } from "../options";
+import { deepMerge } from "./deep-merge";
 
 export interface BundleOutput {
   chunk: OutputChunk;
@@ -55,17 +56,18 @@ export async function bundle(options: ResolvedOptions): Promise<BundleOutput> {
     },
     // Hide all logs by default
     logLevel: "silent",
-    // Finally, apply user-provided overrides
-    ...options.inputOptions,
   };
+
+  // Apply user-provided overrides with deep merge
+  const mergedInputOptions = deepMerge(inputOptions, options.inputOptions);
 
   // Apply tsconfig if resolved
   if (tsconfig) {
-    inputOptions.tsconfig = tsconfig;
+    mergedInputOptions.tsconfig = tsconfig;
   }
 
   // Setup bundle
-  const bundle = await rolldown(inputOptions);
+  const bundle = await rolldown(mergedInputOptions);
 
   // Output options (https://rolldown.rs/reference/config-options#outputoptions)
   const outputOptions: OutputOptions = {
@@ -79,12 +81,13 @@ export async function bundle(options: ResolvedOptions): Promise<BundleOutput> {
           },
         }
       : {}),
-    // Apply user-provided overrides last
-    ...options.outputOptions,
   };
 
+  // Apply user-provided overrides with deep merge
+  const mergedOutputOptions = deepMerge(outputOptions, options.outputOptions);
+
   // Generate bundle in memory
-  const rolldownOutput = await bundle.generate(outputOptions);
+  const rolldownOutput = await bundle.generate(mergedOutputOptions);
 
   // Verify that the output is not empty
   if (!rolldownOutput.output[0]) {

@@ -7,6 +7,9 @@ async function main() {
     path: "playground/index.ts",
     // temporary file will be kept inside node_modules/.unrun
     debug: true,
+    inputOptions: {
+      plugins: [],
+    },
   });
 }
 
