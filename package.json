@@ -1,6 +1,6 @@
 {
   "name": "unrun",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A tool to load and execute any JavaScript or TypeScript code at runtime.",
   "homepage": "https://gugustinette.github.io/unrun/",
   "bugs": {
